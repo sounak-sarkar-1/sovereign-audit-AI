@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   MessageSquare, 
   Search, 
-  Filter, 
-  Clock, 
   CheckCircle2, 
   XSquare,
   Send,
   User,
   ExternalLink,
-  ChevronRight,
   Loader2,
   Inbox
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -34,7 +31,7 @@ import { useAuthStore } from '@/stores/auth';
 
 const ClarificationsPage = () => {
   const queryClient = useQueryClient();
-  const { user: currentUser } = useAuthStore();
+  const { user: _currentUser } = useAuthStore();
   const [activeTab, setActiveTab] = useState<string>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [reply, setReply] = useState('');

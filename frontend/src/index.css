@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,13 +7,23 @@
 @layer base {
   :root {
     --background: 40 18% 94%; /* #f2f0ee */
-    --foreground: 260 59% 15%; /* #2b144d */
+    --foreground: 265 59% 19%; /* #2b144d */
     
-    --primary: 265 47% 34%; /* #4f2d7f */
+    --primary: 265 59% 19%; /* #2b144d */
     --primary-foreground: 0 0% 100%;
     
     --accent: 261 100% 71%; /* #a06dff */
     --accent-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 266 40% 10%; /* #1a1025 */
+    --foreground: 40 18% 94%; /* #f2f0ee */
+  }
+
+  *:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(160, 109, 255, 0.25) !important;
   }
 }
 

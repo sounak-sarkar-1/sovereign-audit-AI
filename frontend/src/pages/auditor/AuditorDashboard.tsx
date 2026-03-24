@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { EmptyState } from '@/components/ui/EmptyState';
 
 const AuditorDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const AuditorDashboard: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-dark">My Audits</h1>
+          <h1 className="text-3xl font-bold text-dark dark:text-white">My Audits</h1>
           <p className="text-muted-foreground">Manage and respond to your assigned audit scope items.</p>
         </div>
       </div>
@@ -43,7 +44,7 @@ const AuditorDashboard: React.FC = () => {
         {audits?.map((audit: any) => (
           <div 
             key={audit.id} 
-            className="bg-white rounded-xl border shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+            className="bg-white dark:bg-[#1a0d35] rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card overflow-hidden hover:shadow-elevated hover:-translate-y-1 transition-all duration-150 flex flex-col"
           >
             <div className="p-5 border-b bg-muted/30">
               <div className="flex justify-between items-start mb-2">
@@ -58,16 +59,16 @@ const AuditorDashboard: React.FC = () => {
                   Ends {format(new Date(audit.endDate), 'MMM dd, yyyy')}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-dark line-clamp-1">{audit.name}</h3>
+              <h3 className="text-lg font-bold text-dark dark:text-white line-clamp-1">{audit.name}</h3>
             </div>
             
             <div className="p-5 flex-1 space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">My Progress</span>
-                  <span className="font-medium">{Math.round(audit.stats.completionPercent)}%</span>
+                  <span className="text-muted-foreground font-medium">My Progress</span>
+                  <span className="font-bold text-primary dark:text-accent">{Math.round(audit.stats.completionPercent)}%</span>
                 </div>
-                <Progress value={audit.stats.completionPercent} className="h-2" />
+                <Progress value={audit.stats.completionPercent} className="h-1" />
                 <div className="text-xs text-muted-foreground">
                   {audit.stats.submittedItems} of {audit.stats.totalItems} items completed
                 </div>
@@ -102,14 +103,16 @@ const AuditorDashboard: React.FC = () => {
             </div>
           </div>
         ))}
-
-        {(!audits || audits.length === 0) && (
-          <div className="col-span-full py-20 bg-white rounded-xl border border-dashed flex flex-col items-center justify-center text-muted-foreground">
-            <ClipboardList size={48} className="mb-4 opacity-20" />
-            <p>No audits assigned to you yet.</p>
-          </div>
-        )}
       </div>
+
+      {(!audits || audits.length === 0) && (
+        <EmptyState 
+          icon={ClipboardList}
+          title="No audits assigned yet"
+          description="Your audit engagements will appear here once they are assigned by a manager."
+          className="mt-8"
+        />
+      )}
     </div>
   );
 };

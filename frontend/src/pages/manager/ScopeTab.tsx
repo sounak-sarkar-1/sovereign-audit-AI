@@ -9,8 +9,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Dialog, 
@@ -211,24 +211,24 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
 
   return (
     <div className="pt-2 space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h3 className="text-lg font-bold text-dark dark:text-white flex items-center gap-3">
           Scope Management
-          <Badge variant="outline" className="font-normal">
-            {Object.values(scopeItemsByBu || {}).flat().length} items
+          <Badge variant="outline" className="font-bold border-bg-mid py-0 h-6 px-3">
+            {Object.values(scopeItemsByBu || {}).flat().length} ITEMS
           </Badge>
         </h3>
         {isDraft && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {!hasAnyItems && (
-              <Button size="sm" variant="outline" onClick={() => setIsManualDialogOpen(true)}>
+              <Button size="sm" variant="outline" onClick={() => setIsManualDialogOpen(true)} className="rounded-full border-bg-mid">
                 <Plus className="h-4 w-4 mr-2" /> Add Item
               </Button>
             )}
-            <Button size="sm" variant="outline" onClick={() => setIsAiDialogOpen(true)} className="gap-2 border-accent/20 text-accent hover:bg-accent/5">
-              <Sparkles className="h-4 w-4" /> AI Extract
+            <Button size="sm" variant="outline" onClick={() => setIsAiDialogOpen(true)} className="rounded-full gap-2 border-primary/20 text-primary dark:text-accent font-bold bg-primary/5 dark:bg-accent/5 hover:bg-primary/10 transition-all">
+              <Sparkles className="h-4 w-4" /> AI EXTRACT
             </Button>
-            <Button size="sm" variant="outline" onClick={() => setIsExcelDialogOpen(true)} className="gap-2">
+            <Button size="sm" variant="outline" onClick={() => setIsExcelDialogOpen(true)} className="rounded-full gap-2 border-bg-mid font-medium">
               <FileSpreadsheet className="h-4 w-4" /> Excel Import
             </Button>
           </div>
@@ -236,39 +236,43 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       </div>
 
       {!hasAnyItems && !isManualDialogOpen && !isAiDialogOpen && !isExcelDialogOpen ? (
-        <Card className="border-dashed">
-          <CardContent className="p-12 text-center text-muted-foreground flex flex-col items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mb-2">
-              <Plus className="h-6 w-6" />
-            </div>
-            <div className="space-y-1">
-              <p className="font-semibold text-foreground">No scope items defined</p>
-              <p className="text-sm">Start by adding items manually, using AI extraction, or importing from Excel.</p>
-            </div>
-            <Button onClick={() => setIsManualDialogOpen(true)}>+ Define Scope Manually</Button>
-          </CardContent>
-        </Card>
+        <EmptyState 
+          icon={Plus}
+          title="Audit scope is currently empty"
+          description="Build your audit framework by adding checkpoints manually, importing an Excel file, or using our AI to extract items from policy documents."
+          action={{
+            label: "Define Scope Manually",
+            onClick: () => setIsManualDialogOpen(true),
+            icon: Plus
+          }}
+        />
       ) : (
         <Tabs value={activeBuId} onValueChange={setActiveBuId} className="w-full">
-          <TabsList className="bg-muted/50 p-1">
+          <TabsList className="mb-4">
             {audit.businessUnits?.map((bu: any) => (
-              <TabsTrigger key={bu.id} value={bu.id} className="text-xs px-4 h-8">
+              <TabsTrigger key={bu.id} value={bu.id}>
                 {bu.name}
               </TabsTrigger>
             ))}
           </TabsList>
           
           {audit.businessUnits?.map((bu: any) => (
-            <TabsContent key={bu.id} value={bu.id} className="mt-4">
-              <ScopeItemsTable 
-                items={scopeItemsByBu?.[bu.id] || []} 
-                onEdit={handleEdit}
-                onDelete={(id: string) => confirm('Delete item?') && deleteMutation.mutate(id)}
-                isDraft={isDraft}
-              />
+            <TabsContent key={bu.id} value={bu.id} className="mt-0">
+              <div className="bg-white dark:bg-[#1a0d35] rounded-xl overflow-hidden border border-bg-mid dark:border-[#3d2a5a]">
+                <ScopeItemsTable 
+                  items={scopeItemsByBu?.[bu.id] || []} 
+                  onEdit={handleEdit}
+                  onDelete={(id: string) => confirm('Delete item?') && deleteMutation.mutate(id)}
+                  isDraft={isDraft}
+                />
+              </div>
               {isDraft && (
-                <Button variant="ghost" className="mt-4 text-accent h-12 w-full border border-dashed border-accent/20 hover:bg-accent/5" onClick={() => setIsManualDialogOpen(true)}>
-                  <Plus className="mr-2 h-4 w-4" /> Add Item to {bu.name}
+                <Button 
+                  variant="ghost" 
+                  className="mt-4 text-primary dark:text-accent h-14 w-full border-2 border-dashed border-primary/20 dark:border-accent/20 hover:bg-primary/5 dark:hover:bg-accent/5 rounded-xl font-bold transition-all" 
+                  onClick={() => setIsManualDialogOpen(true)}
+                >
+                  <Plus className="mr-2 h-5 w-5" /> ADD CHECKPOINT TO {bu.name.toUpperCase()}
                 </Button>
               )}
             </TabsContent>
@@ -309,7 +313,7 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
               </div>
             )}
             <DialogFooter>
-              <Button type="submit" disabled={upsertMutation.isPending}>
+              <Button type="submit" disabled={upsertMutation.isPending} className="rounded-full">
                 {upsertMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {editingItem ? 'Update' : 'Add'}
               </Button>

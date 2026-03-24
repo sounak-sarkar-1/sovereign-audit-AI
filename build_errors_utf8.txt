@@ -1,0 +1,47 @@
+﻿
+> frontend@0.0.0 build
+> tsc -b && vite build
+
+src/components/layout/MainLayout.tsx(18,11): error TS2322: Type '{ onNotificationClick: () => void; isSidebarOpen: boolean; }' is not assignable to type 'IntrinsicAttributes & { onNotificationClick: () => void; }'.
+  Property 'isSidebarOpen' does not exist on type 'IntrinsicAttributes & { onNotificationClick: () => void; }'.
+src/components/layout/NotificationDrawer.tsx(20,10): error TS1484: 'Notification' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/layout/NotificationDrawer.tsx(119,35): error TS7006: Parameter 'notif' implicitly has an 'any' type.
+src/components/layout/Sidebar.tsx(60,17): error TS2339: Property 'logout' does not exist on type 'AuthState'.
+src/components/layout/Sidebar.tsx(190,29): error TS2339: Property 'avatarUrl' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(191,40): error TS2339: Property 'avatarUrl' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(191,61): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(198,31): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(230,25): error TS2339: Property 'avatarUrl' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(231,36): error TS2339: Property 'avatarUrl' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(231,57): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/layout/Sidebar.tsx(239,74): error TS2339: Property 'name' does not exist on type 'User'.
+src/components/modals/ExceptionalRequestModal.tsx(120,13): error TS2322: Type '"destructive" | "default"' is not assignable to type '"link" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | null | undefined'.
+  Type '"default"' is not assignable to type '"link" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | null | undefined'.
+src/pages/auditor/AuditorWorkspace.tsx(206,31): error TS2322: Type '"outline" | "default"' is not assignable to type '"link" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | null | undefined'.
+  Type '"default"' is not assignable to type '"link" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | null | undefined'.
+src/pages/manager/AuditDetail.tsx(19,3): error TS6133: 'CardContent' is declared but its value is never read.
+src/pages/manager/AuditDetail.tsx(20,3): error TS6133: 'CardHeader' is declared but its value is never read.
+src/pages/manager/AuditDetail.tsx(21,3): error TS6133: 'CardTitle' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(6,3): error TS6133: 'Filter' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(7,3): error TS6133: 'Clock' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(13,3): error TS6133: 'ChevronRight' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(17,16): error TS6133: 'CardContent' is declared but its value is never read.
+src/pages/manager/ClarificationsPage.tsx(37,9): error TS6133: 'currentUser' is declared but its value is never read.
+src/pages/manager/ExceptionsTab.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/pages/manager/ExceptionsTab.tsx(15,29): error TS6133: 'CardHeader' is declared but its value is never read.
+src/pages/manager/ExceptionsTab.tsx(15,41): error TS6133: 'CardTitle' is declared but its value is never read.
+src/pages/manager/ExceptionsTab.tsx(15,52): error TS6133: 'CardDescription' is declared but its value is never read.
+src/pages/manager/ExceptionsTab.tsx(20,1): error TS6192: All imports in import declaration are unused.
+src/pages/manager/ExceptionsTab.tsx(35,33): error TS6133: 'isDraft' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(16,3): error TS6133: 'Eye' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(25,1): error TS6192: All imports in import declaration are unused.
+src/pages/manager/ReportsTab.tsx(26,1): error TS6192: All imports in import declaration are unused.
+src/pages/manager/ReportsTab.tsx(35,1): error TS6192: All imports in import declaration are unused.
+src/pages/manager/ReportsTab.tsx(41,25): error TS1484: 'AuditReport' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/pages/manager/ReportsTab.tsx(41,25): error TS6133: 'AuditReport' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(42,31): error TS2307: Cannot find module '@/services/aiJobsService' or its corresponding type declarations.
+src/pages/manager/ReportsTab.tsx(44,1): error TS6133: 'cn' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(45,1): error TS6133: 'useAuthStore' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(53,59): error TS6133: 'auditStatus' is declared but its value is never read.
+src/pages/manager/ReportsTab.tsx(162,21): error TS2322: Type '"default"' is not assignable to type '"link" | "primary" | "secondary" | "outline" | "ghost" | "destructive" | null | undefined'.

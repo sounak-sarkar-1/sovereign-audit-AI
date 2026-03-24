@@ -23,6 +23,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
 
 export default function AuditOversight() {
   const [filters, setFilters] = useState<AuditFilterParams>({
@@ -39,52 +40,49 @@ export default function AuditOversight() {
     adminAuditService.exportAudits(filters);
   };
 
-  const getStatusBadge = (status: string) => {
-    const variants: Record<string, string> = {
-      draft: "bg-white/10 text-white/60 border-white/5",
-      in_progress: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-      under_manager_review: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-      pending_client_review: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-      closed: "bg-green-500/10 text-green-500 border-green-500/20",
-      reopened: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
-      deleted: "bg-red-500/10 text-red-500 border-red-500/20",
-    };
-    return (
-      <Badge variant="outline" className={cn("capitalize px-2 py-0 border", variants[status] || variants.draft)}>
-        {status.replace(/_/g, ' ')}
-      </Badge>
-    );
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'draft': return 'draft';
+      case 'in_progress': return 'inProgress';
+      case 'under_manager_review': return 'underReview';
+      case 'pending_client_review': return 'pendingClient';
+      case 'closed': return 'closed';
+      case 'reopened': return 'default';
+      case 'deleted': return 'destructive';
+      default: return 'default';
+    }
   };
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Eye className="text-accent" />
-            Audit Oversight
-          </h1>
-          <p className="text-white/60">Comprehensive system-wide audit monitoring and reporting.</p>
+    <div className="p-6 max-w-[1600px] mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center text-[10px] uppercase tracking-widest font-bold text-bg-muted gap-2">
+            <Eye size={12} className="opacity-50" />
+            <span>System Administration</span>
+          </div>
+          <h1 className="text-3xl font-bold text-dark dark:text-white">Audit Oversight</h1>
+          <p className="text-sm text-bg-muted font-medium">System-wide monitoring and compliance reporting.</p>
         </div>
         <Button 
           onClick={handleExport}
-          className="bg-accent hover:bg-accent/80 text-white font-bold shadow-lg shadow-accent/20"
+          className="rounded-full shadow-elevated h-11 px-6 font-bold"
         >
-          <Download className="mr-2" size={18} />
-          Export All as CSV
+          <Download className="mr-2 h-4 w-4" />
+          EXPORT CSV
         </Button>
       </div>
 
-      <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden flex flex-col">
+      <Card className="overflow-hidden border-bg-mid dark:border-[#3d2a5a] bg-white dark:bg-[#1a0d35] shadow-card">
         {/* Filters Bar */}
-        <div className="p-4 border-b border-white/10 bg-white/5 flex flex-wrap items-center gap-4">
+        <div className="p-4 border-b border-bg-mid dark:border-[#3d2a5a] bg-bg-warm/30 dark:bg-[#2d1f45]/30 flex flex-wrap items-center gap-4">
           <div className="relative flex-1 min-w-[300px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-bg-muted" size={18} />
             <Input
-              placeholder="Search by audit name..."
+              placeholder="Search by audit name or ID..."
               value={filters.search || ''}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-              className="pl-10 bg-dark border-white/10 text-white"
+              className="pl-10 h-10 border-bg-mid dark:border-[#3d2a5a] bg-white dark:bg-[#1a0d35]"
             />
           </div>
 
@@ -92,10 +90,10 @@ export default function AuditOversight() {
             value={filters.status || 'all'} 
             onValueChange={(val) => setFilters(prev => ({ ...prev, status: val === 'all' ? undefined : val }))}
           >
-            <SelectTrigger className="w-44 bg-dark border-white/10 text-white">
-              <SelectValue placeholder="Status" />
+            <SelectTrigger className="w-48 h-10 border-bg-mid dark:border-[#3d2a5a] bg-white dark:bg-[#1a0d35]">
+              <SelectValue placeholder="All Statuses" />
             </SelectTrigger>
-            <SelectContent className="bg-dark border-white/10 text-white">
+            <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="draft">Draft</SelectItem>
               <SelectItem value="in_progress">In Progress</SelectItem>
@@ -107,19 +105,19 @@ export default function AuditOversight() {
             </SelectContent>
           </Select>
 
-          <Button variant="outline" className="text-white border-white/10 hover:bg-white/5">
-            <Filter className="mr-2" size={16} />
-            Advanced
+          <Button variant="outline" className="h-10 rounded-full border-bg-mid px-4 font-medium">
+            <Filter className="mr-2 h-4 w-4" />
+            ADVANCED
           </Button>
           
           {(filters.search || filters.status) && (
             <Button 
               variant="ghost" 
-              className="text-white/40 hover:text-white"
+              className="h-10 text-bg-muted hover:text-dark dark:hover:text-white"
               onClick={() => setFilters({ sortBy: 'createdAt', sortOrder: 'DESC' })}
             >
-              <X className="mr-2" size={16} />
-              Reset
+              <X className="mr-2 h-4 w-4" />
+              RESET
             </Button>
           )}
         </div>
@@ -128,65 +126,69 @@ export default function AuditOversight() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/10 text-[10px] uppercase tracking-wider text-white/50 font-bold bg-white/5">
-                <th className="px-6 py-4">Audit Name</th>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Manager</th>
-                <th className="px-6 py-4">Start Date</th>
+              <tr className="border-b border-bg-mid dark:border-[#3d2a5a] text-[10px] uppercase tracking-wider text-bg-muted font-bold bg-bg-warm/50 dark:bg-[#2d1f45]/50">
+                <th className="px-6 py-4">Audit Details</th>
+                <th className="px-6 py-4">Stakeholders</th>
                 <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Created</th>
+                <th className="px-6 py-4">Timeline</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-bg-mid/50 dark:divide-[#3d2a5a]/50">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-20 text-center">
-                    <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+                  <td colSpan={5} className="px-6 py-24 text-center">
+                    <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary"></div>
                   </td>
                 </tr>
               ) : audits?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-20 text-center text-white/30">
-                    No audits found matching your filters.
+                  <td colSpan={5} className="px-6 py-24 text-center text-bg-muted font-medium italic">
+                    No audits found matching your current filters.
                   </td>
                 </tr>
               ) : (
                 audits?.map((audit: any) => (
                   <tr key={audit.id} className={cn(
-                    "hover:bg-white/5 transition-colors group",
-                    audit.deletedAt && "opacity-60 grayscale-[0.5]"
+                    "hover:bg-bg-warm/30 dark:hover:bg-accent/5 transition-colors group",
+                    audit.deletedAt && "opacity-60"
                   )}>
-                    <td className="px-6 py-4">
-                      <div className="font-semibold text-white group-hover:text-accent transition-colors">
+                    <td className="px-6 py-5">
+                      <div className="font-bold text-dark dark:text-white group-hover:text-primary transition-colors">
                         {audit.name}
                       </div>
-                      <div className="text-[10px] text-white/30 truncate max-w-[200px]">{audit.id}</div>
+                      <div className="text-[10px] text-bg-muted font-mono uppercase mt-0.5">{audit.id}</div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-white/80">
-                        <Building2 size={14} className="text-white/30" />
-                        {audit.client?.fullName || 'N/A'}
+                    <td className="px-6 py-5">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-dark/80 dark:text-bg-mid">
+                          <Building2 size={12} className="text-bg-muted" />
+                          {audit.client?.fullName || 'N/A'}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs font-medium text-bg-muted">
+                          <User size={12} className="opacity-60" />
+                          {audit.manager?.fullName || 'N/A'}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-white/80">
-                        <User size={14} className="text-white/30" />
-                        {audit.manager?.fullName || 'N/A'}
-                      </div>
+                    <td className="px-6 py-5">
+                       <Badge variant={getStatusVariant(audit.status)} className="capitalize font-bold py-0 h-6">
+                        {audit.status.replace(/_/g, ' ')}
+                      </Badge>
                     </td>
-                    <td className="px-6 py-4 text-white/60">
-                      {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'Not Set'}
+                    <td className="px-6 py-5">
+                       <div className="space-y-1">
+                          <div className="text-xs font-bold text-dark/70 dark:text-bg-mid">
+                            {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'NOT STARTED'}
+                          </div>
+                          <div className="text-[10px] text-bg-muted">
+                            Created {format(new Date(audit.createdAt), 'MMM d, yyyy')}
+                          </div>
+                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      {getStatusBadge(audit.status)}
-                    </td>
-                    <td className="px-6 py-4 text-white/40">
-                      {format(new Date(audit.createdAt), 'MMM d, yyyy')}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Button variant="ghost" size="sm" className="text-white/40 hover:text-white">
-                        Details
+                    <td className="px-6 py-5 text-right">
+                      <Button variant="outline" size="sm" className="rounded-full border-bg-mid font-bold text-[10px] h-8 px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        VIEW DETAILS
                       </Button>
                     </td>
                   </tr>
@@ -196,15 +198,15 @@ export default function AuditOversight() {
           </table>
         </div>
 
-        {/* Footer/Pagination Placeholder */}
-        <div className="p-4 border-t border-white/10 bg-white/5 flex items-center justify-between text-xs text-white/40">
-          <div>Showing {audits?.length || 0} audits across all systems</div>
+        {/* Footer */}
+        <div className="p-4 border-t border-bg-mid dark:border-[#3d2a5a] bg-bg-warm/20 dark:bg-[#1a0d35] flex items-center justify-between text-[11px] font-bold text-bg-muted uppercase tracking-wider">
+          <div>System Registry: {audits?.length || 0} active engagements</div>
           <div className="flex items-center gap-2">
-            <span className="opacity-50">Sort by:</span>
-            <span className="text-white/80 font-medium">Recently Created</span>
+            <span className="opacity-50">Filter Mode:</span>
+            <span className="text-primary">{filters.status ? filters.status.toUpperCase() : 'ALL RECORD TYPES'}</span>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

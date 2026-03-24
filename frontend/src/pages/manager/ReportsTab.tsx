@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Archive,
   ArrowRight,
-  Eye,
   MessageSquare,
   BadgeCheck
 } from 'lucide-react';
@@ -22,27 +21,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { 
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { reportService, AuditReport } from '@/services/reportService';
-import { aiJobsService } from '@/services/aiJobsService';
+import { reportService, type AuditReport } from '@/services/reportService';
+import { aiJobsService } from '../../services/aiJobsService';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { useAuthStore } from '@/stores/auth';
 
 interface ReportsTabProps {
   auditId: string;
@@ -50,12 +31,12 @@ interface ReportsTabProps {
   auditName: string;
 }
 
-const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus, auditName }) => {
+const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditStatus, auditName }) => {
   const queryClient = useQueryClient();
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [jobProgress, setJobProgress] = useState(0);
 
-  const { data: reports, isLoading: isReportsLoading } = useQuery({
+  const { data: reports, isLoading: isReportsLoading } = useQuery<AuditReport[]>({
     queryKey: ['reports', auditId],
     queryFn: () => reportService.getReports(auditId),
   });
@@ -117,8 +98,6 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus, auditName
 
   return (
     <div className="space-y-6">
-      {/* Phases Logic */}
-
       {/* Phase 1 & 2: Generate & Review */}
       {(!latestReport || activeJobId) && (
         <Card className="border-accent/20 bg-accent/5">
@@ -141,7 +120,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus, auditName
                   </span>
                   <span>{jobProgress}%</span>
                 </div>
-                <Progress value={jobProgress} className="h-2" />
+                <Progress value={jobProgress} className="h-1" />
                 <p className="text-xs text-muted-foreground italic">
                   Compiling findings, justifications, and BU metadata into a professional DOCX format.
                 </p>

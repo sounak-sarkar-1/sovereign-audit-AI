@@ -17,10 +17,10 @@ import { useNotifications } from '@/hooks/useNotifications';
 import { useAuthStore } from '@/stores/auth';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { Notification } from '@/services/notificationService';
+import type { Notification } from '@/services/notificationService';
 
 export const NotificationDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-  const { user } = useAuthStore();
+  const { user: _currentUser } = useAuthStore();
   const navigate = useNavigate();
   const { notifications, markAsRead, markAllAsRead, isLoading } = useNotifications();
 
@@ -28,11 +28,11 @@ export const NotificationDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClo
     if (!notif.isRead) {
       await markAsRead(notif.id);
     }
-    
+
     // Deep linking logic
     let targetPath = '';
     const { type, relatedEntityType, relatedEntityId, metadata } = notif;
-    const role = user?.role;
+    const role = _currentUser?.role;
 
     if (relatedEntityType === 'ExceptionRequest' || relatedEntityType === 'exception_request') {
       if (role === 'manager') targetPath = `/manager/audits/${metadata?.auditId}/exceptions`;
@@ -116,7 +116,7 @@ export const NotificationDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClo
             <div className="p-8 text-center text-bg-muted">Loading notifications...</div>
           ) : notifications.length > 0 ? (
             <div className="divide-y">
-              {notifications.map((notif) => (
+              {notifications.map((notif: Notification) => (
                 <div 
                   key={notif.id}
                   onClick={() => handleNotificationClick(notif)}

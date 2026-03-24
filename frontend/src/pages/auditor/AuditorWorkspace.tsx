@@ -103,8 +103,8 @@ const AuditorWorkspace: React.FC = () => {
 
   if (isAuditLoading || isScopeLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center p-24">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary"></div>
       </div>
     );
   }
@@ -260,7 +260,7 @@ const AuditorWorkspace: React.FC = () => {
                   <span className="text-muted-foreground">Overall Completion</span>
                   <span className="font-bold text-primary">{audit.stats.completionPercent}%</span>
                 </div>
-                <Progress value={audit.stats.completionPercent} className="h-2.5" />
+                <Progress value={audit.stats.completionPercent} className="h-1.5" />
                 <div className="flex justify-between items-center text-[10px] text-muted-foreground uppercase tracking-widest font-semibold pt-1">
                   <span>{audit.stats.submittedItems} / {audit.stats.totalItems} Items</span>
                   <span>{audit.stats.pendingExceptions} Exceptions</span>
@@ -276,7 +276,7 @@ const AuditorWorkspace: React.FC = () => {
                         <span className="truncate max-w-[150px]">{bu.name}</span>
                         <span className="text-primary">{bu.coAuditorCompletion}%</span>
                       </div>
-                      <Progress value={bu.coAuditorCompletion} className="h-1.5 bg-muted" />
+                      <Progress value={bu.coAuditorCompletion} className="h-1 bg-muted/20" />
                     </div>
                   ))}
                 </div>

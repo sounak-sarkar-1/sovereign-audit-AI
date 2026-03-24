@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   CheckCircle2, 
@@ -12,17 +12,12 @@ import {
   Loader2,
   Filter
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
-} from '@/components/ui/tooltip';
+
 import { exceptionService, ExceptionStatus } from '@/services/exceptionService';
 import { clarificationService } from '@/services/clarificationService';
 import { format } from 'date-fns';
@@ -32,7 +27,7 @@ interface ExceptionsTabProps {
   isDraft: boolean;
 }
 
-const ExceptionsTab = ({ audit, isDraft }: ExceptionsTabProps) => {
+const ExceptionsTab = ({ audit, isDraft: _isDraft }: ExceptionsTabProps) => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>('pending');
   const [expandedId, setExpandedId] = useState<string | null>(null);
