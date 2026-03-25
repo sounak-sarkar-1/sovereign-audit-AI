@@ -1,33 +1,19 @@
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { DataSource } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
 
 /**
- * TenantMiddleware — runs on every request.
- * Reads the X-Tenant-Slug header, looks up the tenant in global.tenants,
- * and attaches both tenantSlug and tenantSchema to the request for downstream use.
- *
- * Note: The full existence check + auth enforcement is in TenantGuard.
- * This middleware sets the values early in the pipeline so they are available
- * in guards and services without re-querying.
+ * TenantMiddleware — extracts x-tenant-slug header and attaches it to the request.
+ * Used for multi-tenant schema isolation.
  */
 @Injectable()
 export class TenantMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(TenantMiddleware.name);
-
-  constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
-  ) {}
-
   async use(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const slug = req.headers['x-tenant-slug'] as string | undefined;
+    const schema = slug ? `tenant_${slug}` : 'public';
 
-    if (slug) {
-      // Attach early; TenantGuard will perform the full DB validation
-      (req as any).tenantSlug = slug;
-      (req as any).tenantSchema = `tenant_${slug}`;
-    }
+    // Attach to request for legacy/guard support
+    (req as any).tenantSlug = slug;
+    (req as any).tenantSchema = schema;
 
     next();
   }

@@ -15,13 +15,14 @@ const exception_request_entity_1 = require("../../database/entities/exception-re
 const audit_scope_line_item_entity_1 = require("../../database/entities/audit-scope-line-item.entity");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
 const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
+const exception_comment_entity_1 = require("../../database/entities/exception-comment.entity");
 let ManagerExceptionsModule = class ManagerExceptionsModule {
 };
 exports.ManagerExceptionsModule = ManagerExceptionsModule;
 exports.ManagerExceptionsModule = ManagerExceptionsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([exception_request_entity_1.ExceptionRequest, audit_scope_line_item_entity_1.AuditScopeLineItem]),
+            typeorm_1.TypeOrmModule.forFeature([exception_request_entity_1.ExceptionRequest, audit_scope_line_item_entity_1.AuditScopeLineItem, exception_comment_entity_1.ExceptionComment]),
             notifications_module_1.NotificationsModule,
             audit_trail_module_1.AuditTrailModule,
         ],

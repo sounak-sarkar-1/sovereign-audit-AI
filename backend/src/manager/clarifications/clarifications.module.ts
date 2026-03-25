@@ -4,12 +4,15 @@ import { ManagerClarificationsController } from './clarifications.controller';
 import { ManagerClarificationsService } from './clarifications.service';
 import { ClarificationRequest } from '../../database/entities/clarification-request.entity';
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
+import { ClarificationResponse } from '../../database/entities/clarification-response.entity';
 import { NotificationsModule } from '../../shared/notifications/notifications.module';
+import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ClarificationRequest, ExceptionRequest]),
+    TypeOrmModule.forFeature([ClarificationRequest, ExceptionRequest, ClarificationResponse]),
     NotificationsModule,
+    AuditTrailModule,
   ],
   controllers: [ManagerClarificationsController],
   providers: [ManagerClarificationsService],

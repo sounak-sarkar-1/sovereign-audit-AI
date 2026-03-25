@@ -1,0 +1,904 @@
+SOVEREIGN AUDIT AI
+UI Screen Specification
+Sequence Diagrams Persona  |  5 Complex Flows — Prose + Mermaid
+UI Library
+Shadcn/ui + Tailwind CSS
+Navigation
+Collapsible left sidebar + top header bar
+Dark Mode
+Supported via Tailwind dark: prefix + theme toggle
+Primary Colour
+#4f2d7f
+Dark Colour
+#2b144d
+Accent Colour
+#a06dff
+Background (Light)
+#f2f0ee
+Background (Mid)
+#e0dcd7
+Background (Muted)
+#ccc4bd
+Spec Version
+v1.0 — Full Specification
+Table of Contents
+1. Document Overview
+This document specifies the detailed interaction sequences for the five most complex flows within Sovereign Audit AI. Each flow is described in two formats: (1) a prose step-by-step flow table for human readers and (2) a Mermaid sequenceDiagram code block for rendering in VS Code, GitHub, or mermaid.live.
+Actors used throughout this document:
+Actor Abbreviation
+Full Name
+Layer
+UI
+React Frontend (Browser)
+Presentation
+API
+NestJS REST API Backend
+Application
+DB
+PostgreSQL (Tenant Schema)
+Data
+AI
+Gen AI Model (external API)
+External Service
+JOBS
+pg-boss Job Queue (Postgres)
+Background Worker
+FS
+File Storage (Local / S3)
+Storage
+MANAGER
+Manager User (human)
+User
+AUDITOR
+Auditor User (human)
+User
+CLIENT
+Client User (human)
+User
+ADMIN
+Admin User (human)
+User
+2. Flow 1 — Gen AI Scope Extraction from SOP Upload
+2.1 Overview
+This flow covers the asynchronous process by which a Manager uploads an SOP or manual document and the platform uses the configured Gen AI model to extract a draft list of audit scope line items for Manager review. The flow uses pg-boss for background job processing to avoid HTTP timeout on long-running AI calls.
+Attribute
+Value
+Trigger
+Manager clicks 'Extract Scope' after uploading a PDF/DOCX document
+Preconditions
+Audit exists with status=draft; at least one BU selected; active AI model configured
+Primary Actor
+Manager
+Async / Sync
+Asynchronous — returns job ID immediately; client polls for completion
+Success End State
+Draft scope line items displayed in editable table for Manager review
+Failure End State
+AI job fails; error shown with option to retry or use alternative scope method
+2.2 Step-by-Step Flow
+Step
+Actor
+Action / Event
+System Response / Notes
+1
+MANAGER
+Selects BU from dropdown and uploads PDF/DOCX file (max 10 MB) via file dropzone
+UI validates file type (PDF/DOCX) and size client-side before upload
+2
+UI → API
+POST /manager/audits/:id/scope/extract-from-document (multipart/form-data: file + auditBusinessUnitId)
+API receives request; validates JWT + role=manager + audit ownership
+3
+API → DB
+Check active AI model: SELECT * FROM ai_models WHERE is_active=true LIMIT 1
+If no active model: return 503 AI_UNAVAILABLE immediately. Else continue.
+4
+API → FS
+Store uploaded file: save to FS/S3; insert record into uploaded_files (entity_type=sop_document)
+Returns stored_filename and file_path
+5
+API → DB
+INSERT INTO ai_jobs (job_type='scope_extraction', status='queued', input_payload={fileId, auditId, buId, modelConfig}, created_by=managerId)
+ai_job record created with id=jobId
+6
+API → JOBS
+Publish job to pg-boss queue: boss.send('scope-extraction', { jobId })
+pg-boss schedules job for immediate processing
+7
+API → UI
+Return 202 Accepted: { jobId: uuid }
+UI receives jobId; begins polling loop (every 3 seconds)
+8
+UI
+Show processing panel: 'AI is analysing your document...' Disable form controls
+Polling loop: GET /ai-jobs/:jobId
+9
+JOBS (worker)
+pg-boss worker picks up job; UPDATE ai_jobs SET status='processing'
+Worker begins AI extraction pipeline
+10
+JOBS → FS
+Read file content from FS/S3 using file_path from input_payload
+Raw file bytes retrieved
+11
+JOBS
+Extract text from document (PDF text extraction or DOCX parsing); truncate to model token limit if needed
+Plain text document content prepared for AI prompt
+12
+JOBS → AI
+POST to AI model endpoint with structured extraction prompt: 'Extract audit scope line items from the following document. Return JSON array with: name, description, inputMethod (free_text|multiple_choice)'
+API key decrypted from ai_models record before call
+13
+AI → JOBS
+AI model returns JSON array of extracted scope items
+Response may include 0 to N items
+14
+JOBS → DB
+UPDATE ai_jobs SET status='completed', output_payload={lineItems:[...]}, completed_at=NOW()
+Job record updated with extraction result
+15
+UI (polling)
+GET /ai-jobs/:jobId returns status='completed' + outputPayload
+Polling detects completion; terminates poll loop
+16
+UI
+Display draft scope items in editable table. Banner: 'AI extracted N items. Review and edit before finalising.'
+Manager can edit item names/descriptions, change input method, toggle optional, delete rows, add new rows
+17
+MANAGER → UI
+Manager reviews/edits items and clicks 'Finalise Scope'
+UI collects final items array from table state
+18
+UI → API
+POST /manager/audits/:id/scope/line-items (batch array of line item objects)
+API validates each item; inserts into audit_scope_line_items with source='ai_extracted'
+19
+API → DB
+INSERT batch into audit_scope_line_items; INSERT options for MC items into audit_scope_line_item_options; INSERT audit_trail_log entry (action: SCOPE_DEFINED)
+All items persisted atomically in a transaction
+20
+API → UI
+Return 201 with created line items array
+UI navigates to Scope tab showing full items table; success toast: 'Scope defined — N items added'
+2.3 Alternative Flow — AI Job Fails
+Step
+Actor
+Action / Event
+System Response / Notes
+14a
+JOBS → DB
+AI call fails (timeout, API error, invalid response format)
+Worker catches error; UPDATE ai_jobs SET status='failed', error_message='[detail]', completed_at=NOW()
+15a
+UI (polling)
+GET /ai-jobs/:jobId returns status='failed' + errorMessage
+Polling detects failure
+16a
+UI
+Show error card: 'AI extraction failed. [errorMessage]. You can retry or use an alternative method.'
+Retry button re-triggers from Step 2. 'Add Manually' link switches method. 'Import Excel' link switches method.
+2.4 Mermaid Sequence Diagram
+Mermaid Sequence Diagram (render in VS Code, GitHub, or mermaid.live):
+sequenceDiagram
+  actor MANAGER
+  participant UI
+  participant API
+  participant DB
+  participant FS
+  participant JOBS
+  participant AI
+  MANAGER->>UI: Upload SOP file + select BU
+  UI->>UI: Validate file type/size client-side
+  UI->>API: POST /scope/extract-from-document (file + buId)
+  API->>DB: Check active AI model
+  DB-->>API: AI model config (endpoint, encrypted key)
+  API->>FS: Store uploaded file
+  FS-->>API: file_path
+  API->>DB: INSERT ai_jobs (status=queued)
+  DB-->>API: jobId
+  API->>JOBS: boss.send('scope-extraction', {jobId})
+  API-->>UI: 202 { jobId }
+  loop Poll every 3s
+    UI->>API: GET /ai-jobs/:jobId
+    API->>DB: SELECT * FROM ai_jobs WHERE id=jobId
+    DB-->>API: job record
+    API-->>UI: { status, outputPayload }
+  end
+  JOBS->>DB: UPDATE ai_jobs status=processing
+  JOBS->>FS: Read document bytes
+  FS-->>JOBS: file content
+  JOBS->>JOBS: Extract text from PDF/DOCX
+  JOBS->>AI: POST extraction prompt + document text
+  alt AI Success
+    AI-->>JOBS: JSON array of line items
+    JOBS->>DB: UPDATE ai_jobs status=completed, output_payload
+    UI->>UI: Poll detects completed
+    UI->>MANAGER: Show draft items table
+    MANAGER->>UI: Review/edit + click Finalise Scope
+    UI->>API: POST /scope/line-items (batch)
+    API->>DB: INSERT audit_scope_line_items + audit_trail_log
+    API-->>UI: 201 created items
+    UI->>MANAGER: Show scope table + success toast
+  else AI Failure
+    AI-->>JOBS: Error / timeout
+    JOBS->>DB: UPDATE ai_jobs status=failed, error_message
+    UI->>UI: Poll detects failed
+    UI->>MANAGER: Show error + retry/alternative options
+  end
+3. Flow 2 — Excel Scope Import with Column Mapping
+3.1 Overview
+Synchronous script-based flow (no Gen AI). Manager uploads an Excel file; the backend auto-detects column headers and suggests mappings; Manager confirms or adjusts; items are imported into audit scope. Two-phase API pattern: upload+detect → confirm.
+Attribute
+Value
+Trigger
+Manager selects 'Import Excel' method and uploads .xlsx/.xls file
+Preconditions
+Audit exists with status=draft; BU selected
+Primary Actor
+Manager
+Async / Sync
+Synchronous — all processing inline (no background job queue)
+Success End State
+Scope line items created from Excel rows; Optional flag set to Mandatory by default
+3.2 Step-by-Step Flow
+Step
+Actor
+Action / Event
+System Response / Notes
+1
+MANAGER
+Selects BU and uploads .xlsx or .xls file via dropzone
+UI validates extension; no size > 10 MB
+2
+UI → API
+POST /scope/import-from-excel (multipart: file + auditBusinessUnitId)
+API validates JWT + ownership
+3
+API
+Parse Excel file using SheetJS/exceljs library; read header row of first sheet
+Extract column letters (A, B, C...) and header text from row 1
+4
+API
+Run keyword matching against header text: look for 'name'/'item'/'description'/'type'/'method' keywords (case-insensitive)
+Build suggestedMapping per column: nameColumn, descriptionColumn, inputMethodColumn, or 'skip'
+5
+API → DB
+Store parsed Excel data in temporary import session: INSERT INTO import_sessions (importId, payload=rows, mappings, expires_at=NOW()+30min)
+Session scoped to managerId + auditId
+6
+API → UI
+Return 200: { importId, detectedColumns: [{columnLetter, headerText, suggestedMapping}], previewRows: [first 3 rows raw] }
+UI renders Phase 2 column mapping confirmation screen
+7
+MANAGER
+Reviews suggested column mappings; adjusts selects if suggestions are wrong. Views preview rows for reference.
+UI tracks user's confirmed mapping in local state
+8
+MANAGER → UI
+Clicks 'Confirm Import' button
+UI validates: nameColumn and descriptionColumn must be mapped (not 'skip')
+9
+UI → API
+POST /scope/import-from-excel/:importId/confirm (body: { columnMapping: {nameColumn, descriptionColumn, inputMethodColumn} })
+API retrieves import session by importId
+10
+API → DB
+Retrieve import session payload (rows); apply confirmed column mapping to extract Name, Description, Input Method per row
+Rows with empty Name or Description flagged as parse errors; remaining rows processed
+11
+API → DB
+Begin transaction: INSERT all valid rows into audit_scope_line_items (source='excel_imported', is_optional=false by default); INSERT options for MC items; INSERT audit_trail_log
+Atomic transaction — all or nothing
+12
+API → DB
+Delete import session record (cleanup)
+Session removed
+13
+API → UI
+Return 201: { created: [...line items], errors: [{rowNumber, reason}] }
+UI renders scope table with imported items; shows error accordion if any rows failed
+14
+MANAGER
+Reviews imported items; adjusts Optional flags as needed; scope is now populated
+Manager can edit any item from the scope table (SCR-MGR-007)
+3.3 Mermaid Sequence Diagram
+Mermaid Sequence Diagram (render in VS Code, GitHub, or mermaid.live):
+sequenceDiagram
+  actor MANAGER
+  participant UI
+  participant API
+  participant DB
+  MANAGER->>UI: Upload Excel file + select BU
+  UI->>UI: Validate file extension (.xlsx/.xls)
+  UI->>API: POST /scope/import-from-excel (file + buId)
+  API->>API: Parse Excel header row (SheetJS)
+  API->>API: Keyword match headers to field names
+  API->>DB: INSERT import_session (importId, rows, suggested mappings, expires_at)
+  API-->>UI: 200 { importId, detectedColumns, previewRows }
+  UI->>MANAGER: Show column mapping confirmation table + preview rows
+  MANAGER->>UI: Adjust mappings if needed; click Confirm Import
+  UI->>UI: Validate nameColumn + descriptionColumn are mapped
+  UI->>API: POST /import/:importId/confirm { columnMapping }
+  API->>DB: Retrieve import_session (rows + mappings)
+  API->>API: Apply column mapping; extract Name/Desc/InputMethod per row
+  API->>API: Flag rows with empty Name or Description as errors
+  API->>DB: BEGIN TRANSACTION
+  API->>DB: INSERT valid rows → audit_scope_line_items (source=excel_imported)
+  API->>DB: INSERT options for multiple_choice items
+  API->>DB: INSERT audit_trail_log (SCOPE_DEFINED)
+  API->>DB: DELETE import_session (cleanup)
+  API->>DB: COMMIT
+  API-->>UI: 201 { created: [...], errors: [...] }
+  UI->>MANAGER: Show scope table + error accordion (if any failed rows)
+4. Flow 3 — Exception Lifecycle
+4.1 Overview
+End-to-end flow for a scope line item exception: from Auditor raising it, through Manager decision (approve / reject / seek client clarification), to the final downstream outcome on the line item and audit report.
+Attribute
+Value
+Trigger
+Auditor clicks 'Raise Exception' on a scope line item
+Preconditions
+Audit is in_progress; line item assigned to auditor; item not already submitted or excepted
+Primary Actors
+Auditor (initiates), Manager (decides), optionally Client (provides clarification)
+Sync / Async
+Synchronous API calls; async via in-app notifications
+Outcome A
+Manager approves → item flagged in report as exception
+Outcome B
+Manager rejects → item returned to Auditor for re-submission
+Outcome C
+Manager seeks client clarification → Client responds → Manager decides
+4.2 Step-by-Step Flow
+Step
+Actor
+Action / Event
+System Response / Notes
+1
+AUDITOR
+Clicks 'Raise Exception' on line item; fills justification + uploads evidence file(s)
+UI validates justification (min 20 chars) + at least 1 evidence file
+2
+UI → API
+POST /auditor/audits/:id/scope/:liId/exceptions (multipart: justification + evidence files)
+API validates Auditor is assigned to this line item
+3
+API → FS
+Upload evidence file(s) to storage; INSERT uploaded_files records (entity_type=exception_evidence)
+Returns file IDs
+4
+API → DB
+INSERT exception_requests (auditor_id, manager_id, line_item_id, justification, status='pending')
+manager_id denormalised from audit.manager_id for routing
+5
+API → DB
+UPDATE audit_scope_line_items SET status='exception_pending' WHERE id=lineItemId
+Line item status locked — Auditor cannot edit while pending
+6
+API → DB
+INSERT audit_trail_log (action=EXCEPTION_RAISED, entity_type=exception_requests, entity_id=exceptionId)
+Immutable log entry
+7
+API → DB
+INSERT notifications (user_id=managerId, type='exception_raised', relatedEntityId=exceptionId)
+Manager receives in-app notification
+8
+API → UI (Auditor)
+Return 201 { exceptionId }; item card status → 'Exception Pending'
+Auditor sees confirmation toast: 'Exception raised. Manager notified.'
+—
+—
+— MANAGER DECISION PHASE —
+—
+9
+MANAGER
+Receives in-app notification; opens Exception tab; reviews justification + downloads evidence
+UI fetches GET /manager/audits/:id/exceptions
+A
+MANAGER
+OUTCOME A: Manager clicks Approve
+Optional comment field shown; Confirm Approval button
+A1
+UI → API
+POST /manager/audits/:id/exceptions/:exId/approve { managerComment? }
+API validates Manager owns this audit
+A2
+API → DB
+UPDATE exception_requests SET status='approved', manager_comment, resolved_at=NOW()
+Exception record closed
+A3
+API → DB
+UPDATE audit_scope_line_items SET status='exception_approved'
+Item excluded from completion gate; will be flagged in report
+A4
+API → DB
+INSERT notifications (user_id=auditorId, type='exception_approved')
+Auditor notified
+A5
+API → DB
+INSERT audit_trail_log (action=EXCEPTION_APPROVED)
+Immutable log
+A6
+API → UI
+Return 200; Manager sees exception card update to 'Approved'
+Auditor's item card updates to 'Exception Approved' on next poll/refresh
+B
+MANAGER
+OUTCOME B: Manager clicks Reject; enters mandatory rejection comment
+UI validates comment min 10 chars
+B1
+UI → API
+POST /manager/audits/:id/exceptions/:exId/reject { managerComment }
+API validates Manager owns this audit
+B2
+API → DB
+UPDATE exception_requests SET status='rejected', manager_comment, resolved_at=NOW()
+Exception record closed
+B3
+API → DB
+UPDATE audit_scope_line_items SET status='returned'
+Item re-opened for Auditor
+B4
+API → DB
+INSERT notifications (user_id=auditorId, type='exception_rejected', message includes manager_comment)
+Auditor notified with rejection reason
+B5
+AUDITOR
+Sees 'Exception Rejected' on item card with manager comment. Must re-submit response or raise a new exception.
+Item status = 'returned'; response area re-enabled
+C
+MANAGER
+OUTCOME C: Manager clicks 'Seek Client Clarification'; fills clarification message
+Optionally links to relatedExceptionId
+C1
+UI → API
+POST /manager/audits/:id/clarifications { clientId, message, relatedExceptionId }
+INSERT clarification_requests; INSERT notification for Client
+C2
+CLIENT
+Sees clarification request in inbox; submits response
+See Flow 4 for Client→Manager clarification sub-flow
+C3
+MANAGER
+Receives response; proceeds to Outcome A or B based on clarification
+Manager now has context to make the exception decision
+4.3 Mermaid Sequence Diagram
+Mermaid Sequence Diagram (render in VS Code, GitHub, or mermaid.live):
+sequenceDiagram
+  actor AUDITOR
+  actor MANAGER
+  actor CLIENT
+  participant UI
+  participant API
+  participant DB
+  participant FS
+  AUDITOR->>UI: Raise Exception (justification + evidence files)
+  UI->>API: POST /exceptions (multipart)
+  API->>FS: Store evidence files
+  FS-->>API: file IDs
+  API->>DB: INSERT exception_requests (status=pending)
+  API->>DB: UPDATE line_item status=exception_pending
+  API->>DB: INSERT notification (MANAGER)
+  API->>DB: INSERT audit_trail_log
+  API-->>UI: 201 { exceptionId }
+  UI->>AUDITOR: Toast: Exception raised
+  MANAGER->>UI: Open exception; review justification + evidence
+  alt OUTCOME A: Approve
+    MANAGER->>UI: Click Approve (optional comment)
+    UI->>API: POST /exceptions/:id/approve
+    API->>DB: UPDATE exception status=approved
+    API->>DB: UPDATE line_item status=exception_approved
+    API->>DB: INSERT notification (AUDITOR: approved)
+    API->>DB: INSERT audit_trail_log
+    API-->>UI: 200 OK
+    UI->>MANAGER: Exception card → Approved
+  else OUTCOME B: Reject
+    MANAGER->>UI: Click Reject + enter comment
+    UI->>API: POST /exceptions/:id/reject { managerComment }
+    API->>DB: UPDATE exception status=rejected
+    API->>DB: UPDATE line_item status=returned
+    API->>DB: INSERT notification (AUDITOR: rejected + comment)
+    API->>DB: INSERT audit_trail_log
+    API-->>UI: 200 OK
+    UI->>AUDITOR: Item card shows Returned + manager comment
+  else OUTCOME C: Seek Client Clarification
+    MANAGER->>UI: Click Seek Clarification + message
+    UI->>API: POST /clarifications { clientId, message, relatedExceptionId }
+    API->>DB: INSERT clarification_requests (status=pending)
+    API->>DB: INSERT notification (CLIENT)
+    API-->>UI: 201 clarificationId
+    CLIENT->>UI: View clarification; submit response
+    UI->>API: POST /clarifications/:id/respond
+    API->>DB: INSERT clarification_responses
+    API->>DB: INSERT notification (MANAGER: clarification responded)
+    MANAGER->>UI: Reviews response; proceeds to Approve or Reject
+  end
+5. Flow 4 — AI Report Generation and Full Review Loop
+5.1 Overview
+Full lifecycle of audit report creation: from Manager triggering Gen AI generation, through Manager review and editing, client review with structured feedback, and final audit closure. Spans multiple personas and multiple async/sync steps.
+Attribute
+Value
+Trigger
+Manager clicks 'Generate Draft Report' when all mandatory items are in terminal state
+Preconditions
+All mandatory scope items: status = submitted or exception_approved; audit status = in_progress → transitions to under_manager_review on job completion
+Primary Actors
+Manager (generate, edit, send, finalise), Client (review, feedback)
+Async Steps
+Report generation (AI job); NL search (covered in separate flow)
+Success End State
+Audit status = closed; report status = final; all parties notified
+5.2 Step-by-Step Flow
+Step
+Actor
+Action / Event
+System Response / Notes
+1
+MANAGER
+All auditors have submitted. Manager navigates to Report tab. Sees 'Generate Draft Report' button (enabled — all mandatory items terminal).
+UI shows completion readiness checklist: N submitted, N exceptions approved
+2
+UI → API
+POST /manager/audits/:id/reports/generate
+API validates: all mandatory audit_scope_line_items.status IN (submitted, exception_approved)
+3
+API → DB
+INSERT audit_reports (audit_id, version=1, status='draft', ai_job_id=TBD)
+Initial report record created
+4
+API → DB
+INSERT ai_jobs (job_type='report_generation', input_payload={auditId, reportId})
+Job created; jobId returned
+5
+API → JOBS
+boss.send('report-generation', { jobId })
+Job queued in pg-boss
+6
+API → UI
+Return 202: { jobId, reportId }; UPDATE audit status = under_manager_review
+UI begins polling; audit Kanban card moves to 'Under Manager Review'
+7
+JOBS (worker)
+Worker picks up job. Fetch all audit data: scope items, responses, exceptions (with justifications), client + BU metadata
+DB queries to compile full audit dataset
+8
+JOBS → AI
+POST to AI endpoint: structured report-writing prompt + compiled audit data. Request structured DOCX content: Executive Summary, Scope, Methodology, Findings by BU, Exception Summary (approved exceptions flagged), Recommendations
+AI model generates report content
+9
+AI → JOBS
+AI returns structured report content (JSON or markdown)
+Worker parses AI response
+10
+JOBS
+Generate DOCX file from AI content using docx/pandoc library. Structure: cover page, sections per BRD spec. Approved exceptions highlighted in Findings + summarised in Exception Summary section.
+DOCX bytes generated in memory
+11
+JOBS → FS
+Save DOCX to FS/S3; INSERT uploaded_files (entity_type=audit_report)
+Returns fileId + path
+12
+JOBS → DB
+UPDATE ai_jobs SET status=completed; UPDATE audit_reports SET file_id=fileId, status=draft; INSERT notification (MANAGER: report_ready)
+Job and report records finalised
+13
+UI (polling)
+GET /ai-jobs/:jobId returns status=completed; { reportId, downloadUrl }
+UI transitions from progress panel to report management view
+14
+MANAGER
+Downloads DOCX, reviews content. Edits locally and re-uploads (or accepts as-is).
+GET /manager/audits/:id/reports/:rId/download; PUT to upload edited version
+15
+MANAGER → UI
+Clicks 'Send to Client for Review'
+Confirm dialog shown
+16
+UI → API
+POST /manager/audits/:id/reports/:rId/send-to-client
+API: UPDATE audit_reports SET status=sent_for_client_review; UPDATE audits SET status=pending_client_review; INSERT notification (CLIENT)
+17
+CLIENT
+Receives notification; downloads report DOCX; reviews content
+GET /client/reports/:rId/download
+18
+CLIENT → UI
+Opens feedback form; provides section-level feedback (Accepted / Requires Revision + comments)
+UI collects feedback array across all sections
+19
+UI → API
+POST /client/reports/:rId/feedback { feedback: [{sectionName, comment, status}] }
+API: INSERT client_report_feedback rows; UPDATE audit status=under_manager_review; INSERT notification (MANAGER: feedback received)
+20
+MANAGER
+Reviews client feedback. Addresses 'Requires Revision' items by editing report and re-uploading. Or accepts without changes.
+Manager downloads, edits, re-uploads. PUT creates new report version.
+21
+MANAGER → UI
+Clicks 'Finalise Audit'
+Confirm dialog shows: report version, feedback summary
+22
+UI → API
+POST /manager/audits/:id/reports/:rId/finalize
+API: UPDATE audit_reports SET status=final; UPDATE audits SET status=closed; INSERT notifications (MANAGER, CLIENT: audit_closed); INSERT audit_trail_log (action=AUDIT_CLOSED)
+23
+UI
+Audit Kanban card moves to 'Closed/Completed'. Report tab shows finalised state.
+All edit actions hidden; final DOCX available for download
+5.3 Mermaid Sequence Diagram
+Mermaid Sequence Diagram (render in VS Code, GitHub, or mermaid.live):
+sequenceDiagram
+  actor MANAGER
+  actor CLIENT
+  participant UI
+  participant API
+  participant DB
+  participant JOBS
+  participant AI
+  participant FS
+  MANAGER->>UI: Click Generate Draft Report
+  UI->>API: POST /reports/generate
+  API->>DB: Validate all mandatory items terminal
+  API->>DB: INSERT audit_reports (status=draft)
+  API->>DB: INSERT ai_jobs (report_generation)
+  API->>JOBS: boss.send(report-generation, {jobId})
+  API->>DB: UPDATE audit status=under_manager_review
+  API-->>UI: 202 { jobId, reportId }
+  loop Poll every 3s
+    UI->>API: GET /ai-jobs/:jobId
+  end
+  JOBS->>DB: Fetch audit data (scope, responses, exceptions)
+  JOBS->>AI: POST report-writing prompt + audit data
+  AI-->>JOBS: Structured report content
+  JOBS->>JOBS: Generate DOCX bytes
+  JOBS->>FS: Store DOCX file
+  JOBS->>DB: UPDATE ai_jobs=completed; UPDATE audit_reports file_id
+  JOBS->>DB: INSERT notification (MANAGER: report ready)
+  UI->>UI: Poll detects completed
+  MANAGER->>UI: Download DOCX; review; optional edit + re-upload
+  MANAGER->>UI: Click Send to Client
+  UI->>API: POST /send-to-client
+  API->>DB: UPDATE report=sent_for_client_review
+  API->>DB: UPDATE audit=pending_client_review
+  API->>DB: INSERT notification (CLIENT)
+  CLIENT->>UI: Download report DOCX
+  CLIENT->>UI: Submit section feedback
+  UI->>API: POST /feedback [{section, comment, status}]
+  API->>DB: INSERT client_report_feedback rows
+  API->>DB: UPDATE audit=under_manager_review
+  API->>DB: INSERT notification (MANAGER: feedback received)
+  MANAGER->>UI: Review feedback; edit report if needed
+  MANAGER->>UI: Click Finalise Audit
+  UI->>API: POST /finalize
+  API->>DB: UPDATE report=final; UPDATE audit=closed
+  API->>DB: INSERT notifications (MANAGER + CLIENT: audit closed)
+  API->>DB: INSERT audit_trail_log (AUDIT_CLOSED)
+  API-->>UI: 200 OK
+  UI->>MANAGER: Audit card → Closed/Completed
+6. Flow 5 — Exceptional Action Request (Manager → Admin → Audit Status Change)
+6.1 Overview
+Flow for Admin-gated exceptional audit controls: a Manager requests deletion of an in-progress audit or re-opening of a closed audit. Admin reviews, uploads evidence, and either approves (triggering audit status change) or rejects. Covers both action types in a single flow with branching.
+Attribute
+Value
+Trigger
+Manager opens audit Actions menu → selects 'Request Deletion' or 'Request Re-open'
+Preconditions (Delete)
+Audit status = draft or in_progress
+Preconditions (Re-open)
+Audit status = closed
+Primary Actors
+Manager (requests), Admin (decides)
+Success End State — Delete
+Audit soft-deleted; all related data retained in DB with deleted_at set
+Success End State — Re-open
+Audit status = reopened; Manager can modify scope and re-assign auditors
+Rejection End State
+Audit status unchanged; Manager notified with Admin's rejection reason
+6.2 Step-by-Step Flow
+Step
+Actor
+Action / Event
+System Response / Notes
+1
+MANAGER
+Opens audit detail; clicks 3-dot Actions menu; selects 'Request Deletion' (in_progress audit) or 'Request Re-open' (closed audit)
+UI shows action type pre-filled in modal (derived from audit status)
+2
+MANAGER → UI
+Enters justification (min 20 chars); clicks 'Submit Request'
+UI validates justification length
+3
+UI → API
+POST /manager/audits/:id/exceptional-requests { actionType, justification }
+API validates Manager owns audit; validates audit status is eligible for action type
+4
+API → DB
+Check for existing pending request: SELECT * FROM exceptional_action_requests WHERE audit_id=:id AND status='pending'
+If pending request already exists: return 422 'A request is already pending Admin review'
+5
+API → DB
+INSERT exceptional_action_requests (audit_id, requested_by, action_type, justification, status='pending')
+Request record created
+6
+API → DB
+INSERT notifications for all users with role=admin (type='exceptional_request_raised')
+All Admins notified
+7
+API → DB
+INSERT audit_trail_log (action=EXCEPTIONAL_REQUEST_RAISED)
+Immutable log
+8
+API → UI (Manager)
+Return 201; Audit card shows 'Pending Exceptional Request' badge
+Toast: 'Request submitted. You will be notified when Admin reviews it.'
+—
+—
+— ADMIN REVIEW PHASE —
+—
+9
+ADMIN
+Receives notification; navigates to /admin/exceptional-requests; opens request detail drawer
+GET /admin/exceptional-requests/:id — full justification, audit summary, manager details shown
+A
+ADMIN
+OUTCOME A: Approve — uploads evidence file + optional comment; clicks Approve
+UI validates evidence file present
+A1
+UI → API
+POST /admin/exceptional-requests/:id/approve (multipart: evidence file + adminComment?)
+API validates Admin role
+A2
+API → FS
+Upload evidence file; INSERT uploaded_files (entity_type=exceptional_action_evidence)
+Returns fileId
+A3
+API → DB
+UPDATE exceptional_action_requests SET status='approved', reviewed_by=adminId, admin_comment, evidence_file_id, resolved_at=NOW()
+Request resolved
+A4
+API → DB (branch)
+IF action_type = 'delete': UPDATE audits SET deleted_at=NOW() (soft delete); INSERT audit_trail_log (AUDIT_DELETED)
+All related records (scope items, responses, assignments) remain in DB with audit's deleted_at as reference
+A5
+API → DB (branch)
+IF action_type = 'reopen': UPDATE audits SET status='reopened', deleted_at=NULL; INSERT audit_trail_log (AUDIT_REOPENED)
+Audit back in active state; Manager can modify scope
+A6
+API → DB
+INSERT notification (Manager: exceptional_request_resolved — approved)
+Manager notified of outcome
+A7
+API → UI (Admin)
+Return 200; request card updates to 'Approved'
+Toast: 'Request approved and audit [status] updated'
+A8
+MANAGER
+Receives notification. If delete: audit disappears from Kanban. If reopen: audit card moves to 'Reopened' column.
+Manager can now re-initiate work on reopened audit
+B
+ADMIN
+OUTCOME B: Reject — enters mandatory comment; clicks Reject
+UI validates comment min 10 chars
+B1
+UI → API
+POST /admin/exceptional-requests/:id/reject { adminComment }
+API validates Admin role
+B2
+API → DB
+UPDATE exceptional_action_requests SET status='rejected', reviewed_by, admin_comment, resolved_at=NOW()
+Request closed; audit status UNCHANGED
+B3
+API → DB
+INSERT notification (Manager: exceptional_request_resolved — rejected + admin_comment)
+Manager notified with rejection reason
+B4
+API → DB
+INSERT audit_trail_log (EXCEPTIONAL_REQUEST_REJECTED)
+Immutable log
+B5
+MANAGER
+Receives rejection notification with Admin's comment. Audit status remains unchanged. 'Pending Request' badge removed.
+Manager can submit a new request with revised justification if needed
+6.3 Mermaid Sequence Diagram
+Mermaid Sequence Diagram (render in VS Code, GitHub, or mermaid.live):
+sequenceDiagram
+  actor MANAGER
+  actor ADMIN
+  participant UI
+  participant API
+  participant DB
+  participant FS
+  MANAGER->>UI: Open Actions menu → Request Deletion/Re-open
+  MANAGER->>UI: Enter justification; click Submit Request
+  UI->>API: POST /exceptional-requests { actionType, justification }
+  API->>DB: Check audit ownership + status eligibility
+  API->>DB: Check for existing pending request
+  alt Existing pending request
+    API-->>UI: 422 BUSINESS_RULE_ERROR
+    UI->>MANAGER: 'A request is already pending'
+  else No existing pending request
+    API->>DB: INSERT exceptional_action_requests (status=pending)
+    API->>DB: INSERT notifications (all admins)
+    API->>DB: INSERT audit_trail_log
+    API-->>UI: 201 requestId
+    UI->>MANAGER: Audit card shows pending badge
+  end
+  ADMIN->>UI: Open exceptional-requests; review detail
+  alt OUTCOME A: Approve
+    ADMIN->>UI: Upload evidence + optional comment; click Approve
+    UI->>API: POST /exceptional-requests/:id/approve (multipart)
+    API->>FS: Store evidence file
+    API->>DB: UPDATE request=approved + evidence_file_id
+    alt action_type = delete
+      API->>DB: UPDATE audit SET deleted_at=NOW()
+      API->>DB: INSERT audit_trail_log (AUDIT_DELETED)
+    else action_type = reopen
+      API->>DB: UPDATE audit SET status=reopened
+      API->>DB: INSERT audit_trail_log (AUDIT_REOPENED)
+    end
+    API->>DB: INSERT notification (MANAGER: approved)
+    API-->>UI: 200 OK
+    MANAGER->>UI: Audit updates (deleted or reopened)
+  else OUTCOME B: Reject
+    ADMIN->>UI: Enter mandatory comment; click Reject
+    UI->>API: POST /exceptional-requests/:id/reject { adminComment }
+    API->>DB: UPDATE request=rejected
+    API->>DB: INSERT notification (MANAGER: rejected + reason)
+    API->>DB: INSERT audit_trail_log (EXCEPTIONAL_REQUEST_REJECTED)
+    API-->>UI: 200 OK
+    MANAGER->>UI: Notification with rejection reason; audit unchanged
+  end
+7. Appendix — Cross-Flow Notification Summary
+This table consolidates all in-app notifications triggered across the five flows documented above, for implementation reference.
+Flow
+Trigger Event
+Recipient
+Notification Type
+1
+Gen AI scope extraction job completed
+Manager
+report_ready_to_generate (or custom scope type)
+3
+Exception raised by Auditor
+Manager
+exception_raised
+3
+Exception approved by Manager
+Auditor
+exception_approved
+3
+Exception rejected by Manager
+Auditor
+exception_rejected
+3
+Clarification request sent to Client
+Client
+clarification_request
+3
+Client responds to clarification
+Manager
+clarification_responded
+4
+AI report generation job completed
+Manager
+report_ready_to_generate
+4
+Manager sends report to Client
+Client
+report_sent_to_client
+4
+Client submits report feedback
+Manager
+client_feedback_received
+4
+Audit closed by Manager
+Manager + Client
+audit_closed
+5
+Exceptional request submitted by Manager
+Admin (all)
+exceptional_request_raised
+5
+Admin approves or rejects exceptional request
+Manager
+exceptional_request_resolved

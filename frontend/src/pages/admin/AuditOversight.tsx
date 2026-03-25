@@ -31,10 +31,12 @@ export default function AuditOversight() {
     sortOrder: 'DESC'
   });
 
-  const { data: audits, isLoading } = useQuery({
+  const { data: auditsData, isLoading } = useQuery({
     queryKey: ['admin-audits', filters],
     queryFn: () => adminAuditService.getAudits(filters),
   });
+
+  const audits = Array.isArray(auditsData) ? auditsData : (auditsData as any)?.data || [];
 
   const handleExport = () => {
     adminAuditService.exportAudits(filters);
@@ -179,10 +181,14 @@ export default function AuditOversight() {
                     <td className="px-6 py-5">
                        <div className="space-y-1">
                           <div className="text-xs font-bold text-dark/70 dark:text-bg-mid">
-                            {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'NOT STARTED'}
+                            {audit.startDate && !isNaN(new Date(audit.startDate).getTime()) 
+                              ? format(new Date(audit.startDate), 'MMM d, yyyy') 
+                              : 'NOT STARTED'}
                           </div>
                           <div className="text-[10px] text-bg-muted">
-                            Created {format(new Date(audit.createdAt), 'MMM d, yyyy')}
+                            Created {audit.createdAt && !isNaN(new Date(audit.createdAt).getTime())
+                              ? format(new Date(audit.createdAt), 'MMM d, yyyy')
+                              : 'N/A'}
                           </div>
                        </div>
                     </td>

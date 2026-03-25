@@ -16,4 +16,8 @@ export class UpdateResponseDto {
 
   @IsBoolean()
   isDraft: boolean;
+
+  @IsOptional()
+  @IsUUID('4', { each: true })
+  evidenceFileIds?: string[];
 }

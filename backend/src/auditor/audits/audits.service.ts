@@ -36,26 +36,44 @@ export class AuditorAuditsService {
       relations: ['client'],
     });
 
-    // Calculate completion for each audit (own items only)
     const results = await Promise.all(audits.map(async (audit) => {
       const totalItems = await this.lineItemRepo.count({
         where: { auditId: audit.id, assignments: { auditorId: user.id } },
       });
       
-      const completedItems = await this.lineItemRepo.count({
+      const submittedItems = await this.lineItemRepo.count({
         where: { 
           auditId: audit.id, 
           assignments: { auditorId: user.id },
-          status: In([LineItemStatus.SUBMITTED, LineItemStatus.EXCEPTION_APPROVED])
+          status: LineItemStatus.SUBMITTED
+        },
+      });
+
+      const draftItems = await this.lineItemRepo.count({
+        where: { 
+          auditId: audit.id, 
+          assignments: { auditorId: user.id },
+          status: LineItemStatus.DRAFT_SAVED
+        },
+      });
+
+      const pendingExceptions = await this.lineItemRepo.count({
+        where: { 
+          auditId: audit.id, 
+          assignments: { auditorId: user.id },
+          status: LineItemStatus.EXCEPTION_PENDING
         },
       });
 
       return {
         ...audit,
-        completionStats: {
-          total: totalItems,
-          completed: completedItems,
-          percent: totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0,
+        endDate: audit.expectedCompletionDate,
+        stats: {
+          totalItems,
+          submittedItems,
+          draftItems,
+          pendingExceptions,
+          completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
         }
       };
     }));
@@ -71,36 +89,56 @@ export class AuditorAuditsService {
 
     if (!audit) throw new NotFoundException('Audit not found');
 
-    // Get BUs and co-auditor completion stats
-    const bus = await this.auditBURepo.find({
-      where: { auditId },
-      relations: ['businessUnit'],
+    const totalItems = await this.lineItemRepo.count({
+      where: { auditId, assignments: { auditorId: user.id } },
+    });
+    
+    const submittedItems = await this.lineItemRepo.count({
+      where: { 
+        auditId, 
+        assignments: { auditorId: user.id },
+        status: LineItemStatus.SUBMITTED
+      },
+    });
+
+    const pendingExceptions = await this.lineItemRepo.count({
+      where: { 
+        auditId, 
+        assignments: { auditorId: user.id },
+        status: LineItemStatus.EXCEPTION_PENDING
+      },
     });
 
     const buStats = await Promise.all(bus.map(async (bu) => {
-      const totalItems = await this.lineItemRepo.count({
+      const buTotalItems = await this.lineItemRepo.count({
         where: { auditBusinessUnitId: bu.id },
       });
 
-      const completedItems = await this.lineItemRepo.count({
+      const buCompletedItems = await this.lineItemRepo.count({
         where: { 
           auditBusinessUnitId: bu.id,
-          status: In([LineItemStatus.SUBMITTED, LineItemStatus.EXCEPTION_APPROVED])
+          status: LineItemStatus.SUBMITTED
         },
       });
 
       return {
         id: bu.id,
         name: bu.businessUnit.name,
-        totalItems,
-        completedItems,
-        completionPercent: totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0,
+        coAuditorCompletion: buTotalItems > 0 ? Math.round((buCompletedItems / buTotalItems) * 100) : 0,
       };
     }));
 
     return {
       ...audit,
-      businessUnits: buStats,
+      clientName: audit.client?.fullName,
+      endDate: audit.expectedCompletionDate,
+      stats: {
+        totalItems,
+        submittedItems,
+        pendingExceptions,
+        completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
+        buStats,
+      }
     };
   }
 }

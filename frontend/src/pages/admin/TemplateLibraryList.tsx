@@ -35,10 +35,13 @@ const TemplateLibraryList = () => {
   const { user } = useAuthStore();
   const isAdmin = user?.role === 'admin';
 
-  const { data, isLoading } = useQuery({
+  const { data: rawData, isLoading } = useQuery({
     queryKey: ['templates', page, search],
     queryFn: () => templateService.getTemplates(page, 10, search),
   });
+
+  const data = (rawData as any)?.data || rawData;
+  const templates = data?.items || [];
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => templateService.deleteTemplate(id),
@@ -70,7 +73,7 @@ const TemplateLibraryList = () => {
           <p className="text-muted-foreground">Manage and reuse audit scope templates.</p>
         </div>
         {isAdmin && (
-          <Button onClick={() => navigate('/admin/templates/create')}>
+          <Button onClick={() => navigate('/admin/templates/new')}>
             <Plus className="mr-2 h-4 w-4" /> Create Template
           </Button>
         )}
@@ -96,7 +99,7 @@ const TemplateLibraryList = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.items.map((template) => (
+          {templates.map((template: any) => (
             <Card key={template.id} className="flex flex-col">
               <CardHeader>
                 <div className="flex justify-between items-start">
@@ -113,7 +116,7 @@ const TemplateLibraryList = () => {
                           </DropdownMenuItem>
                           {isAdmin && (
                             <>
-                              <DropdownMenuItem onClick={() => navigate(`/admin/templates/${template.id}/edit`)}>
+                              <DropdownMenuItem onClick={() => navigate(`/admin/templates/${template.id}`)}>
                                 <Edit className="mr-2 h-4 w-4" /> Edit
                               </DropdownMenuItem>
                               <DropdownMenuItem
@@ -139,7 +142,7 @@ const TemplateLibraryList = () => {
         </div>
       )}
 
-      {data?.items.length === 0 && !isLoading && (
+      {templates.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No templates found.</p>
         </div>

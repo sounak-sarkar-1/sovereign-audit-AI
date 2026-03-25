@@ -52,13 +52,15 @@ export const AiModelsList: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-  const { data: models, isLoading } = useQuery<AiModel[]>({
+  const { data: modelsData, isLoading } = useQuery<any>({
     queryKey: ['ai-models'],
     queryFn: async () => {
       const response = await api.get('/admin/ai-models');
       return response.data;
     },
   });
+
+  const models = (modelsData as any)?.data || modelsData || [];
 
   const activateMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -105,7 +107,7 @@ export const AiModelsList: React.FC = () => {
     },
   });
 
-  const filteredModels = models?.filter(model => 
+  const filteredModels = (models as AiModel[])?.filter((model: AiModel) => 
     model.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     model.modelType.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -179,7 +181,7 @@ export const AiModelsList: React.FC = () => {
                 <TableCell colSpan={5} className="text-center py-10">No AI models found</TableCell>
               </TableRow>
             ) : (
-              filteredModels?.map((model) => (
+              filteredModels?.map((model: AiModel) => (
                 <TableRow key={model.id}>
                   <TableCell className="font-medium">{model.name}</TableCell>
                   <TableCell>

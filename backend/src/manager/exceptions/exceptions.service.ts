@@ -8,6 +8,7 @@ import { NotificationType } from '../../database/entities/notification.entity';
 import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
 import { ApproveExceptionDto, RejectExceptionDto } from './dto/exception-action.dto';
 import { User } from '../../database/entities/user.entity';
+import { ExceptionComment } from '../../database/entities/exception-comment.entity';
 
 @Injectable()
 export class ManagerExceptionsService {
@@ -21,6 +22,8 @@ export class ManagerExceptionsService {
     private readonly notificationsService: NotificationsService,
     private readonly auditTrailService: AuditTrailService,
     private readonly dataSource: DataSource,
+    @InjectRepository(ExceptionComment)
+    private readonly commentRepo: Repository<ExceptionComment>,
   ) {}
 
   async findAll(auditId: string, status?: ExceptionStatus) {
@@ -152,5 +155,22 @@ export class ManagerExceptionsService {
     });
 
     return { message: 'Exception rejected successfully' };
+  }
+
+  async getComments(exceptionId: string) {
+    return this.commentRepo.find({
+      where: { exceptionRequestId: exceptionId },
+      relations: ['author'],
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  async addComment(exceptionId: string, user: User, content: string) {
+    const comment = this.commentRepo.create({
+      exceptionRequestId: exceptionId,
+      authorId: user.id,
+      content,
+    });
+    return this.commentRepo.save(comment);
   }
 }

@@ -12,10 +12,13 @@ export declare class AuditorAuditsService {
     private readonly logger;
     constructor(assignmentRepo: Repository<AuditorAuditAssignment>, auditRepo: Repository<Audit>, lineItemRepo: Repository<AuditScopeLineItem>, auditBURepo: Repository<AuditBusinessUnit>);
     findAll(user: User): Promise<{
-        completionStats: {
-            total: number;
-            completed: number;
-            percent: number;
+        endDate: Date;
+        stats: {
+            totalItems: number;
+            submittedItems: number;
+            draftItems: number;
+            pendingExceptions: number;
+            completionPercent: number;
         };
         id: string;
         name: string;
@@ -32,13 +35,15 @@ export declare class AuditorAuditsService {
         deletedAt: Date;
     }[]>;
     findOne(auditId: string, user: User): Promise<{
-        businessUnits: {
-            id: string;
-            name: string;
+        clientName: string;
+        endDate: Date;
+        stats: {
             totalItems: number;
-            completedItems: number;
+            submittedItems: number;
+            pendingExceptions: number;
             completionPercent: number;
-        }[];
+            buStats: any;
+        };
         id: string;
         name: string;
         clientId: string;

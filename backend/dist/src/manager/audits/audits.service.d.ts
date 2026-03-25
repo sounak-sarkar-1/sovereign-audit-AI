@@ -115,4 +115,22 @@ export declare class ManagerAuditsService {
         updatedAt: Date;
         deletedAt: Date;
     }>;
+    getTrail(id: string): Promise<import("../../database/entities/audit-trail-log.entity").AuditTrailLog[]>;
+    archive(id: string, managerId: string): Promise<{
+        businessUnits: BusinessUnit[];
+        assignments: AuditorAuditAssignment[];
+        id: string;
+        name: string;
+        clientId: string;
+        client: User;
+        managerId: string;
+        manager: User;
+        status: AuditStatus;
+        description: string;
+        startDate: Date;
+        expectedCompletionDate: Date;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date;
+    }>;
 }

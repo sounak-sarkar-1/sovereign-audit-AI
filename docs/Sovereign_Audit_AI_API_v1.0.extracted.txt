@@ -1,0 +1,1399 @@
+SOVEREIGN AUDIT AI
+API Specification Document
+Version 1.0  |  REST  |  NestJS + PostgreSQL
+Base URL (dev)
+http://localhost:3000/api/v1
+Base URL (prod)
+https://<tenant-slug>.sovereign-audit.ai/api/v1
+API Style
+REST — JSON over HTTPS
+Versioning
+URL path prefix: /api/v1/
+Authentication
+JWT Bearer token (Authorization: Bearer <token>)
+Pagination
+Offset-based: ?page=1&limit=20 (default limit=20, max=100)
+Content Type
+application/json (except file uploads: multipart/form-data)
+Tenant Resolution
+X-Tenant-Slug header on every request
+Table of Contents
+1. Conventions and Standards
+1.1 Request Headers
+Header
+Required
+Description
+Authorization
+Yes (all protected routes)
+Bearer <access_token> — short-lived JWT (15 min)
+X-Tenant-Slug
+Yes (all routes)
+Tenant identifier used to resolve correct PostgreSQL schema
+Content-Type
+Yes (POST/PUT/PATCH)
+application/json or multipart/form-data for file uploads
+1.2 Standard Response Envelope
+All endpoints return responses in the following envelope:
+// Success
+{
+  "success": true,
+  "data": { ... },           // payload
+  "meta": {                  // present on paginated responses
+    "page": 1,
+    "limit": 20,
+    "total": 84,
+    "totalPages": 5
+  }
+}
+// Error
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Human-readable description",
+    "details": [ ... ]       // field-level errors where applicable
+  }
+}
+1.3 Standard Error Codes
+HTTP Status
+Error Code
+When Used
+400
+VALIDATION_ERROR
+Request body fails validation (missing required fields, wrong types)
+401
+UNAUTHORIZED
+Missing or invalid JWT; expired access token
+403
+FORBIDDEN
+Authenticated but insufficient role/ownership for resource
+404
+NOT_FOUND
+Requested resource does not exist or is soft-deleted
+409
+CONFLICT
+Duplicate unique constraint (e.g. email already exists)
+413
+FILE_TOO_LARGE
+Uploaded file exceeds 10 MB limit
+415
+UNSUPPORTED_MEDIA_TYPE
+File MIME type not in allowed list
+422
+BUSINESS_RULE_ERROR
+Request is valid but violates business logic (e.g. activate model that is already active)
+429
+RATE_LIMITED
+Too many requests from this IP/tenant
+500
+INTERNAL_ERROR
+Unhandled server error
+503
+AI_UNAVAILABLE
+Gen AI model is not configured or unreachable
+1.4 Pagination
+All list endpoints support: ?page=1&limit=20. Default: page=1, limit=20. Maximum limit=100. Response includes meta.total, meta.totalPages, meta.page, meta.limit.
+1.5 Soft Delete Behaviour
+All GET list endpoints exclude soft-deleted records (WHERE deleted_at IS NULL) by default. Admin-only endpoints may include ?includeDeleted=true to surface deleted records.
+1.6 RBAC Enforcement
+Role-based access is enforced at both the NestJS guard layer and the database query layer. A Manager cannot access another Manager's clients or audits. An Auditor cannot access audits not assigned to them. A Client cannot access other clients' data.
+2. Authentication Endpoints
+2.1 POST /auth/login
+POST  /api/v1/auth/login   —  Authenticate user, issue JWT access + refresh tokens
+ℹ  Public endpoint — no Authorization header required. X-Tenant-Slug is required.
+Request Body
+Field
+Type
+Required?
+Description
+email
+string
+required
+User's registered email address
+password
+string
+required
+User's current password
+Success Response — 200
+{
+  "success": true,
+  "data": {
+    "accessToken": "<jwt>",
+    "user": { "id": "uuid", "fullName": "string", "role": "manager", "isFirstLogin": false }
+  }
+}
+ℹ  Refresh token is set as httpOnly cookie (name: refresh_token; SameSite=Strict; Secure).
+Responses
+200  Login successful
+401  Invalid credentials
+403  Account is inactive or locked
+2.2 POST /auth/refresh
+POST  /api/v1/auth/refresh   —  Issue a new access token using the refresh token cookie
+ℹ  No request body. Reads refresh_token from httpOnly cookie. Rotates refresh token on each call.
+Responses
+200  New accessToken returned in response body
+401  Refresh token missing, expired, or revoked
+2.3 POST /auth/logout
+POST  /api/v1/auth/logout   —  Revoke refresh token and clear cookie
+Auth: JWT Bearer  |  Roles: All authenticated roles
+Responses
+200  Logged out successfully
+2.4 POST /auth/change-password
+POST  /api/v1/auth/change-password   —  Change password — mandatory on first login
+Auth: JWT Bearer  |  Roles: All authenticated roles
+Request Body
+Field
+Type
+Required?
+Description
+currentPassword
+string
+required
+Must match stored hash
+newPassword
+string
+required
+Min 8 chars, 1 uppercase, 1 number, 1 special
+Responses
+200  Password changed; is_first_login set to FALSE
+400  New password fails policy validation
+401  currentPassword incorrect
+3. Admin Endpoints
+3.1 User Management
+GET /admin/users
+GET  /api/v1/admin/users   —  List all users for the tenant
+Auth: JWT Bearer  |  Roles: admin
+Query Params
+Field
+Type
+Required?
+Description
+role
+string
+required
+Filter by role: admin|manager|auditor|client
+status
+string
+required
+Filter by status: active|inactive
+page / limit
+integer
+required
+Pagination
+Responses
+200  Paginated list of user objects
+POST /admin/users
+POST  /api/v1/admin/users   —  Create a new user
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+email
+string
+required
+Must be unique within tenant schema
+fullName
+string
+required
+—
+role
+string
+required
+manager | auditor | client
+defaultPassword
+string
+required
+Stored as bcrypt hash; user forced to reset on first login
+phone
+string
+required
+—
+Responses
+201  User created; returns full user object
+409  Email already exists
+GET /admin/users/:userId
+GET  /api/v1/admin/users/:userId   —  Retrieve single user with mappings
+Auth: JWT Bearer  |  Roles: admin
+200  User object including role-specific mappings and BUs
+404  User not found
+PUT /admin/users/:userId
+PUT  /api/v1/admin/users/:userId   —  Update user profile and status
+Auth: JWT Bearer  |  Roles: admin
+Request Body (all optional — partial update)
+Field
+Type
+Required?
+Description
+fullName
+string
+required
+—
+phone
+string
+required
+—
+status
+string
+required
+active | inactive
+Responses
+200  Updated user object
+404  User not found
+DELETE /admin/users/:userId
+DELETE  /api/v1/admin/users/:userId   —  Soft delete a user
+Auth: JWT Bearer  |  Roles: admin
+ℹ  Returns 409 with list of affected active audits if user has open audit assignments. Requires confirmation flag to proceed.
+Query Params
+Field
+Type
+Required?
+Description
+forceDelete
+boolean
+required
+Set to true to confirm deletion despite active assignments
+Responses
+200  User soft-deleted
+409  User has active audit assignments — returns affected audit IDs
+3.2 Role Mappings
+POST /admin/mappings/manager-auditor
+POST  /api/v1/admin/mappings/manager-auditor   —  Map an auditor to a manager
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+managerId
+UUID
+required
+Must be role=manager
+auditorId
+UUID
+required
+Must be role=auditor
+Responses
+201  Mapping created
+409  Mapping already exists
+DELETE /admin/mappings/manager-auditor/:mappingId
+DELETE  /api/v1/admin/mappings/manager-auditor/:mappingId   —  Remove manager-auditor mapping (soft delete)
+Auth: JWT Bearer  |  Roles: admin
+200  Mapping removed
+POST /admin/mappings/manager-client
+POST  /api/v1/admin/mappings/manager-client   —  Map a client to a manager
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+managerId
+UUID
+required
+—
+clientId
+UUID
+required
+Must be role=client
+Responses
+201  Mapping created
+409  Mapping already exists
+DELETE /admin/mappings/manager-client/:mappingId
+DELETE  /api/v1/admin/mappings/manager-client/:mappingId   —  Remove manager-client mapping (soft delete)
+Auth: JWT Bearer  |  Roles: admin
+200  Mapping removed
+3.3 Client Business Units
+GET /admin/clients/:clientId/business-units
+GET  /api/v1/admin/clients/:clientId/business-units   —  List BUs for a client
+Auth: JWT Bearer  |  Roles: admin
+200  Array of business unit objects
+POST /admin/clients/:clientId/business-units
+POST  /api/v1/admin/clients/:clientId/business-units   —  Create a new BU for a client
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+name
+string
+required
+BU display name
+description
+string
+required
+—
+Responses
+201  BU created
+PUT /admin/clients/:clientId/business-units/:buId
+PUT  /api/v1/admin/clients/:clientId/business-units/:buId   —  Update BU name or description
+Auth: JWT Bearer  |  Roles: admin
+200  Updated BU object
+DELETE /admin/clients/:clientId/business-units/:buId
+DELETE  /api/v1/admin/clients/:clientId/business-units/:buId   —  Soft delete a BU
+Auth: JWT Bearer  |  Roles: admin
+200  BU soft-deleted
+409  BU is referenced in active audits
+3.4 AI Model Configuration
+GET /admin/ai-models
+GET  /api/v1/admin/ai-models   —  List all configured AI models
+Auth: JWT Bearer  |  Roles: admin
+ℹ  api_key_enc is never returned in responses — replaced with a masked placeholder.
+200  Array of AI model objects (api key masked)
+POST /admin/ai-models
+POST  /api/v1/admin/ai-models   —  Register a new AI model
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+name
+string
+required
+Display name
+modelType
+string
+required
+openai | anthropic | google | slm | open_source | other
+endpointUrl
+string
+required
+Full API endpoint URL
+apiKey
+string
+required
+Raw API key — encrypted before storage
+Responses
+201  Model registered (api key masked in response)
+PUT /admin/ai-models/:modelId
+PUT  /api/v1/admin/ai-models/:modelId   —  Update AI model configuration
+Auth: JWT Bearer  |  Roles: admin
+ℹ  Sending apiKey in body rotates the stored key. Omit apiKey to keep existing key.
+200  Updated model object
+POST /admin/ai-models/:modelId/activate
+POST  /api/v1/admin/ai-models/:modelId/activate   —  Set model as active (deactivates current active model)
+Auth: JWT Bearer  |  Roles: admin
+200  Model activated; previously active model deactivated
+404  Model not found
+DELETE /admin/ai-models/:modelId
+DELETE  /api/v1/admin/ai-models/:modelId   —  Soft delete an AI model
+Auth: JWT Bearer  |  Roles: admin
+200  Model deleted
+422  Cannot delete active model — deactivate first
+3.5 Audit Template Library
+GET /admin/templates
+GET  /api/v1/admin/templates   —  List all audit templates
+Auth: JWT Bearer  |  Roles: admin, manager (read-only for manager)
+200  Paginated list of template objects (without line items)
+POST /admin/templates
+POST  /api/v1/admin/templates   —  Create a new audit template
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+name
+string
+required
+Template name
+description
+string
+required
+—
+lineItems
+array
+required
+Array of line item objects (see POST /admin/templates/:id/line-items for item schema)
+Responses
+201  Template created with embedded line items
+GET /admin/templates/:templateId
+GET  /api/v1/admin/templates/:templateId   —  Get template with full line items and options
+Auth: JWT Bearer  |  Roles: admin, manager
+200  Template object with nested lineItems array
+PUT /admin/templates/:templateId
+PUT  /api/v1/admin/templates/:templateId   —  Update template name or description
+Auth: JWT Bearer  |  Roles: admin
+200  Updated template object
+DELETE /admin/templates/:templateId
+DELETE  /api/v1/admin/templates/:templateId   —  Soft delete a template
+Auth: JWT Bearer  |  Roles: admin
+ℹ  Returns 409 warning if template line items have been copied into active audits (does not block deletion).
+200  Template soft-deleted
+POST /admin/templates/:templateId/line-items
+POST  /api/v1/admin/templates/:templateId/line-items   —  Add a line item to a template
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+name
+string
+required
+—
+description
+string
+required
+—
+inputMethod
+string
+required
+free_text | multiple_choice
+isOptional
+boolean
+required
+Default false
+displayOrder
+integer
+required
+Sort position within template
+options
+array of strings
+required
+Required when inputMethod=multiple_choice
+Responses
+201  Line item created with options
+PUT /admin/templates/:templateId/line-items/:lineItemId
+PUT  /api/v1/admin/templates/:templateId/line-items/:lineItemId   —  Update a template line item
+Auth: JWT Bearer  |  Roles: admin
+200  Updated line item
+DELETE /admin/templates/:templateId/line-items/:lineItemId
+DELETE  /api/v1/admin/templates/:templateId/line-items/:lineItemId   —  Soft delete a template line item
+Auth: JWT Bearer  |  Roles: admin
+200  Line item deleted
+3.6 Audit Oversight and Exceptional Actions
+GET /admin/audits
+GET  /api/v1/admin/audits   —  View all audits across all managers and clients
+Auth: JWT Bearer  |  Roles: admin
+Query Params
+Field
+Type
+Required?
+Description
+status
+string
+required
+Filter by audit_status enum value
+managerId
+UUID
+required
+Filter by manager
+clientId
+UUID
+required
+Filter by client
+from / to
+date (YYYY-MM-DD)
+required
+Filter by start_date range
+page / limit
+integer
+required
+Pagination
+Responses
+200  Paginated audit list with status, manager, client, completion %
+GET /admin/exceptional-requests
+GET  /api/v1/admin/exceptional-requests   —  List all pending exceptional action requests
+Auth: JWT Bearer  |  Roles: admin
+Query Params
+Field
+Type
+Required?
+Description
+status
+string
+required
+pending | approved | rejected
+200  Paginated list of exceptional_action_requests with audit and requester info
+POST /admin/exceptional-requests/:requestId/approve
+POST  /api/v1/admin/exceptional-requests/:requestId/approve   —  Approve an exceptional action (re-open or delete audit)
+Auth: JWT Bearer  |  Roles: admin
+ℹ  Requires evidence file upload. Use multipart/form-data.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+evidence
+file
+required
+JPG, PNG, PDF, DOCX — max 10 MB
+adminComment
+string
+required
+Admin's approval note
+Responses
+200  Request approved; audit status updated accordingly; manager notified in-app
+404  Request not found
+422  Request is not in pending state
+POST /admin/exceptional-requests/:requestId/reject
+POST  /api/v1/admin/exceptional-requests/:requestId/reject   —  Reject an exceptional action request
+Auth: JWT Bearer  |  Roles: admin
+Request Body
+Field
+Type
+Required?
+Description
+adminComment
+string
+required
+Mandatory rejection reason
+Responses
+200  Request rejected; manager notified in-app
+4. Manager Endpoints
+4.1 Audit Management
+GET /manager/audits
+GET  /api/v1/manager/audits   —  Get all audits owned by the authenticated manager
+Auth: JWT Bearer  |  Roles: manager
+Query Params: status, clientId, page, limit
+200  Paginated audits with Kanban status grouping data
+POST /manager/audits
+POST  /api/v1/manager/audits   —  Initiate a new audit
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+name
+string
+required
+Audit name
+clientId
+UUID
+required
+Must be a client mapped to this manager
+businessUnitIds
+UUID[]
+required
+Array of BU IDs from the selected client
+startDate
+date
+required
+YYYY-MM-DD
+expectedCompletionDate
+date
+required
+YYYY-MM-DD
+description
+string
+required
+Audit objective
+Responses
+201  Audit created with status=draft; returns full audit object with audit_business_units
+403  clientId not mapped to this manager
+GET /manager/audits/:auditId
+GET  /api/v1/manager/audits/:auditId   —  Get full audit detail including scope summary and progress
+Auth: JWT Bearer  |  Roles: manager
+200  Audit object with BU list, completion percentages, open exception count, last activity
+PUT /manager/audits/:auditId
+PUT  /api/v1/manager/audits/:auditId   —  Update audit header fields (name, dates, description)
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Status cannot be updated directly via this endpoint. Status transitions happen through dedicated action endpoints.
+200  Updated audit object
+4.2 Audit Scope Definition
+GET /manager/audits/:auditId/scope
+GET  /api/v1/manager/audits/:auditId/scope   —  Get all scope line items for the audit, grouped by BU
+Auth: JWT Bearer  |  Roles: manager
+200  Object keyed by audit_business_unit_id, each containing array of line items with options
+POST /manager/audits/:auditId/scope/line-items
+POST  /api/v1/manager/audits/:auditId/scope/line-items   —  Manually add one or more scope line items
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+auditBusinessUnitId
+UUID
+required
+Target BU within this audit
+items
+array
+required
+Array of line item objects
+items[].name
+string
+required
+—
+items[].description
+string
+required
+—
+items[].inputMethod
+string
+required
+free_text | multiple_choice
+items[].isOptional
+boolean
+required
+Default false
+items[].displayOrder
+integer
+required
+—
+items[].options
+string[]
+required
+Required if inputMethod=multiple_choice
+Responses
+201  Array of created line item objects
+PUT /manager/audits/:auditId/scope/line-items/:lineItemId
+PUT  /api/v1/manager/audits/:auditId/scope/line-items/:lineItemId   —  Update a scope line item
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Cannot update a line item with status=submitted or exception_approved.
+200  Updated line item
+422  Line item is already submitted or exception-approved
+DELETE /manager/audits/:auditId/scope/line-items/:lineItemId
+DELETE  /api/v1/manager/audits/:auditId/scope/line-items/:lineItemId   —  Soft delete a scope line item
+Auth: JWT Bearer  |  Roles: manager
+200  Line item deleted
+POST /manager/audits/:auditId/scope/extract-from-document
+POST  /api/v1/manager/audits/:auditId/scope/extract-from-document   —  Upload SOP/manual and trigger Gen AI scope extraction
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Async operation. Returns ai_job_id immediately. Poll GET /ai-jobs/:jobId for status. On completion, job output_payload contains draft line items for manager review.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+document
+file
+required
+PDF or DOCX — max 10 MB
+auditBusinessUnitId
+UUID
+required
+BU to attach extracted items to
+Responses
+202  AI job queued — returns { jobId: uuid }
+503  No active AI model configured
+POST /manager/audits/:auditId/scope/import-from-excel
+POST  /api/v1/manager/audits/:auditId/scope/import-from-excel   —  Upload Excel file for script-based scope extraction
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Synchronous. Returns detected columns for manager confirmation in a separate PATCH call.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+file
+file
+required
+.xlsx or .xls — max 10 MB
+auditBusinessUnitId
+UUID
+required
+—
+Responses
+200  Returns { importId, detectedColumns: [{columnLetter, headerText, suggestedMapping}] } for confirmation
+400  File format invalid or no header row detected
+POST /manager/audits/:auditId/scope/import-from-excel/:importId/confirm
+POST  /api/v1/manager/audits/:auditId/scope/import-from-excel/:importId/confirm   —  Confirm column mapping and finalise Excel import
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+columnMapping
+object
+required
+{ nameColumn: 'A', descriptionColumn: 'B', inputMethodColumn: 'C' }
+Responses
+201  Returns array of created line items (all with isOptional defaulting to false)
+POST /manager/audits/:auditId/scope/import-from-template
+POST  /api/v1/manager/audits/:auditId/scope/import-from-template   —  Copy line items from one or more templates into audit scope
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+templateIds
+UUID[]
+required
+Array of template IDs to copy from
+auditBusinessUnitId
+UUID
+required
+BU to attach copied items to
+Responses
+201  Returns array of copied line items (editable independently of source template)
+4.3 Auditor Assignments
+GET /manager/audits/:auditId/assignments
+GET  /api/v1/manager/audits/:auditId/assignments   —  List all auditor-BU assignments for an audit
+Auth: JWT Bearer  |  Roles: manager
+200  Array of assignments grouped by BU with auditor names and completion stats
+POST /manager/audits/:auditId/assignments
+POST  /api/v1/manager/audits/:auditId/assignments   —  Assign an auditor to a BU within the audit
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+auditorId
+UUID
+required
+Must be mapped to this manager
+auditBusinessUnitId
+UUID
+required
+BU within this audit
+lineItemIds
+UUID[]
+required
+If provided, narrows assignment to specific items within the BU
+Responses
+201  Assignment created; auditor receives in-app notification
+409  Assignment already exists for this auditor-BU pair
+DELETE /manager/audits/:auditId/assignments/:assignmentId
+DELETE  /api/v1/manager/audits/:auditId/assignments/:assignmentId   —  Remove an auditor-BU assignment
+Auth: JWT Bearer  |  Roles: manager
+200  Assignment removed
+GET /manager/auditors/heatmap
+GET  /api/v1/manager/auditors/heatmap   —  Get auditor utilisation heatmap data for all mapped auditors
+Auth: JWT Bearer  |  Roles: manager
+Response Data per Auditor
+Field
+Type
+Required?
+Description
+auditorId / fullName
+string
+required
+—
+openLineItems
+integer
+required
+Total unsubmitted mandatory items across all active audits
+completionPercentage
+float
+required
+% of assigned items in submitted/exception-approved state
+activeEngagements
+integer
+required
+Number of audits currently in_progress
+200  Array of auditor utilisation objects
+4.4 Exception Management (Manager)
+GET /manager/audits/:auditId/exceptions
+GET  /api/v1/manager/audits/:auditId/exceptions   —  List all exception requests for an audit
+Auth: JWT Bearer  |  Roles: manager
+Query Params: status (pending|approved|rejected), page, limit
+200  Paginated list with exception details, auditor name, line item name, evidence files
+POST /manager/audits/:auditId/exceptions/:exceptionId/approve
+POST  /api/v1/manager/audits/:auditId/exceptions/:exceptionId/approve   —  Approve an exception — line item flagged in report
+Auth: JWT Bearer  |  Roles: manager
+ℹ  On approval: exception_requests.status → approved; audit_scope_line_items.status → exception_approved. Auditor notified in-app.
+Request Body
+Field
+Type
+Required?
+Description
+managerComment
+string
+required
+Optional approval note
+Responses
+200  Exception approved
+POST /manager/audits/:auditId/exceptions/:exceptionId/reject
+POST  /api/v1/manager/audits/:auditId/exceptions/:exceptionId/reject   —  Reject exception — item returned to auditor
+Auth: JWT Bearer  |  Roles: manager
+ℹ  On rejection: exception_requests.status → rejected; audit_scope_line_items.status → returned. Auditor must re-submit. Auditor notified in-app.
+Request Body
+Field
+Type
+Required?
+Description
+managerComment
+string
+required
+Mandatory rejection reason shown to auditor
+Responses
+200  Exception rejected; item returned to auditor
+4.5 Clarification Requests (Manager → Client)
+GET /manager/audits/:auditId/clarifications
+GET  /api/v1/manager/audits/:auditId/clarifications   —  List all clarification threads for an audit
+Auth: JWT Bearer  |  Roles: manager
+200  Paginated clarification requests with nested responses thread
+POST /manager/audits/:auditId/clarifications
+POST  /api/v1/manager/audits/:auditId/clarifications   —  Send a clarification request to the client
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+clientId
+UUID
+required
+Target client user
+message
+string
+required
+Clarification question
+relatedExceptionId
+UUID
+required
+Link to an exception request if applicable
+Responses
+201  Clarification sent; client notified in-app
+4.6 Report Management (Manager)
+POST /manager/audits/:auditId/reports/generate
+POST  /api/v1/manager/audits/:auditId/reports/generate   —  Trigger Gen AI DOCX report generation
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Async. Only available when all mandatory line items are in terminal state (submitted or exception_approved). Returns ai_job_id immediately. Audit status → under_manager_review on job completion.
+Responses
+202  Job queued — returns { jobId: uuid, reportId: uuid }
+422  Not all mandatory items are in terminal state
+503  No active AI model configured
+GET /manager/audits/:auditId/reports
+GET  /api/v1/manager/audits/:auditId/reports   —  List all report versions for an audit
+Auth: JWT Bearer  |  Roles: manager
+200  Array of audit_reports ordered by version desc, each with status and download URL
+GET /manager/audits/:auditId/reports/:reportId/download
+GET  /api/v1/manager/audits/:auditId/reports/:reportId/download   —  Download the DOCX report file
+Auth: JWT Bearer  |  Roles: manager
+200  Binary DOCX file stream with Content-Disposition: attachment
+404  Report or file not found
+PUT /manager/audits/:auditId/reports/:reportId
+PUT  /api/v1/manager/audits/:auditId/reports/:reportId   —  Upload an edited version of the report DOCX
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Manager downloads, edits locally, and re-uploads. Increments version. Accepts multipart/form-data.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+reportFile
+file
+required
+DOCX only — max 10 MB
+Responses
+200  New report version created with updated file reference
+POST /manager/audits/:auditId/reports/:reportId/send-to-client
+POST  /api/v1/manager/audits/:auditId/reports/:reportId/send-to-client   —  Share draft report with client for review
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Updates audit status to pending_client_review. Updates report status to sent_for_client_review. Client notified in-app.
+200  Report sent; audit and report status updated
+POST /manager/audits/:auditId/reports/:reportId/finalize
+POST  /api/v1/manager/audits/:auditId/reports/:reportId/finalize   —  Finalise the report and close the audit
+Auth: JWT Bearer  |  Roles: manager
+ℹ  Sets report status → final and audit status → closed. All parties notified in-app. Creates audit_trail_log entry.
+200  Audit closed; report finalised
+4.7 Exceptional Audit Requests (Manager → Admin)
+POST /manager/audits/:auditId/exceptional-requests
+POST  /api/v1/manager/audits/:auditId/exceptional-requests   —  Submit request to Admin for exceptional audit action
+Auth: JWT Bearer  |  Roles: manager
+Request Body
+Field
+Type
+Required?
+Description
+actionType
+string
+required
+reopen | delete
+justification
+string
+required
+Mandatory reason — minimum 20 characters
+Responses
+201  Request submitted; Admin notified in-app
+422  Audit status does not permit this action type
+5. Auditor Endpoints
+5.1 Audit Dashboard
+GET /auditor/audits
+GET  /api/v1/auditor/audits   —  List all audits assigned to the authenticated auditor
+Auth: JWT Bearer  |  Roles: auditor
+Query Params: status, page, limit
+200  Array of assigned audits with BU names, overall completion %, open items count
+GET /auditor/audits/:auditId
+GET  /api/v1/auditor/audits/:auditId   —  Get audit detail including co-auditor progress (no response values)
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Co-auditor data includes only completionPercentage and openItemCount — never response content.
+200  Audit detail with BU list, own progress, and co-auditor progress summaries
+5.2 Scope Item Responses
+GET /auditor/audits/:auditId/scope
+GET  /api/v1/auditor/audits/:auditId/scope   —  Get assigned scope items for auditor, grouped by BU
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Only returns items assigned to the authenticated auditor.
+Query Params: status (not_started|draft_saved|submitted|exception_pending|returned), page, limit
+200  Scope items grouped by audit_business_unit, with current status and existing draft response if any
+PUT /auditor/audits/:auditId/scope/:lineItemId/response
+PUT  /api/v1/auditor/audits/:auditId/scope/:lineItemId/response   —  Save draft or submit a response for a line item
+Auth: JWT Bearer  |  Roles: auditor
+Request Body
+Field
+Type
+Required?
+Description
+responseText
+string
+required
+Required when inputMethod=free_text and isDraft=false
+selectedOptionId
+UUID
+required
+Required when inputMethod=multiple_choice and isDraft=false
+comment
+string
+required
+Optional auditor note
+isDraft
+boolean
+required
+true = save draft; false = submit (locked)
+Responses
+200  Response saved/submitted; line item status updated
+403  Line item not assigned to this auditor
+422  Line item status is submitted or exception_approved — cannot re-edit
+POST /auditor/audits/:auditId/scope/:lineItemId/documents
+POST  /api/v1/auditor/audits/:auditId/scope/:lineItemId/documents   —  Upload a supporting document for a line item
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Accepts multipart/form-data. Allowed MIME types: image/jpeg, image/png, application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document. Max 10 MB per file.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+file
+file
+required
+JPG, PNG, PDF, or DOCX
+Responses
+201  File uploaded; returns uploaded_file object
+413  File exceeds 10 MB
+415  Unsupported file type
+DELETE /auditor/audits/:auditId/scope/:lineItemId/documents/:fileId
+DELETE  /api/v1/auditor/audits/:auditId/scope/:lineItemId/documents/:fileId   —  Remove a supporting document
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Only permitted if the line item is not yet submitted.
+200  File soft-deleted
+422  Cannot delete file — line item already submitted
+POST /auditor/audits/:auditId/scope/:lineItemId/exceptions
+POST  /api/v1/auditor/audits/:auditId/scope/:lineItemId/exceptions   —  Raise an exception request for a line item
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Accepts multipart/form-data. At least one evidence file is mandatory. Line item status changes to exception_pending.
+Request Body (multipart/form-data)
+Field
+Type
+Required?
+Description
+justification
+string
+required
+Minimum 20 characters
+evidence
+file (one or more)
+required
+JPG, PNG, PDF, or DOCX — max 10 MB each
+Responses
+201  Exception raised; manager notified in-app; line item status → exception_pending
+422  Line item is already submitted or has an open exception
+POST /auditor/audits/:auditId/submit
+POST  /api/v1/auditor/audits/:auditId/submit   —  Explicit Submit to Manager action
+Auth: JWT Bearer  |  Roles: auditor
+ℹ  Only permitted when all mandatory items assigned to this auditor are in submitted or exception_approved state. Triggers check for full audit completion and notifies manager.
+Responses
+200  Submission confirmed; manager notified in-app if all auditors complete
+422  One or more mandatory items are still not_started or draft_saved
+6. Client Endpoints
+6.1 Executive Cockpit
+GET /client/audits
+GET  /api/v1/client/audits   —  List all audits for the authenticated client's entity
+Auth: JWT Bearer  |  Roles: client
+Query Params: status, page, limit
+200  Paginated list with completion %, open exceptions, open clarifications, pending report review flag
+GET /client/audits/:auditId
+GET  /api/v1/client/audits/:auditId   —  Get audit detail view for client cockpit
+Auth: JWT Bearer  |  Roles: client
+200  Audit overview with per-BU completion, exception summary, open clarifications
+GET /client/insights
+GET  /api/v1/client/insights   —  Get historical insights from all completed audits for this client
+Auth: JWT Bearer  |  Roles: client
+Response Structure
+Field
+Type
+Required?
+Description
+recurringFindings
+array
+required
+Line item names/descriptions flagged in 2+ consecutive audits
+riskTrendByBU
+array
+required
+Per-BU exception and finding count over time (by audit cycle)
+actionItems
+object
+required
+{ open: N, closed: N, aging: [{itemName, daysSinceRaised}] }
+complianceScores
+array
+required
+Calculated score per completed audit (based on submitted vs excepted ratio)
+auditFrequency
+array
+required
+List of completed audits with dates and scope size
+200  Insights object as described above
+6.2 Natural Language Search
+POST /client/search
+POST  /api/v1/client/search   —  Natural language search over historical audit reports
+Auth: JWT Bearer  |  Roles: client
+ℹ  Async operation powered by active Gen AI model. Scoped strictly to reports belonging to the authenticated client. Returns ai_job_id; poll GET /ai-jobs/:jobId for result.
+Request Body
+Field
+Type
+Required?
+Description
+query
+string
+required
+Natural language question — max 500 characters
+Responses
+202  Job queued — returns { jobId: uuid }
+503  No active AI model configured
+6.3 Clarifications (Client)
+GET /client/clarifications
+GET  /api/v1/client/clarifications   —  Get all clarification requests directed to this client
+Auth: JWT Bearer  |  Roles: client
+Query Params: status (pending|responded|closed), auditId, page, limit
+200  Paginated clarification requests with thread of responses
+POST /client/clarifications/:clarificationId/respond
+POST  /api/v1/client/clarifications/:clarificationId/respond   —  Submit a response to a clarification request
+Auth: JWT Bearer  |  Roles: client
+Request Body
+Field
+Type
+Required?
+Description
+message
+string
+required
+Response content
+Responses
+201  Response recorded; clarification status → responded; manager notified in-app
+403  Clarification not addressed to this client
+6.4 Draft Report Review (Client)
+GET /client/reports/:reportId/download
+GET  /api/v1/client/reports/:reportId/download   —  Download draft report DOCX for review
+Auth: JWT Bearer  |  Roles: client
+ℹ  Only available when report status=sent_for_client_review.
+200  Binary DOCX stream
+403  Report not shared with this client yet
+POST /client/reports/:reportId/feedback
+POST  /api/v1/client/reports/:reportId/feedback   —  Submit section-level structured feedback on draft report
+Auth: JWT Bearer  |  Roles: client
+Request Body
+Field
+Type
+Required?
+Description
+feedback
+array
+required
+Array of section feedback objects
+feedback[].sectionName
+string
+required
+e.g. Executive Summary, Findings - BU Name
+feedback[].comment
+string
+required
+Client's feedback text
+feedback[].status
+string
+required
+accepted | requires_revision
+Responses
+201  Feedback submitted; audit status → under_manager_review; manager notified in-app
+422  Report is not in sent_for_client_review status
+7. Shared Endpoints
+7.1 Notifications
+GET /notifications
+GET  /api/v1/notifications   —  Get notifications for the authenticated user
+Auth: JWT Bearer  |  Roles: All roles
+Query Params
+Field
+Type
+Required?
+Description
+isRead
+boolean
+required
+Filter by read status
+page / limit
+integer
+required
+Pagination
+Response per notification
+Field
+Type
+Required?
+Description
+id
+UUID
+required
+—
+type
+string
+required
+notification_type enum value
+title
+string
+required
+Short display title
+message
+string
+required
+Full body
+isRead
+boolean
+required
+—
+relatedEntityType / relatedEntityId
+string / UUID
+required
+For navigation deep-link
+createdAt
+ISO 8601
+required
+—
+Responses
+200  Paginated notifications; meta includes unreadCount
+PUT /notifications/:notificationId/read
+PUT  /api/v1/notifications/:notificationId/read   —  Mark a single notification as read
+Auth: JWT Bearer  |  Roles: All roles
+200  Notification marked as read
+403  Notification belongs to another user
+PUT /notifications/read-all
+PUT  /api/v1/notifications/read-all   —  Mark all notifications as read for the authenticated user
+Auth: JWT Bearer  |  Roles: All roles
+200  Returns { updatedCount: N }
+7.2 File Downloads
+GET /files/:fileId
+GET  /api/v1/files/:fileId   —  Download or stream any uploaded file by ID
+Auth: JWT Bearer  |  Roles: All roles — ownership enforced
+ℹ  Returns 403 if the requesting user does not have access to the entity owning the file. Access rules: auditor can access files they uploaded; manager can access files on their audits; client can access files on their audits; admin can access all.
+Query Params
+Field
+Type
+Required?
+Description
+disposition
+string
+required
+inline (preview) | attachment (force download) — default attachment
+Responses
+200  Binary file stream with correct Content-Type and Content-Disposition
+403  Insufficient ownership to access this file
+404  File not found or soft-deleted
+7.3 AI Job Status Polling
+GET /ai-jobs/:jobId
+GET  /api/v1/ai-jobs/:jobId   —  Poll status of an asynchronous AI job
+Auth: JWT Bearer  |  Roles: All roles — job ownership enforced
+Response
+Field
+Type
+Required?
+Description
+id
+UUID
+required
+Job ID
+jobType
+string
+required
+scope_extraction | report_generation | nl_search
+status
+string
+required
+queued | processing | completed | failed
+outputPayload
+object / null
+required
+Result data when status=completed (structure varies by job type)
+errorMessage
+string / null
+required
+Error detail when status=failed
+createdAt / completedAt
+ISO 8601
+required
+—
+outputPayload Structure by Job Type
+Field
+Type
+Required?
+Description
+scope_extraction
+{ lineItems: [{name, description, inputMethod, suggestedIsOptional}] }
+required
+Draft scope items for manager review
+report_generation
+{ reportId: uuid, downloadUrl: string }
+required
+Link to generated DOCX
+nl_search
+{ answer: string, sources: [{auditId, auditName, reportDate, excerpt}] }
+required
+Synthesised answer with citations
+Responses
+200  Job status object
+403  Job was not created by this user
+404  Job not found
+8. RBAC Endpoint Access Matrix
+The following table summarises which roles can access each endpoint group. Cell values: ✓ Full access  |  R Read-only  |  — No access.
+Endpoint Group
+Admin
+Manager
+Auditor
+Client
+POST /auth/login
+✓
+✓
+✓
+✓
+POST /auth/change-password
+✓
+✓
+✓
+✓
+GET /admin/users (& sub-resources)
+✓
+—
+—
+—
+POST,PUT,DELETE /admin/users
+✓
+—
+—
+—
+Admin mappings & BUs
+✓
+—
+—
+—
+Admin AI model config
+✓
+—
+—
+—
+GET /admin/templates (read)
+✓
+R
+—
+—
+POST,PUT,DELETE /admin/templates
+✓
+—
+—
+—
+GET /admin/audits
+✓
+—
+—
+—
+Admin exceptional-requests (approve/reject)
+✓
+—
+—
+—
+Manager audit CRUD
+—
+✓
+—
+—
+Manager scope definition
+—
+✓
+—
+—
+Manager assignment & heatmap
+—
+✓
+—
+—
+Manager exception decisions
+—
+✓
+—
+—
+Manager clarification send
+—
+✓
+—
+—
+Manager report management
+—
+✓
+—
+—
+Manager exceptional-requests (submit)
+—
+✓
+—
+—
+Auditor audits & scope (own assignments only)
+—
+—
+✓
+—
+Auditor response submission
+—
+—
+✓
+—
+Auditor exception raise
+—
+—
+✓
+—
+Client audits cockpit
+—
+—
+—
+✓
+Client insights
+—
+—
+—
+✓
+Client NL search
+—
+—
+—
+✓
+Client clarification respond
+—
+—
+—
+✓
+Client report feedback
+—
+—
+—
+✓
+GET /notifications (own only)
+✓
+✓
+✓
+✓
+GET /files/:fileId (ownership enforced)
+✓
+✓
+✓
+✓
+GET /ai-jobs/:jobId (own only)
+—
+✓
+—
+✓

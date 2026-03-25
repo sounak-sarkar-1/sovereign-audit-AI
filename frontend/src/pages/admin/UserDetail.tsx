@@ -26,12 +26,7 @@ const UserDetail: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
 
-  const { data: user, isLoading } = useQuery<User & { 
-    auditorMappings: any[], 
-    managedByMappings: any[], 
-    clientMappings: any[], 
-    managedClientsByMappings: any[] 
-  }>({
+  const { data: rawUser, isLoading } = useQuery<any>({
     queryKey: ['user', userId],
     queryFn: async () => {
       const response = await api.get(`/admin/users/${userId}`);
@@ -39,6 +34,8 @@ const UserDetail: React.FC = () => {
     },
     enabled: !!userId,
   });
+
+  const user = (rawUser as any)?.data || rawUser;
 
   if (isLoading) {
     return (

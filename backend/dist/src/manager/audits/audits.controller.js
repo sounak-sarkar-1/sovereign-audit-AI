@@ -35,6 +35,9 @@ let ManagerAuditsController = class ManagerAuditsController {
     async findOne(id) {
         return this.auditsService.findOne(id);
     }
+    async getTrail(id) {
+        return this.auditsService.getTrail(id);
+    }
     async update(id, updateDto, req) {
         return this.auditsService.update(id, updateDto, req.user.id);
     }
@@ -43,6 +46,9 @@ let ManagerAuditsController = class ManagerAuditsController {
     }
     async getClients(req) {
         return this.auditsService.getClients(req.user.id);
+    }
+    async archive(id, req) {
+        return this.auditsService.archive(id, req.user.id);
     }
 };
 exports.ManagerAuditsController = ManagerAuditsController;
@@ -72,6 +78,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ManagerAuditsController.prototype, "findOne", null);
 __decorate([
+    (0, common_1.Get)('audits/:id/trail'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ManagerAuditsController.prototype, "getTrail", null);
+__decorate([
     (0, common_1.Put)('audits/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -95,6 +108,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ManagerAuditsController.prototype, "getClients", null);
+__decorate([
+    (0, common_1.Post)('audits/:id/archive'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], ManagerAuditsController.prototype, "archive", null);
 exports.ManagerAuditsController = ManagerAuditsController = __decorate([
     (0, common_1.Controller)('manager'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),

@@ -11,6 +11,6 @@ export class CreateExceptionDto {
   justification: string;
 
   @IsOptional()
-  @IsUUID()
-  evidenceFileId?: string;
+  @IsUUID('4', { each: true })
+  evidenceFileIds?: string[];
 }

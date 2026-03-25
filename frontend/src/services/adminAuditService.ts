@@ -9,6 +9,8 @@ export interface AuditFilterParams {
   endDate?: string;
   sortBy?: string;
   sortOrder?: 'ASC' | 'DESC';
+  page?: number;
+  limit?: number;
 }
 
 export const adminAuditService = {

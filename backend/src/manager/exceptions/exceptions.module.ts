@@ -6,10 +6,11 @@ import { ExceptionRequest } from '../../database/entities/exception-request.enti
 import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 import { NotificationsModule } from '../../shared/notifications/notifications.module';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
+import { ExceptionComment } from '../../database/entities/exception-comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ExceptionRequest, AuditScopeLineItem]),
+    TypeOrmModule.forFeature([ExceptionRequest, AuditScopeLineItem, ExceptionComment]),
     NotificationsModule,
     AuditTrailModule,
   ],

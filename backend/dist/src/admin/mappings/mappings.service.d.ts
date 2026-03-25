@@ -9,6 +9,8 @@ export declare class AdminMappingsService {
     private readonly auditTrailService;
     private readonly logger;
     constructor(managerAuditorRepo: Repository<ManagerAuditorMapping>, managerClientRepo: Repository<ManagerClientMapping>, auditTrailService: AuditTrailService);
+    getManagerAuditorMappings(): Promise<ManagerAuditorMapping[]>;
+    getManagerClientMappings(): Promise<ManagerClientMapping[]>;
     addManagerAuditorMapping(dto: CreateMappingDto, actor: {
         id: string;
         role: string;

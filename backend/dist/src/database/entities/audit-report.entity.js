@@ -68,7 +68,12 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)({ name: 'updated_at', type: 'timestamptz' }),
     __metadata("design:type", Date)
 ], AuditReport.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => client_report_feedback_entity_1.ClientReportFeedback, (feedback) => feedback.report),
+    __metadata("design:type", Array)
+], AuditReport.prototype, "feedbacks", void 0);
 exports.AuditReport = AuditReport = __decorate([
     (0, typeorm_1.Entity)('audit_reports')
 ], AuditReport);
+const client_report_feedback_entity_1 = require("./client-report-feedback.entity");
 //# sourceMappingURL=audit-report.entity.js.map

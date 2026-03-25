@@ -13,6 +13,6 @@ import { NotificationsModule } from '../../shared/notifications/notifications.mo
   ],
   controllers: [ClientClarificationsController],
   providers: [ClientClarificationsService],
-  exports: [ClientClarificationsService],
+  exports: [ClientClarificationsService]
 })
 export class ClientClarificationsModule {}

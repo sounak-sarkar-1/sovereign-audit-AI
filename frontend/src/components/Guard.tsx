@@ -1,7 +1,7 @@
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth';
 
-export const ProtectedRoute = () => {
+export const ProtectedRoute = ({ children }: { children?: React.ReactNode }) => {
   const { user, accessToken } = useAuthStore();
   const location = useLocation();
 
@@ -9,10 +9,10 @@ export const ProtectedRoute = () => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 };
 
-export const FirstLoginGuard = () => {
+export const FirstLoginGuard = ({ children }: { children?: React.ReactNode }) => {
   const { user } = useAuthStore();
   const location = useLocation();
 
@@ -21,5 +21,5 @@ export const FirstLoginGuard = () => {
     return <Navigate to="/reset-password" replace />;
   }
 
-  return <Outlet />;
+  return children ? <>{children}</> : <Outlet />;
 };

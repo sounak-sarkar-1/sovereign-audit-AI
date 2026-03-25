@@ -1,31 +1,33 @@
-"use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientAuditsController = void 0;
-const common_1 = require("@nestjs/common");
-const audits_service_1 = require("./audits.service");
-const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
-const tenant_guard_1 = require("../../common/guards/tenant.guard");
-const roles_guard_1 = require("../../common/guards/roles.guard");
-const roles_decorator_1 = require("../../common/decorators/roles.decorator");
-let ClientAuditsController = class ClientAuditsController {
-    constructor(service) {
-        this.service = service;
-    }
-};
-exports.ClientAuditsController = ClientAuditsController;
-exports.ClientAuditsController = ClientAuditsController = __decorate([
-    (0, common_1.Controller)('client/audits'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('client'),
-    __metadata("design:paramtypes", [audits_service_1.ClientAuditsService])
-], ClientAuditsController);
+`` `typescript
+import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common';
+import { ClientAuditsService } from './audits.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { TenantGuard } from '../../common/guards/tenant.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { AuditStatus } from '../../database/entities/audit.entity';
+import { UserRole } from '../../database/entities/user.entity';
+
+@Controller('client/audits')
+@UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
+@Roles(UserRole.CLIENT)
+export class ClientAuditsController {
+  constructor(private readonly service: ClientAuditsService) {}
+
+  @Get()
+  async findAll(
+    @Request() req: any,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('status') status?: AuditStatus,
+  ) {
+    return this.service.findAll(req.user.id, page, limit, status);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Request() req: any) {
+    return this.service.findOne(id, req.user.id);
+  }
+}
+` ``;
 //# sourceMappingURL=audits.controller.js.map

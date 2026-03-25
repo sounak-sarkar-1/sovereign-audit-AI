@@ -10,10 +10,13 @@ export declare class AuditorAuditsController {
     private readonly exceptionsService;
     constructor(service: AuditorAuditsService, scopeService: AuditorScopeService, exceptionsService: AuditorExceptionsService);
     findAll(user: User): Promise<{
-        completionStats: {
-            total: number;
-            completed: number;
-            percent: number;
+        endDate: Date;
+        stats: {
+            totalItems: number;
+            submittedItems: number;
+            draftItems: number;
+            pendingExceptions: number;
+            completionPercent: number;
         };
         id: string;
         name: string;
@@ -30,13 +33,15 @@ export declare class AuditorAuditsController {
         deletedAt: Date;
     }[]>;
     findOne(id: string, user: User): Promise<{
-        businessUnits: {
-            id: string;
-            name: string;
+        clientName: string;
+        endDate: Date;
+        stats: {
             totalItems: number;
-            completedItems: number;
+            submittedItems: number;
+            pendingExceptions: number;
             completionPercent: number;
-        }[];
+            buStats: any;
+        };
         id: string;
         name: string;
         clientId: string;
@@ -79,4 +84,6 @@ export declare class AuditorAuditsController {
     updateResponse(id: string, liId: string, dto: UpdateResponseDto, user: User): Promise<import("../../database/entities/line-item-response.entity").LineItemResponse>;
     getExceptions(id: string, user: User): Promise<import("../../database/entities/exception-request.entity").ExceptionRequest[]>;
     createException(id: string, dto: CreateExceptionDto, user: User): Promise<import("../../database/entities/exception-request.entity").ExceptionRequest>;
+    getScopeItemComments(liId: string): Promise<import("../../database/entities/line-item-comment.entity").LineItemComment[]>;
+    addScopeItemComment(liId: string, content: string, user: User): Promise<import("../../database/entities/line-item-comment.entity").LineItemComment>;
 }

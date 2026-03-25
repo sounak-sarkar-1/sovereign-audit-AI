@@ -18,6 +18,20 @@ export class AdminMappingsService {
     private readonly auditTrailService: AuditTrailService,
   ) {}
 
+  async getManagerAuditorMappings(): Promise<ManagerAuditorMapping[]> {
+    return await this.managerAuditorRepo.find({
+      relations: ['manager', 'auditor'],
+      order: { createdAt: 'DESC' }
+    });
+  }
+
+  async getManagerClientMappings(): Promise<ManagerClientMapping[]> {
+    return await this.managerClientRepo.find({
+      relations: ['manager', 'client'],
+      order: { createdAt: 'DESC' }
+    });
+  }
+
   async addManagerAuditorMapping(dto: CreateMappingDto, actor: { id: string, role: string, ip: string }): Promise<void> {
     const existing = await this.managerAuditorRepo.findOne({
       where: { managerId: dto.managerId, auditorId: dto.targetId }

@@ -5,7 +5,7 @@ export class RespondToClarificationDto {
   @MinLength(1, { message: 'Message cannot be empty' })
   message: string;
 
-  @IsString()
   @IsOptional()
-  attachmentFileId?: string;
+  @IsUUID('4', { each: true })
+  attachmentFileIds?: string[];
 }

@@ -18,6 +18,7 @@ export declare enum AuditAction {
     AUDIT_CLOSED = "AUDIT_CLOSED",
     AUDIT_DELETED = "AUDIT_DELETED",
     AUDIT_REOPENED = "AUDIT_REOPENED",
+    AUDIT_ARCHIVED = "AUDIT_ARCHIVED",
     EXCEPTIONAL_REQUEST_RAISED = "EXCEPTIONAL_REQUEST_RAISED",
     EXCEPTIONAL_REQUEST_APPROVED = "EXCEPTIONAL_REQUEST_APPROVED",
     EXCEPTIONAL_REQUEST_REJECTED = "EXCEPTIONAL_REQUEST_REJECTED",
@@ -42,5 +43,17 @@ export declare class AuditTrailService {
     private readonly logger;
     constructor(repository: Repository<AuditTrailLog>);
     log(entry: LogEntry): Promise<void>;
+    findAll(query: {
+        page?: number;
+        limit?: number;
+        action?: AuditAction;
+        entityType?: string;
+        actorId?: string;
+        search?: string;
+    }): Promise<{
+        data: AuditTrailLog[];
+        meta: any;
+    }>;
+    findForAudit(auditId: string): Promise<AuditTrailLog[]>;
 }
 export {};

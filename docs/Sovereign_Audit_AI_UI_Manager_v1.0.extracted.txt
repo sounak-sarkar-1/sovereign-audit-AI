@@ -1,0 +1,949 @@
+SOVEREIGN AUDIT AI
+UI Screen Specification
+Manager Persona  |  Dashboard · Audit Initiation · Scope · Assignment · Exceptions · Reports
+UI Library
+Shadcn/ui + Tailwind CSS
+Navigation
+Collapsible left sidebar + top header bar
+Dark Mode
+Supported via Tailwind dark: prefix + theme toggle
+Primary Colour
+#4f2d7f
+Dark Colour
+#2b144d
+Accent Colour
+#a06dff
+Background (Light)
+#f2f0ee
+Background (Mid)
+#e0dcd7
+Background (Muted)
+#ccc4bd
+Spec Version
+v1.0 — Full Specification
+Table of Contents
+1. Manager Sidebar Navigation
+Icon
+Label
+Route
+Badge
+LayoutDashboard
+My Audits
+/manager
+—
+PlusCircle
+New Audit
+/manager/audits/new
+—
+Users
+Auditor Heatmap
+/manager/heatmap
+—
+AlertTriangle
+Exceptions
+/manager/exceptions
+Open count badge
+MessageSquare
+Clarifications
+/manager/clarifications
+Pending count badge
+FileText
+Reports
+/manager/reports
+—
+2. Manager Dashboard — Kanban Board
+SCR-MGR-001 — My Audits Kanban
+Screen ID
+SCR-MGR-001
+Route
+/manager
+Persona
+Manager
+Purpose
+Primary workspace. All audits displayed as a Kanban board with columns by lifecycle status. Central hub for audit management.
+Layout
+Full-width horizontally scrollable Kanban board. Six columns (one per status). Each column has a header with status label + count badge. Cards within each column are vertically stacked. 'New Audit' button in top-right header area. View toggle: Kanban / List (for users who prefer tabular view).
+Kanban Columns
+Column
+Status Value
+Header Colour Indicator
+Card Actions
+Draft
+draft
+Muted grey
+Open, Delete Request
+In Progress
+in_progress
+Accent blue
+Open, View Exceptions
+Under Manager Review
+under_manager_review
+Primary purple
+Open, Generate/View Report
+Pending Client Review
+pending_client_review
+Warning amber
+Open, View Feedback
+Closed / Completed
+closed
+Success green
+Open, Re-open Request
+Reopened
+reopened
+Accent purple
+Open, View History
+Audit Card Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Audit name
+Text (bold)
+audit.name
+Click anywhere on card to open audit detail
+Client name
+Text (muted)
+client.full_name
+—
+Completion progress bar
+Progress bar
+Calculated: submitted / total mandatory items
+Thin bar below client name; % shown as label
+Auditor avatars
+Avatar group (max 3 shown + N more)
+auditor_audit_assignments
+Hovering shows auditor names
+Expected completion date
+Text with calendar icon
+audit.expected_completion_date
+Turns red if date is past and audit not closed
+Exception count badge
+Badge (destructive if > 0)
+open exception_requests count
+Only shown on In Progress cards
+Card actions menu
+DropdownMenu (3-dot icon)
+—
+Context-sensitive actions per column
+States
+State
+Trigger
+UI Behaviour
+Loading
+Page mount
+Skeleton Kanban board with placeholder cards
+Empty board
+No audits created
+Each column shows dashed empty placeholder. Draft column shows '+ Create your first audit'
+Empty column
+Column has no audits
+Dashed empty card placeholder; no actions
+List view mode
+Toggle clicked
+Switches to paginated table with sortable columns: Name, Client, Status, Completion %, Due Date, Actions
+Navigation Flows
+Card click → /manager/audits/:auditId (SCR-MGR-003)
+New Audit button → /manager/audits/new (SCR-MGR-002)
+Exception count badge → /manager/audits/:auditId/exceptions
+3. Audit Initiation
+SCR-MGR-002 — New Audit Form
+Screen ID
+SCR-MGR-002
+Route
+/manager/audits/new
+Persona
+Manager
+Purpose
+Step 1 of audit creation: define audit header — name, client, BUs in scope, dates, objective. Audit is created with status=draft.
+Layout
+Full page (not a drawer — first step of a multi-step flow). Centred card form (max-width 720px). Progress stepper at top: Step 1: Audit Details → Step 2: Define Scope → Step 3: Assign Auditors. Only Step 1 is on this page; subsequent steps are on the audit detail page after creation.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Progress stepper
+Stepper (Step 1 active)
+—
+3-step visual indicator at top of page
+Audit Name input
+Input
+—
+Required; large; placeholder: 'e.g. Q3 2025 IT Controls Audit'
+Client select
+Searchable select
+GET /manager/clients (mapped only)
+Required; only shows clients mapped to this manager
+Business Units multi-select
+Multi-select checkboxes
+GET /admin/clients/:id/business-units (on client change)
+Required; loads BUs for selected client; min 1 selection
+Start Date picker
+DatePicker
+—
+Required; cannot be in the past
+Expected Completion picker
+DatePicker
+—
+Required; must be after start date
+Description textarea
+Textarea
+—
+Optional; placeholder: 'Audit objective, scope narrative...'
+Create Audit button
+Button (primary)
+POST /manager/audits
+Disabled until required fields valid; shows spinner
+Cancel button
+Button (ghost)
+—
+Returns to Kanban dashboard
+States
+State
+Trigger
+UI Behaviour
+Default
+Page load
+Client dropdown populated; BUs empty until client selected
+Client selected
+Client dropdown value changes
+BU multi-select populates with client's BUs; loading spinner briefly
+No BUs available
+Client has no BUs configured
+Warning: 'This client has no Business Units configured. Please ask your Admin to add BUs before initiating an audit.'
+Submitting
+Create Audit clicked
+Spinner on button; all fields disabled
+Success
+201 from API
+Navigate to /manager/audits/:id with active Step 2 (scope definition) and success toast: 'Audit created. Now define the scope.'
+Validations
+Field
+Rule
+Error Message
+Audit Name
+Required; max 500 chars
+Audit name is required
+Client
+Required
+Please select a client
+Business Units
+Min 1 selection required
+Please select at least one Business Unit
+Start Date
+Required; not in the past
+Start date cannot be in the past
+Expected Completion
+Required; must be after Start Date
+Expected completion must be after start date
+4. Audit Detail and Scope Definition
+SCR-MGR-003 — Audit Detail Page
+Screen ID
+SCR-MGR-003
+Route
+/manager/audits/:auditId
+Persona
+Manager
+Purpose
+Central page for a single audit. Shows progress, scope summary, assignments, interaction log. Hosts scope definition workflow tabs for draft audits.
+Layout
+Two-panel layout. Left (65%): tabbed content area (Scope, Assignments, Exceptions, Interactions, Report). Right (35%): sticky audit summary card. Breadcrumb: My Audits > [Audit Name].
+Audit Summary Card (Right Panel)
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Audit name + status badge
+Heading + Badge
+audit record
+Status badge colour matches Kanban column colours
+Client + BUs in scope
+Text list
+audit_business_units
+Client name + bulleted BU names
+Manager name
+Text with avatar
+manager user record
+—
+Dates
+Text
+start_date, expected_completion_date
+Start → Expected; overdue label if past expected
+Overall progress ring
+Circular progress chart
+Calculated from line item statuses
+% in centre; tooltip shows N of M items complete
+Auditor count
+Text with avatar group
+auditor_audit_assignments
+N auditors assigned
+Open exceptions badge
+Badge (destructive)
+exception_requests count
+Only shown if > 0
+Left Panel Tabs
+Tab
+Content Summary
+Visible When
+Scope
+Line item management; scope definition methods
+Always
+Assignments
+Auditor-BU assignment table + heatmap link
+Always
+Exceptions
+Exception request list + approve/reject actions
+Always; badge if open exceptions
+Interactions
+Chronological log of all manager↔auditor and manager↔client messages
+Always
+Report
+Report generation trigger, version history, client share
+Visible once audit reaches under_manager_review
+SCR-MGR-004 — Scope Tab: Method Selector
+Screen ID
+SCR-MGR-004
+Route
+/manager/audits/:auditId (Scope tab, draft status)
+Persona
+Manager
+Purpose
+When audit is in draft and scope is empty, this method selection panel is shown as the first action.
+Layout
+Centred method selector within the Scope tab. Three method cards side-by-side (3-column grid on desktop, stacked on mobile). Plus a 'Use Template' option below. After any method is used, the scope line items table appears and method selector becomes an 'Add More Items' dropdown.
+Method Cards
+Method
+Icon
+Description on Card
+CTA Button
+Gen AI Extraction
+Sparkles / Wand
+Upload a SOP, manual, or policy document and let AI extract audit scope items
+Upload Document
+Excel Import
+Table / Sheet
+Upload a previous audit scope in Excel format. The system will auto-detect and map columns.
+Upload Excel File
+Manual Entry
+PenLine
+Add scope line items one at a time or in bulk using the form editor.
+Add Manually
+States
+State
+Trigger
+UI Behaviour
+No AI model configured
+is_active model absent
+Gen AI Extraction card shows warning overlay: 'AI features not configured. Contact your Admin.' CTA button disabled.
+Scope already has items
+items.length > 0
+Method selector replaced by 'Add More Items' split button with dropdown: Upload Document | Import Excel | Add Manually | Use Template
+SCR-MGR-005 — Scope: Gen AI Extraction Flow
+Screen ID
+SCR-MGR-005
+Route
+/manager/audits/:auditId (Scope tab, AI flow)
+Persona
+Manager
+Purpose
+Upload SOP document → AI extracts draft scope → Manager reviews and edits before finalising.
+Phase 1 — Document Upload Panel
+Component
+Type
+Data Source / API
+Behaviour / Notes
+BU selector
+Select
+audit_business_units
+Required; which BU extracted items will belong to
+File dropzone
+Dropzone
+—
+PDF or DOCX; max 10 MB; drag-and-drop or click. Selected file shows name + size chip
+Extract Scope button
+Button (primary)
+POST /manager/audits/:id/scope/extract-from-document
+Disabled until file + BU selected
+Phase 2 — Processing State
+State
+Trigger
+UI Behaviour
+Queued / Processing
+After Extract Scope clicked
+Progress panel replaces upload area: animated spinner + 'AI is analysing your document...' + Job ID shown for reference. Poll GET /ai-jobs/:jobId every 3s.
+Completed
+job.status = completed
+Transition to Phase 3 draft review panel; success toast: 'AI extracted N scope items. Please review.'
+Failed
+job.status = failed
+Error panel: 'AI extraction failed. [error message]' + retry button + 'Add manually instead' link
+Phase 3 — Draft Review and Edit Table
+Component
+Type
+Data Source / API
+Behaviour / Notes
+AI draft banner
+Alert (info)
+—
+N items suggested by AI. Review, edit, or remove items below. You can also add your own.
+Scope items editable table
+Inline-editable table
+AI job outputPayload.lineItems
+Columns: Name (editable), Description (editable), Input Method (select), Optional (checkbox). Each row: edit inline + delete icon
+Add custom item row
+Button below table
+—
+'+ Add Item' appends new blank row to table
+Finalise Scope button
+Button (primary)
+POST /manager/audits/:id/scope/line-items (batch)
+Saves all rows as line items; disabled if any row has empty required fields
+Discard and start over link
+Link button
+—
+Clears draft and returns to method selector
+SCR-MGR-006 — Scope: Excel Import Flow
+Screen ID
+SCR-MGR-006
+Route
+/manager/audits/:auditId (Scope tab, Excel flow)
+Persona
+Manager
+Purpose
+Upload Excel file → system auto-detects columns → Manager confirms mapping → items imported.
+Phase 1 — File Upload
+Component
+Type
+Data Source / API
+Behaviour / Notes
+BU selector
+Select
+audit_business_units
+Required
+File dropzone
+Dropzone
+—
+.xlsx or .xls only; max 10 MB
+Upload and Detect button
+Button (primary)
+POST /manager/audits/:id/scope/import-from-excel
+Returns importId + detectedColumns for Phase 2
+Phase 2 — Column Mapping Confirmation
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Detected columns table
+Mapping table
+API response detectedColumns
+Columns: Column Letter, Header Text (from file), Suggested Mapping (select). Manager adjusts selects if suggestions are wrong.
+Mapping selects
+Select per row
+—
+Options: Line Item Name / Description / Input Method / Skip Column
+Preview rows
+Read-only mini-table
+—
+Shows first 3 rows of Excel data for reference
+Confirm Import button
+Button (primary)
+POST /confirm endpoint
+Disabled if Name and Description not mapped
+Back button
+Button (ghost)
+—
+Returns to Phase 1 to re-upload
+Phase 3 — Import Result
+State
+Trigger
+UI Behaviour
+Success
+201 from confirm API
+Scope items table shown with imported items. Banner: 'N items imported. All items set to Mandatory — adjust Optional flags as needed.'
+Partial success
+Some rows had parse errors
+Success items shown in table; error rows listed in warning accordion: 'N rows could not be imported' with row numbers and reason
+Mapping error
+Required columns not mapped
+Inline error: 'Please map at least the Name and Description columns before importing'
+SCR-MGR-007 — Scope: Manual Entry and Scope Items Table
+Screen ID
+SCR-MGR-007
+Route
+/manager/audits/:auditId (Scope tab, items exist)
+Persona
+Manager
+Purpose
+Manage all scope line items in an interactive table. Add, edit, delete, and reorder items. View per-BU grouping.
+Layout
+BU selector tabs at top (one tab per BU in audit scope). Below: line items table for selected BU. Table header: item count + 'Add Item' button. Each row is expandable for full details.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+BU tabs
+Tabs
+audit_business_units
+One tab per BU; each tab shows completion % badge
+Scope items table
+Data table
+GET /manager/audits/:id/scope
+Columns: #, Name, Description (truncated), Input Method badge, Optional badge, Status badge, Actions
+Status badge per item
+Badge
+line_item_status
+Not Started=muted, Draft=amber, Submitted=green, Exception Pending=orange, Exception Approved=blue, Returned=red
+Expand row
+Chevron on row
+—
+Expands to show full description, options list (if MC), assigned auditor(s)
+Edit item (draft audits only)
+Edit icon
+PUT /manager/audits/:id/scope/line-items/:itemId
+Opens inline edit form in expanded row
+Delete item (draft audits only)
+Trash icon
+DELETE endpoint
+Confirm inline: 'Remove this item?' Yes/No
+Add Item button
+Button (outline)
+—
+Opens inline blank row at bottom of table
+States
+State
+Trigger
+UI Behaviour
+Audit in draft
+status=draft
+Edit and delete icons visible on all rows
+Audit in progress
+status=in_progress
+Edit/delete disabled on submitted/excepted items; tooltip: 'Cannot edit submitted items'
+In-progress edit on eligible item
+Edit clicked (not_started or returned)
+Inline edit form opens in expanded row
+Template import
+'Use Template' selected from Add More dropdown
+Modal opens: searchable template list, multi-select checkboxes, BU assignment select, Import button
+5. Auditor Assignment
+SCR-MGR-008 — Assignments Tab
+Screen ID
+SCR-MGR-008
+Route
+/manager/audits/:auditId (Assignments tab)
+Persona
+Manager
+Purpose
+Assign auditors to Business Units and optionally to specific line items. View utilisation heatmap.
+Layout
+Two sub-sections: (1) Assignment Matrix table, (2) Heatmap summary panel (collapsible). Assignment table: rows = BUs, columns = available auditors. Each cell is a toggle (assign/unassign).
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Assignment matrix
+Grid / toggle table
+GET /manager/audits/:id/assignments
+Rows: BU names. Columns: mapped auditor names + avatars. Cell: toggle checkbox. Checked = assigned.
+Line item expand (per BU row)
+Expandable sub-table
+auditor_line_item_assignments
+Optional: shows individual line items under BU row; each item has auditor assignment toggles
+Add/Remove assignment
+Toggle checkbox in matrix
+POST/DELETE /manager/audits/:id/assignments
+Immediate API call on toggle; loading spinner in cell while saving
+Heatmap summary panel
+Collapsible card
+GET /manager/auditors/heatmap
+Shows: Auditor name, Open Items count (colour: green<5, amber<15, red≥15), Completion %, Active Engagements badge
+View full heatmap link
+Link
+—
+Navigates to /manager/heatmap (SCR-MGR-009)
+States
+State
+Trigger
+UI Behaviour
+No auditors available
+Manager has no mapped auditors
+Warning: 'No auditors are mapped to your profile. Ask your Admin to configure auditor mappings.'
+Assigning
+Toggle clicked
+Cell shows spinner; checkbox disabled during API call
+Fully assigned
+All BUs have at least one auditor
+Section header shows green checkmark: 'All Business Units have auditors assigned'
+Audit in progress (locked)
+status=in_progress
+Existing assignments shown but toggles disabled; tooltip: 'Reassignment not available while audit is in progress. Contact admin.'
+SCR-MGR-009 — Auditor Utilisation Heatmap
+Screen ID
+SCR-MGR-009
+Route
+/manager/heatmap
+Persona
+Manager
+Purpose
+Full heatmap view of workload across all mapped auditors. Used for informed assignment decisions.
+Layout
+Full page. Top: 3 summary KPI cards (Total mapped auditors, Average completion %, Total open items). Below: detailed heatmap table — one row per auditor with visual intensity cells.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+KPI cards row
+3x KPI Card
+GET /manager/auditors/heatmap (aggregated)
+Total auditors, Avg completion %, Total open items across all engagements
+Heatmap table
+Styled data table
+GET /manager/auditors/heatmap
+Columns: Auditor Name, Open Items (heat cell), Completion % (progress bar), Active Engagements (badge)
+Open Items heat cell
+Coloured cell
+openLineItems value
+Green (0–4), Amber (5–14), Red (15+); value shown as number in centre
+Auditor row expand
+Expandable row
+—
+Shows breakdown by active audit: audit name, BU name, items assigned, % done
+Filter by audit
+Select dropdown
+GET /manager/audits
+Filter heatmap to show only auditors in a specific audit
+6. Exception Management
+SCR-MGR-010 — Exceptions Tab (within Audit Detail)
+Screen ID
+SCR-MGR-010
+Route
+/manager/audits/:auditId (Exceptions tab)
+Persona
+Manager
+Purpose
+Review, approve, or reject exception requests raised by auditors for specific line items.
+Layout
+Status filter tabs: All | Pending | Approved | Rejected. Below: exception request cards. Each pending card has Approve and Reject action buttons prominently shown.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Status filter tabs
+Tabs
+—
+Pending tab has count badge; highlighted if > 0
+Exception card
+Card
+GET /manager/audits/:id/exceptions
+Line Item name (link), BU name, Auditor name + avatar, Justification (full text), Raised date
+Evidence files section
+File list on card
+uploaded_files for exception
+Each evidence file shown as chip with download icon; click downloads via GET /files/:id
+Approve button
+Button (primary)
+POST .../exceptions/:id/approve
+On pending cards; opens inline approval comment field before confirming
+Reject button
+Button (destructive outline)
+POST .../exceptions/:id/reject
+On pending cards; requires rejection comment before confirming
+Seek Clarification button
+Button (ghost)
+POST /manager/audits/:id/clarifications
+On pending cards; opens mini clarification form to send query to client
+States
+State
+Trigger
+UI Behaviour
+Approve inline
+Approve button clicked
+Card expands: optional comment textarea + 'Confirm Approval' button
+Reject inline
+Reject button clicked
+Card expands: required comment textarea (red border if empty) + 'Confirm Rejection' button
+Seek clarification inline
+Seek Clarification clicked
+Mini-form: client select (pre-filled if one client), message textarea, Send button. Links to relatedExceptionId
+Empty — pending
+No pending exceptions
+Green illustration: 'No pending exceptions — all items are on track'
+Validations
+Field
+Rule
+Error Message
+Rejection comment
+Required; min 10 chars
+Please provide a reason for rejection (minimum 10 characters)
+Clarification message
+Required; min 20 chars
+Please enter your clarification question
+7. Clarification Requests
+SCR-MGR-011 — Clarifications Hub
+Screen ID
+SCR-MGR-011
+Route
+/manager/clarifications
+Persona
+Manager
+Purpose
+Central inbox for all clarification threads across all audits. Send new requests and view client responses.
+Layout
+Two-panel layout. Left: list of clarification threads (grouped by audit). Right: selected thread conversation view. Similar to a messaging inbox pattern.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Thread list (left panel)
+Scrollable list
+GET /manager/clarifications
+Each thread: Audit name, Client name, message preview, status badge, date. Pending badge if unresponded.
+Status filter
+Tabs above list
+—
+All | Pending | Responded | Closed
+Conversation view (right panel)
+Chat-style thread
+clarification_responses
+Manager message at top; client responses below in chat bubbles. Manager bubble: primary bg, right-aligned. Client bubble: light bg, left-aligned.
+Reply area
+Textarea + Send button
+POST .../clarifications/:id/respond (N/A for manager — manager already sent)
+Manager cannot reply further once client has responded (to avoid infinite loops); 'Close' button marks status=closed
+Related exception link
+Badge link on thread
+relatedExceptionId
+If linked to exception: 'View Exception' link opens exception detail drawer
+Send Clarification button
+Button (primary, top right)
+—
+Opens modal: audit select, client select, message textarea
+States
+State
+Trigger
+UI Behaviour
+No thread selected
+Page load
+Right panel: 'Select a clarification thread to view the conversation'
+Pending
+Client has not responded yet
+Thread shows 'Awaiting Response' badge; right panel shows sent message with pending indicator
+Responded
+Client submitted response
+Thread shows 'Responded' badge; right panel shows full conversation thread
+8. Report Management
+SCR-MGR-012 — Report Tab (within Audit Detail)
+Screen ID
+SCR-MGR-012
+Route
+/manager/audits/:auditId (Report tab)
+Persona
+Manager
+Purpose
+Generate AI-powered DOCX report, review/edit it, share with client, review feedback, and finalise the audit.
+Layout
+Report tab is only visible when audit status is under_manager_review or later. Content changes based on report state. Uses a timeline/progress indicator to show: Generated → Reviewed → Sent to Client → Feedback Received → Finalised.
+Phase 1 — Generate Report
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Completion readiness check
+Summary card
+Line item status counts
+Shows: N mandatory items complete, N exceptions approved, N outstanding. Generate button enabled only when all mandatory items terminal.
+Outstanding items warning
+Alert (warning)
+—
+If any mandatory items not terminal: lists item names. Disabled Generate button with tooltip.
+Generate Draft Report button
+Button (primary + Sparkles icon)
+POST /manager/audits/:id/reports/generate
+Async; shows AI progress panel after click
+AI progress panel
+Animated card
+Poll GET /ai-jobs/:jobId
+'Generating your audit report...' with animated pulse. ETA shown if available.
+Phase 2 — Review and Edit
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Report version card
+Card with version badge
+audit_reports
+Version number, generated date, status badge (Draft / Sent / Final)
+Download DOCX button
+Button (outline)
+GET /manager/audits/:id/reports/:rId/download
+Downloads DOCX for local editing
+Re-upload edited report
+File dropzone (inline)
+PUT /manager/audits/:id/reports/:rId
+DOCX only; drag-and-drop to replace; confirms version increment
+Regenerate report button
+Button (ghost)
+POST /generate again
+Creates new version; confirm dialog: 'This will generate a new version. Continue?'
+Version history accordion
+Collapsible list
+GET /manager/audits/:id/reports
+All versions listed with download links
+Phase 3 — Send to Client and Review Feedback
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Send to Client button
+Button (primary)
+POST .../send-to-client
+Confirm dialog: 'Share this report with [Client Name] for review?' Confirm / Cancel
+Client feedback section
+Feedback card list
+GET client_report_feedback
+Shown after client submits feedback. Each card: section name, comment, status badge (Accepted / Requires Revision)
+Feedback status badge
+Badge
+feedback.status
+Accepted=green, Requires Revision=amber, Pending=muted
+Feedback response textarea
+Inline textarea per card
+—
+Manager notes on whether they addressed the feedback
+Phase 4 — Finalise Audit
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Finalise Audit button
+Button (primary, green)
+POST .../finalize
+Confirm dialog with checklist: Report version, Outstanding feedback items. Confirm to close.
+Finalise confirm checklist
+AlertDialog with checklist
+—
+Shows: Final report version, N feedback items (N accepted, N requires revision). Warning if any 'requires revision' unaddressed.
+States
+State
+Trigger
+UI Behaviour
+Not ready to generate
+Incomplete mandatory items
+Generate button disabled; outstanding items listed
+AI generating
+Job queued/processing
+Animated progress panel; all other actions disabled
+Generation failed
+Job status = failed
+Error card with retry button and error message
+Awaiting client feedback
+Report sent, no feedback yet
+Pending indicator: 'Report sent. Awaiting client feedback.'
+Feedback received
+Client submitted feedback
+Notification already received; feedback cards shown in section
+Audit finalised
+Closed status
+Report tab shows: green banner 'Audit closed on [date]'; Final report download only; all edit actions hidden
+9. Exceptional Audit Requests
+SCR-MGR-013 — Exceptional Request Submission
+Screen ID
+SCR-MGR-013
+Route
+/manager/audits/:auditId (Audit Detail — context menu)
+Persona
+Manager
+Purpose
+Submit a request to Admin to either delete an ongoing audit or re-open a closed audit.
+Layout
+Accessed via the 3-dot Actions menu on the audit summary card. Opens a modal dialog (not a full page). Modal has audit name in header, action type (pre-selected based on audit status), justification textarea, and Submit button.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Action type display
+Read-only badge
+Derived from audit status
+Draft/In Progress → shows 'Request Deletion'; Closed → shows 'Request Re-open'
+Justification textarea
+Textarea
+—
+Required; min 20 chars; placeholder: 'Please explain the reason for this request...'
+Warning banner
+Alert (warning)
+—
+Deletion: 'Deleting this audit will permanently remove all scope items and responses.' Re-open: 'Reopening will allow scope modifications and additional data gathering.'
+Submit Request button
+Button (primary)
+POST /manager/audits/:id/exceptional-requests
+Disabled until justification meets min length
+States
+State
+Trigger
+UI Behaviour
+Submitted
+201 from API
+Modal closes; toast: 'Request submitted. You will be notified when Admin reviews it.'; audit card shows 'Pending exceptional request' badge
+Already pending
+Existing pending request for this audit
+Submit button disabled; message: 'A request is already pending Admin review.'
+Validations
+Field
+Rule
+Error Message
+Justification
+Required; min 20 chars; max 2000 chars
+Please provide a justification of at least 20 characters
+10. Interactions Log
+SCR-MGR-014 — Interactions Tab (within Audit Detail)
+Screen ID
+SCR-MGR-014
+Route
+/manager/audits/:auditId (Interactions tab)
+Persona
+Manager
+Purpose
+Chronological tamper-proof log of all interactions within an audit: manager↔auditor and manager↔client.
+Layout
+Timeline view. Each entry is a timestamped card. Filter toggles at top: All | Manager-Auditor | Manager-Client | System Events. Entries are read-only — no editing or deletion.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Filter toggles
+Toggle group
+—
+All / Manager-Auditor / Manager-Client / System Events
+Timeline entry card
+Card with left border colour
+audit_trail_logs + interaction tables
+Border: primary = Manager-Auditor, accent = Manager-Client, muted = System. Shows: actor, action summary, timestamp.
+System event entry
+Muted card
+audit_trail_logs
+e.g. 'Audit status changed to In Progress by System'. Auto-generated.
+Expand entry
+Chevron on card
+—
+Shows full message or payload details
+Export log button
+Button (outline)
+—
+Exports filtered log as PDF or CSV
+States
+State
+Trigger
+UI Behaviour
+Loading
+Tab selected
+Skeleton timeline cards
+Empty
+New audit with no interactions
+'No interactions yet. Actions taken in this audit will appear here.'

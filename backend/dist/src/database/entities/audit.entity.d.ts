@@ -6,7 +6,8 @@ export declare enum AuditStatus {
     PENDING_CLIENT_REVIEW = "pending_client_review",
     CLOSED = "closed",
     REOPENED = "reopened",
-    DELETED = "deleted"
+    DELETED = "deleted",
+    ARCHIVED = "archived"
 }
 export declare class Audit {
     id: string;

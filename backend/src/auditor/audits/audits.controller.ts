@@ -59,4 +59,18 @@ export class AuditorAuditsController {
   ) {
     return this.exceptionsService.create(id, user, dto);
   }
+
+  @Get(':id/scope/:liId/comments')
+  getScopeItemComments(@Param('liId') liId: string) {
+    return this.scopeService.getComments(liId);
+  }
+
+  @Post(':id/scope/:liId/comments')
+  addScopeItemComment(
+    @Param('liId') liId: string,
+    @Body('content') content: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.scopeService.addComment(liId, user, content);
+  }
 }

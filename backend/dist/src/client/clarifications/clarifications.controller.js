@@ -19,18 +19,41 @@ const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const tenant_guard_1 = require("../../common/guards/tenant.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
+const user_entity_1 = require("../../database/entities/user.entity");
+const clarification_request_entity_1 = require("../../database/entities/clarification-request.entity");
 const respond_clarification_dto_1 = require("./dto/respond-clarification.dto");
 const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
-const user_entity_1 = require("../../database/entities/user.entity");
 let ClientClarificationsController = class ClientClarificationsController {
     constructor(service) {
         this.service = service;
+    }
+    async findAll(clientId, status) {
+        return this.service.findAll(clientId, status);
+    }
+    async findOne(id, clientId) {
+        return this.service.findOne(id, clientId);
     }
     respond(id, dto, user) {
         return this.service.respond(id, dto, user);
     }
 };
 exports.ClientClarificationsController = ClientClarificationsController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(1, (0, common_1.Query)('status')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ClientClarificationsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ClientClarificationsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(':id/respond'),
     __param(0, (0, common_1.Param)('id')),
@@ -44,7 +67,7 @@ __decorate([
 exports.ClientClarificationsController = ClientClarificationsController = __decorate([
     (0, common_1.Controller)('client/clarifications'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('client'),
+    (0, roles_decorator_1.Roles)(user_entity_1.UserRole.CLIENT),
     __metadata("design:paramtypes", [clarifications_service_1.ClientClarificationsService])
 ], ClientClarificationsController);
 //# sourceMappingURL=clarifications.controller.js.map

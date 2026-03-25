@@ -14,11 +14,15 @@ import { AdminExceptionalRequestsModule } from './admin/exceptional-requests/exc
 import { AdminMappingsModule } from './admin/mappings/mappings.module';
 import { TemplatesModule as AdminTemplatesModule } from './admin/templates/templates.module';
 import { AdminUsersModule } from './admin/users/users.module';
+import { AdminSummaryModule } from './admin/summary/summary.module';
 
 // Auditor modules
 import { AuditorAuditsModule } from './auditor/audits/audits.module';
 import { AuditorExceptionsModule } from './auditor/exceptions/exceptions.module';
 import { AuditorScopeModule } from './auditor/scope/scope.module';
+import { AuditorSearchModule } from './auditor/search/search.module';
+import { AuditorChatModule } from './auditor/chat/chat.module';
+import { ChatModule } from './shared/chat/chat.module';
 
 // Client modules
 import { ClientAuditsModule } from './client/audits/audits.module';
@@ -26,11 +30,13 @@ import { ClientClarificationsModule } from './client/clarifications/clarificatio
 import { ClientInsightsModule } from './client/insights/insights.module';
 import { ClientReportsModule } from './client/reports/reports.module';
 import { ClientSearchModule } from './client/search/search.module';
+import { ClientCorrectiveActionsModule } from './client/corrective-actions/corrective-actions.module';
 
 // Manager modules
 import { ManagerAssignmentsModule } from './manager/assignments/assignments.module';
 import { ManagerAuditsModule } from './manager/audits/audits.module';
 import { ManagerAuditorsModule } from './manager/auditors/auditors.module';
+import { ManagerChatModule } from './manager/chat/chat.module';
 import { ManagerClarificationsModule } from './manager/clarifications/clarifications.module';
 import { ManagerExceptionsModule } from './manager/exceptions/exceptions.module';
 import { ManagerReportsModule } from './manager/reports/reports.module';
@@ -55,6 +61,9 @@ import { AppService } from './app.service';
     AuthModule,
     TenantModule,
     AuditTrailModule,
+    NotificationsModule,
+    FilesModule,
+    AiJobsModule,
     
     // Admin
     AdminAiModelsModule,
@@ -64,11 +73,15 @@ import { AppService } from './app.service';
     AdminMappingsModule,
     AdminTemplatesModule,
     AdminUsersModule,
+    AdminSummaryModule,
     
     // Auditor
     AuditorAuditsModule,
     AuditorExceptionsModule,
     AuditorScopeModule,
+    AuditorSearchModule,
+    AuditorChatModule,
+    ChatModule,
     
     // Client
     ClientAuditsModule,
@@ -76,21 +89,19 @@ import { AppService } from './app.service';
     ClientInsightsModule,
     ClientReportsModule,
     ClientSearchModule,
+    ClientCorrectiveActionsModule,
     
     // Manager
     ManagerAssignmentsModule,
     ManagerAuditorsModule,
+    ManagerChatModule,
     ManagerAuditsModule,
     ManagerClarificationsModule,
     ManagerExceptionsModule,
     ManagerReportsModule,
     ManagerScopeModule,
     ManagerExceptionalRequestsModule,
-    
-    // Shared
-    AiJobsModule,
-    FilesModule,
-    NotificationsModule,
+    ManagerSettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

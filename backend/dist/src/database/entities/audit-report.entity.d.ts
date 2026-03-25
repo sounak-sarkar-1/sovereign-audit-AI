@@ -16,4 +16,6 @@ export declare class AuditReport {
     managerNotes: string;
     createdAt: Date;
     updatedAt: Date;
+    feedbacks: ClientReportFeedback[];
 }
+import { ClientReportFeedback } from './client-report-feedback.entity';

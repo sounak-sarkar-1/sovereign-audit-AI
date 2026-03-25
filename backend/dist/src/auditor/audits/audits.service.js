@@ -45,19 +45,36 @@ let AuditorAuditsService = AuditorAuditsService_1 = class AuditorAuditsService {
             const totalItems = await this.lineItemRepo.count({
                 where: { auditId: audit.id, assignments: { auditorId: user.id } },
             });
-            const completedItems = await this.lineItemRepo.count({
+            const submittedItems = await this.lineItemRepo.count({
                 where: {
                     auditId: audit.id,
                     assignments: { auditorId: user.id },
-                    status: (0, typeorm_2.In)([audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED, audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_APPROVED])
+                    status: audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED
+                },
+            });
+            const draftItems = await this.lineItemRepo.count({
+                where: {
+                    auditId: audit.id,
+                    assignments: { auditorId: user.id },
+                    status: audit_scope_line_item_entity_1.LineItemStatus.DRAFT_SAVED
+                },
+            });
+            const pendingExceptions = await this.lineItemRepo.count({
+                where: {
+                    auditId: audit.id,
+                    assignments: { auditorId: user.id },
+                    status: audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_PENDING
                 },
             });
             return {
                 ...audit,
-                completionStats: {
-                    total: totalItems,
-                    completed: completedItems,
-                    percent: totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0,
+                endDate: audit.expectedCompletionDate,
+                stats: {
+                    totalItems,
+                    submittedItems,
+                    draftItems,
+                    pendingExceptions,
+                    completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
                 }
             };
         }));
@@ -70,31 +87,50 @@ let AuditorAuditsService = AuditorAuditsService_1 = class AuditorAuditsService {
         });
         if (!audit)
             throw new common_1.NotFoundException('Audit not found');
-        const bus = await this.auditBURepo.find({
-            where: { auditId },
-            relations: ['businessUnit'],
+        const totalItems = await this.lineItemRepo.count({
+            where: { auditId, assignments: { auditorId: user.id } },
+        });
+        const submittedItems = await this.lineItemRepo.count({
+            where: {
+                auditId,
+                assignments: { auditorId: user.id },
+                status: audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED
+            },
+        });
+        const pendingExceptions = await this.lineItemRepo.count({
+            where: {
+                auditId,
+                assignments: { auditorId: user.id },
+                status: audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_PENDING
+            },
         });
         const buStats = await Promise.all(bus.map(async (bu) => {
-            const totalItems = await this.lineItemRepo.count({
+            const buTotalItems = await this.lineItemRepo.count({
                 where: { auditBusinessUnitId: bu.id },
             });
-            const completedItems = await this.lineItemRepo.count({
+            const buCompletedItems = await this.lineItemRepo.count({
                 where: {
                     auditBusinessUnitId: bu.id,
-                    status: (0, typeorm_2.In)([audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED, audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_APPROVED])
+                    status: audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED
                 },
             });
             return {
                 id: bu.id,
                 name: bu.businessUnit.name,
-                totalItems,
-                completedItems,
-                completionPercent: totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0,
+                coAuditorCompletion: buTotalItems > 0 ? Math.round((buCompletedItems / buTotalItems) * 100) : 0,
             };
         }));
         return {
             ...audit,
-            businessUnits: buStats,
+            clientName: audit.client?.fullName,
+            endDate: audit.expectedCompletionDate,
+            stats: {
+                totalItems,
+                submittedItems,
+                pendingExceptions,
+                completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
+                buStats,
+            }
         };
     }
 };

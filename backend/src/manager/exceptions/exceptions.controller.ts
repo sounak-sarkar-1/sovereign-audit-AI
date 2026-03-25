@@ -44,4 +44,18 @@ export class ManagerExceptionsController {
   ) {
     return this.service.reject(exId, dto, manager);
   }
+
+  @Get(':exId/comments')
+  getComments(@Param('exId') exId: string) {
+    return this.service.getComments(exId);
+  }
+
+  @Post(':exId/comments')
+  addComment(
+    @Param('exId') exId: string,
+    @Body('content') content: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.service.addComment(exId, user, content);
+  }
 }

@@ -34,4 +34,9 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], UpdateResponseDto.prototype, "isDraft", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)('4', { each: true }),
+    __metadata("design:type", Array)
+], UpdateResponseDto.prototype, "evidenceFileIds", void 0);
 //# sourceMappingURL=update-response.dto.js.map

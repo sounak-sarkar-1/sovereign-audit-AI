@@ -18,6 +18,7 @@ export declare class UploadedFile {
     uploader: User;
     entityType: FileEntityType;
     entityId: string;
+    annotations: any;
     createdAt: Date;
     deletedAt: Date;
 }

@@ -55,6 +55,9 @@ export class UploadedFile {
   @Column({ name: 'entity_id', type: 'uuid' })
   entityId: string;
 
+  @Column({ type: 'jsonb', nullable: true })
+  annotations: any;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 

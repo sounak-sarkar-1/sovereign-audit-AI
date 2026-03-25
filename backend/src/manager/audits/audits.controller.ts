@@ -44,6 +44,11 @@ export class ManagerAuditsController {
     return this.auditsService.findOne(id);
   }
 
+  @Get('audits/:id/trail')
+  async getTrail(@Param('id') id: string) {
+    return this.auditsService.getTrail(id);
+  }
+
   @Put('audits/:id')
   async update(
     @Param('id') id: string,
@@ -61,5 +66,10 @@ export class ManagerAuditsController {
   @Get('clients')
   async getClients(@Request() req: any) {
     return this.auditsService.getClients(req.user.id);
+  }
+
+  @Post('audits/:id/archive')
+  async archive(@Param('id') id: string, @Request() req: any) {
+    return this.auditsService.archive(id, req.user.id);
   }
 }

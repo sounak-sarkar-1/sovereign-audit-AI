@@ -21,6 +21,7 @@ export enum AuditAction {
   AUDIT_CLOSED = 'AUDIT_CLOSED',
   AUDIT_DELETED = 'AUDIT_DELETED',
   AUDIT_REOPENED = 'AUDIT_REOPENED',
+  AUDIT_ARCHIVED = 'AUDIT_ARCHIVED',
   EXCEPTIONAL_REQUEST_RAISED = 'EXCEPTIONAL_REQUEST_RAISED',
   EXCEPTIONAL_REQUEST_APPROVED = 'EXCEPTIONAL_REQUEST_APPROVED',
   EXCEPTIONAL_REQUEST_REJECTED = 'EXCEPTIONAL_REQUEST_REJECTED',
@@ -66,8 +67,64 @@ export class AuditTrailService {
       await this.repository.insert(logRecord);
     } catch (error) {
       this.logger.error(`Failed to create audit trail log: ${error.message}`, error.stack);
-      // We don't throw here to avoid breaking the main transaction, 
-      // but in production we might want more robust error handling
     }
+  }
+
+  async findAll(query: {
+    page?: number;
+    limit?: number;
+    action?: AuditAction;
+    entityType?: string;
+    actorId?: string;
+    search?: string;
+  }): Promise<{ data: AuditTrailLog[]; meta: any }> {
+    const page = query.page || 1;
+    const limit = query.limit || 20;
+    const skip = (page - 1) * limit;
+
+    const qb = this.repository.createQueryBuilder('log')
+      .leftJoinAndSelect('log.actorUser', 'actor')
+      .orderBy('log.createdAt', 'DESC')
+      .take(limit)
+      .skip(skip);
+
+    if (query.action) {
+      qb.andWhere('log.actionType = :action', { action: query.action });
+    }
+
+    if (query.entityType) {
+      qb.andWhere('log.entityType = :entityType', { entityType: query.entityType });
+    }
+
+    if (query.actorId) {
+      qb.andWhere('log.actorUserId = :actorId', { actorId: query.actorId });
+    }
+
+    if (query.search) {
+      qb.andWhere('(log.entityId ILIKE :search OR CAST(log.payload AS TEXT) ILIKE :search)', { 
+        search: `%${query.search}%` 
+      });
+    }
+
+    const [items, total] = await qb.getManyAndCount();
+
+    return {
+      data: items,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async findForAudit(auditId: string): Promise<AuditTrailLog[]> {
+    return this.repository.createQueryBuilder('log')
+      .leftJoinAndSelect('log.actorUser', 'actor')
+      .where('log.entityId = :auditId', { auditId })
+      .orWhere("log.payload->>'auditId' = :auditId", { auditId })
+      .orderBy('log.createdAt', 'DESC')
+      .getMany();
   }
 }

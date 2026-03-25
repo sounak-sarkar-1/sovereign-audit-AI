@@ -1,21 +1,36 @@
 import { NavLink } from 'react-router-dom';
 import { 
   Users, 
-  LayoutDashboard, 
   Map, 
   FileText, 
   Settings, 
+  ClipboardCheck, 
+  AlertTriangle, 
+  BarChart3, 
+  History,
+  LayoutDashboard,
+  ShieldAlert,
+  LogOut,
   ChevronLeft,
   ChevronRight,
-  ShieldCheck,
-  ClipboardList,
-  Library,
-  MessageSquare,
-  AlertTriangle,
-  Eye,
-  LogOut,
+  Menu,
+  X,
+  FileCheck,
+  Briefcase,
+  TrendingUp,
+  Activity,
   User,
-  Key
+  Key,
+  MessageSquare,
+  Library,
+  Shield,
+  Layout,
+  CheckCircle2,
+  Clock,
+  Search,
+  Play,
+  ShieldCheck,
+  ClipboardList
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuthStore } from '../../stores/auth';
@@ -23,6 +38,7 @@ import { useQuery } from '@tanstack/react-query';
 import { exceptionService } from '../../services/exceptionService';
 import { clarificationService } from '../../services/clarificationService';
 import { exceptionalRequestService } from '../../services/exceptionalRequestService';
+import { clientService } from '../../services/clientService';
 import { 
   Popover,
   PopoverContent,
@@ -31,18 +47,21 @@ import {
 import { Button } from "../../components/ui/button";
 
 const adminNavItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-  { icon: Eye, label: 'Audit Oversight', path: '/admin/audits' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
+  { icon: FileCheck, label: 'Audit Oversight', path: '/admin/audit-oversight' },
+  { icon: History, label: 'Audit Logs', path: '/admin/audit-logs' },
+  { icon: Shield, label: 'Mappings', path: '/admin/mappings' },
   { icon: AlertTriangle, label: 'Exceptional Requests', path: '/admin/exceptional-requests' },
   { icon: Users, label: 'User Management', path: '/admin/users' },
   { icon: Map, label: 'Business Units', path: '/admin/business-units' },
   { icon: FileText, label: 'Audit Templates', path: '/admin/templates' },
-  { icon: ShieldCheck, label: 'Access Control', path: '/admin/roles' },
-  { icon: Settings, label: 'Settings', path: '/admin/settings' },
+  { icon: Play, label: 'AI Model Config', path: '/admin/ai-models' },
+  { icon: ShieldCheck, label: 'Access Control', path: '/admin/access-control' },
+  { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
 const managerNavItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/manager/audits' },
   { icon: ClipboardList, label: 'Audit Portfolio', path: '/manager/audits' },
   { icon: MessageSquare, label: 'Clarifications', path: '/manager/clarifications' },
   { icon: Map, label: 'Heatmap', path: '/manager/heatmap' },
@@ -51,8 +70,18 @@ const managerNavItems = [
 ];
 
 const auditorNavItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-  { icon: ClipboardList, label: 'My Audits', path: '/auditor/audits' },
+  { icon: LayoutDashboard, label: 'Task Dashboard', path: '/auditor/dashboard' },
+  { icon: Briefcase, label: 'Audit Assignments', path: '/auditor/dashboard' },
+  { icon: Settings, label: 'Settings', path: '/settings' },
+];
+
+const clientNavItems = [
+  { icon: Activity, label: 'Executive Cockpit', path: '/client/dashboard' },
+  { icon: ClipboardList, label: 'Audit Inventory', path: '/client/audits' },
+  { icon: TrendingUp, label: 'Compliance Insights', path: '/client/insights' },
+  { icon: Search, label: 'AI Search', path: '/client/search' },
+  { icon: MessageSquare, label: 'Clarification Inbox', path: '/client/clarifications' },
+  { icon: FileText, label: 'Report Hub', path: '/client/reports' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
@@ -77,15 +106,25 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
     enabled: user?.role === 'admin',
   });
 
-  const pendingExceptionCount = exceptions?.length || 0;
-  const pendingClarificationCount = clarificationThreads?.length || 0;
-  const pendingRequestCount = pendingRequests?.length || 0;
+  const { data: clientClarifications } = useQuery({
+    queryKey: ['client-pending-clarifications'],
+    queryFn: () => clientService.getClarifications({ status: 'pending' }),
+    enabled: user?.role === 'client',
+  });
+
+  const pendingExceptionCount = (exceptions as any)?.data?.length || (exceptions as any)?.length || 0;
+  const pendingClarificationCount = user?.role === 'client' 
+    ? (clientClarifications as any)?.length || 0
+    : (clarificationThreads as any)?.data?.length || (clarificationThreads as any)?.length || 0;
+  const pendingRequestCount = (pendingRequests as any)?.data?.length || (pendingRequests as any)?.length || 0;
 
   const navItems = user?.role === 'admin' 
     ? adminNavItems 
     : user?.role === 'manager' 
       ? managerNavItems 
-      : auditorNavItems;
+      : user?.role === 'client'
+        ? clientNavItems
+        : auditorNavItems;
 
   return (
     <aside 
@@ -148,7 +187,7 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
                     {pendingExceptionCount}
                   </div>
                 )}
-                {item.label === 'Clarifications' && pendingClarificationCount > 0 && (
+                {(item.label === 'Clarifications' || item.label === 'Clarification Inbox') && pendingClarificationCount > 0 && (
                   <div className={cn(
                     "bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center",
                     isOpen ? "ml-auto px-2 py-0.5 min-w-[18px]" : "absolute top-1 right-1 w-4 h-4 shadow-sm"

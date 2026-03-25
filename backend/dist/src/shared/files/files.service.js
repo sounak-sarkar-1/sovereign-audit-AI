@@ -85,6 +85,11 @@ let FilesService = FilesService_1 = class FilesService {
         }
         return file;
     }
+    async updateAnnotations(id, annotations) {
+        const file = await this.findOne(id);
+        file.annotations = annotations;
+        return await this.fileRepository.save(file);
+    }
     async deleteFile(id) {
         const file = await this.findOne(id);
         try {

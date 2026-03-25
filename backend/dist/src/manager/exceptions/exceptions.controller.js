@@ -39,6 +39,12 @@ let ManagerExceptionsController = class ManagerExceptionsController {
     reject(exId, dto, manager) {
         return this.service.reject(exId, dto, manager);
     }
+    getComments(exId) {
+        return this.service.getComments(exId);
+    }
+    addComment(exId, content, user) {
+        return this.service.addComment(exId, user, content);
+    }
 };
 exports.ManagerExceptionsController = ManagerExceptionsController;
 __decorate([
@@ -70,6 +76,22 @@ __decorate([
         user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], ManagerExceptionsController.prototype, "reject", null);
+__decorate([
+    (0, common_1.Get)(':exId/comments'),
+    __param(0, (0, common_1.Param)('exId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ManagerExceptionsController.prototype, "getComments", null);
+__decorate([
+    (0, common_1.Post)(':exId/comments'),
+    __param(0, (0, common_1.Param)('exId')),
+    __param(1, (0, common_1.Body)('content')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, user_entity_1.User]),
+    __metadata("design:returntype", void 0)
+], ManagerExceptionsController.prototype, "addComment", null);
 exports.ManagerExceptionsController = ManagerExceptionsController = __decorate([
     (0, common_1.Controller)('manager/audits/:id/exceptions'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),

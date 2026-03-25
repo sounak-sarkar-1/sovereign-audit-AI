@@ -9,6 +9,7 @@ export enum AuditStatus {
   CLOSED = 'closed',
   REOPENED = 'reopened',
   DELETED = 'deleted',
+  ARCHIVED = 'archived',
 }
 
 @Entity('audits')

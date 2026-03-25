@@ -27,7 +27,7 @@ __decorate([
 ], CreateExceptionDto.prototype, "justification", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsUUID)(),
-    __metadata("design:type", String)
-], CreateExceptionDto.prototype, "evidenceFileId", void 0);
+    (0, class_validator_1.IsUUID)('4', { each: true }),
+    __metadata("design:type", Array)
+], CreateExceptionDto.prototype, "evidenceFileIds", void 0);
 //# sourceMappingURL=create-exception.dto.js.map

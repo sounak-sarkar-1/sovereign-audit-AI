@@ -1,0 +1,134 @@
+-- Confirm users in public.users table
+[
+  {
+    "email": "admin@sovereign.ai",
+    "role": "admin",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "admin@test.com",
+    "role": "admin",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "manager1@test.com",
+    "role": "manager",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "manager2@test.com",
+    "role": "manager",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor1@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor2@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor3@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor4@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor5@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "client1@test.com",
+    "role": "client",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "client2@test.com",
+    "role": "client",
+    "is_active": "active",
+    "is_first_login": false
+  }
+]
+
+-- Confirm all 10 users exist in test schema
+[
+  {
+    "email": "admin@test.com",
+    "role": "admin",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "manager1@test.com",
+    "role": "manager",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "manager2@test.com",
+    "role": "manager",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor1@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor2@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor3@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor4@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "auditor5@test.com",
+    "role": "auditor",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "client1@test.com",
+    "role": "client",
+    "is_active": "active",
+    "is_first_login": false
+  },
+  {
+    "email": "client2@test.com",
+    "role": "client",
+    "is_active": "active",
+    "is_first_login": false
+  }
+]
+

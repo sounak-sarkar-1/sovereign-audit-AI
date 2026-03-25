@@ -1,0 +1,86 @@
+[
+  {
+    "table_name": "migrations"
+  },
+  {
+    "table_name": "users"
+  },
+  {
+    "table_name": "refresh_tokens"
+  },
+  {
+    "table_name": "manager_auditor_mappings"
+  },
+  {
+    "table_name": "manager_client_mappings"
+  },
+  {
+    "table_name": "client_business_units"
+  },
+  {
+    "table_name": "ai_models"
+  },
+  {
+    "table_name": "audit_templates"
+  },
+  {
+    "table_name": "audit_template_line_items"
+  },
+  {
+    "table_name": "audit_template_line_item_options"
+  },
+  {
+    "table_name": "audits"
+  },
+  {
+    "table_name": "audit_business_units"
+  },
+  {
+    "table_name": "line_item_responses"
+  },
+  {
+    "table_name": "audit_scope_line_items"
+  },
+  {
+    "table_name": "audit_scope_line_item_options"
+  },
+  {
+    "table_name": "auditor_audit_assignments"
+  },
+  {
+    "table_name": "auditor_line_item_assignments"
+  },
+  {
+    "table_name": "uploaded_files"
+  },
+  {
+    "table_name": "exception_requests"
+  },
+  {
+    "table_name": "audit_reports"
+  },
+  {
+    "table_name": "client_report_feedback"
+  },
+  {
+    "table_name": "clarification_requests"
+  },
+  {
+    "table_name": "clarification_responses"
+  },
+  {
+    "table_name": "exceptional_action_requests"
+  },
+  {
+    "table_name": "notifications"
+  },
+  {
+    "table_name": "audit_trail_logs"
+  },
+  {
+    "table_name": "ai_jobs"
+  },
+  {
+    "table_name": "import_sessions"
+  }
+]

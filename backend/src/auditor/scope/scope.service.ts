@@ -5,6 +5,8 @@ import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audi
 import { LineItemResponse } from '../../database/entities/line-item-response.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { User } from '../../database/entities/user.entity';
+import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
+import { LineItemComment } from '../../database/entities/line-item-comment.entity';
 import { UpdateResponseDto } from './dto/update-response.dto';
 
 @Injectable()
@@ -18,7 +20,28 @@ export class AuditorScopeService {
     private readonly responseRepo: Repository<LineItemResponse>,
     @InjectRepository(AuditBusinessUnit)
     private readonly auditBURepo: Repository<AuditBusinessUnit>,
+    @InjectRepository(UploadedFile)
+    private readonly fileRepo: Repository<UploadedFile>,
+    @InjectRepository(LineItemComment)
+    private readonly commentRepo: Repository<LineItemComment>,
   ) {}
+
+  async getComments(liId: string) {
+    return this.commentRepo.find({
+      where: { lineItemId: liId },
+      relations: ['author'],
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  async addComment(liId: string, user: User, content: string) {
+    const comment = this.commentRepo.create({
+      lineItemId: liId,
+      authorId: user.id,
+      content,
+    });
+    return this.commentRepo.save(comment);
+  }
 
   async getScope(auditId: string, user: User) {
     const bus = await this.auditBURepo.find({
@@ -88,6 +111,15 @@ export class AuditorScopeService {
     response.isDraft = dto.isDraft;
 
     await this.responseRepo.save(response);
+
+    // Link evidence files if provided
+    if (dto.evidenceFileIds && dto.evidenceFileIds.length > 0) {
+      this.logger.log(`Linking ${dto.evidenceFileIds.length} files to response ${response.id}`);
+      await this.fileRepo.update(
+        { id: In(dto.evidenceFileIds), entityType: FileEntityType.LINE_ITEM_EVIDENCE },
+        { entityId: response.id }
+      );
+    }
 
     // Update line item status
     if (dto.isDraft) {

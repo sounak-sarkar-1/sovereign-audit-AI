@@ -13,15 +13,18 @@ const clarifications_controller_1 = require("./clarifications.controller");
 const clarifications_service_1 = require("./clarifications.service");
 const clarification_request_entity_1 = require("../../database/entities/clarification-request.entity");
 const exception_request_entity_1 = require("../../database/entities/exception-request.entity");
+const clarification_response_entity_1 = require("../../database/entities/clarification-response.entity");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
+const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
 let ManagerClarificationsModule = class ManagerClarificationsModule {
 };
 exports.ManagerClarificationsModule = ManagerClarificationsModule;
 exports.ManagerClarificationsModule = ManagerClarificationsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([clarification_request_entity_1.ClarificationRequest, exception_request_entity_1.ExceptionRequest]),
+            typeorm_1.TypeOrmModule.forFeature([clarification_request_entity_1.ClarificationRequest, exception_request_entity_1.ExceptionRequest, clarification_response_entity_1.ClarificationResponse]),
             notifications_module_1.NotificationsModule,
+            audit_trail_module_1.AuditTrailModule,
         ],
         controllers: [clarifications_controller_1.ManagerClarificationsController],
         providers: [clarifications_service_1.ManagerClarificationsService],

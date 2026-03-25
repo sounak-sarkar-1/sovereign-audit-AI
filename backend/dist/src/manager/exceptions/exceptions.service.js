@@ -22,13 +22,15 @@ const audit_scope_line_item_entity_1 = require("../../database/entities/audit-sc
 const notifications_service_1 = require("../../shared/notifications/notifications.service");
 const notification_entity_1 = require("../../database/entities/notification.entity");
 const audit_trail_service_1 = require("../../shared/audit-trail/audit-trail.service");
+const exception_comment_entity_1 = require("../../database/entities/exception-comment.entity");
 let ManagerExceptionsService = ManagerExceptionsService_1 = class ManagerExceptionsService {
-    constructor(exceptionRepo, lineItemRepo, notificationsService, auditTrailService, dataSource) {
+    constructor(exceptionRepo, lineItemRepo, notificationsService, auditTrailService, dataSource, commentRepo) {
         this.exceptionRepo = exceptionRepo;
         this.lineItemRepo = lineItemRepo;
         this.notificationsService = notificationsService;
         this.auditTrailService = auditTrailService;
         this.dataSource = dataSource;
+        this.commentRepo = commentRepo;
         this.logger = new common_1.Logger(ManagerExceptionsService_1.name);
     }
     async findAll(auditId, status) {
@@ -131,16 +133,33 @@ let ManagerExceptionsService = ManagerExceptionsService_1 = class ManagerExcepti
         });
         return { message: 'Exception rejected successfully' };
     }
+    async getComments(exceptionId) {
+        return this.commentRepo.find({
+            where: { exceptionRequestId: exceptionId },
+            relations: ['author'],
+            order: { createdAt: 'ASC' },
+        });
+    }
+    async addComment(exceptionId, user, content) {
+        const comment = this.commentRepo.create({
+            exceptionRequestId: exceptionId,
+            authorId: user.id,
+            content,
+        });
+        return this.commentRepo.save(comment);
+    }
 };
 exports.ManagerExceptionsService = ManagerExceptionsService;
 exports.ManagerExceptionsService = ManagerExceptionsService = ManagerExceptionsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(exception_request_entity_1.ExceptionRequest)),
     __param(1, (0, typeorm_1.InjectRepository)(audit_scope_line_item_entity_1.AuditScopeLineItem)),
+    __param(5, (0, typeorm_1.InjectRepository)(exception_comment_entity_1.ExceptionComment)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         notifications_service_1.NotificationsService,
         audit_trail_service_1.AuditTrailService,
-        typeorm_2.DataSource])
+        typeorm_2.DataSource,
+        typeorm_2.Repository])
 ], ManagerExceptionsService);
 //# sourceMappingURL=exceptions.service.js.map

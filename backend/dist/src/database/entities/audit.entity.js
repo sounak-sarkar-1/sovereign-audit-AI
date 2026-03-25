@@ -21,6 +21,7 @@ var AuditStatus;
     AuditStatus["CLOSED"] = "closed";
     AuditStatus["REOPENED"] = "reopened";
     AuditStatus["DELETED"] = "deleted";
+    AuditStatus["ARCHIVED"] = "archived";
 })(AuditStatus || (exports.AuditStatus = AuditStatus = {}));
 let Audit = class Audit {
 };

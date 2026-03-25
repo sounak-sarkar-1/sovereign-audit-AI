@@ -12,4 +12,6 @@ export declare class ManagerExceptionsController {
     reject(exId: string, dto: RejectExceptionDto, manager: User): Promise<{
         message: string;
     }>;
+    getComments(exId: string): Promise<import("../../database/entities/exception-comment.entity").ExceptionComment[]>;
+    addComment(exId: string, content: string, user: User): Promise<import("../../database/entities/exception-comment.entity").ExceptionComment>;
 }

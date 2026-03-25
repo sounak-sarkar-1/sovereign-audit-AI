@@ -3,4 +3,5 @@ export declare class UpdateResponseDto {
     selectedOptionId?: string;
     comment?: string;
     isDraft: boolean;
+    evidenceFileIds?: string[];
 }

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import api from '@/lib/api';
 import { UserRole, UserStatus } from '@/types/user';
-import type { User, PaginatedResponse } from '@/types/user';
+import type { User } from '@/types/user';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -65,7 +65,7 @@ const UsersList: React.FC = () => {
   const [userToEdit, setUserToEdit] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
-  const { data, isLoading } = useQuery<PaginatedResponse<User>>({
+  const { data: rawData, isLoading } = useQuery<any>({
     queryKey: ['users', { page, search, roleFilter, statusFilter }],
     queryFn: async () => {
       const params: any = { page, limit: 10 };
@@ -76,6 +76,10 @@ const UsersList: React.FC = () => {
       return response.data;
     },
   });
+
+  const responseData = rawData?.data || { data: [], meta: null };
+  const users = (responseData as any)?.data || [];
+  const meta = (responseData as any)?.meta;
 
   const deleteMutation = useMutation({
     mutationFn: (userId: string) => api.delete(`/admin/users/${userId}`),
@@ -187,14 +191,14 @@ const UsersList: React.FC = () => {
                   Loading users...
                 </TableCell>
               </TableRow>
-            ) : data?.data.length === 0 ? (
+            ) : users.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">
                   No users found.
                 </TableCell>
               </TableRow>
             ) : (
-              data?.data.map((user) => (
+              users.map((user: User) => (
                 <TableRow key={user.id} className="hover:bg-muted/30">
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -243,10 +247,10 @@ const UsersList: React.FC = () => {
           </TableBody>
         </Table>
 
-        {data && data.meta.totalPages > 1 && (
+        {meta && meta.totalPages > 1 && (
           <div className="p-4 border-t flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, data.meta.total)} of {data.meta.total} users
+              Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, meta.total)} of {meta.total} users
             </div>
             <div className="flex gap-2">
               <Button 
@@ -260,7 +264,7 @@ const UsersList: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
-                disabled={page === data.meta.totalPages}
+                disabled={page === meta.totalPages}
                 onClick={() => setPage(p => p + 1)}
               >
                 Next

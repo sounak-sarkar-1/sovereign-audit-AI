@@ -15,6 +15,8 @@ const audit_scope_line_item_entity_1 = require("../../database/entities/audit-sc
 const line_item_response_entity_1 = require("../../database/entities/line-item-response.entity");
 const audit_business_unit_entity_1 = require("../../database/entities/audit-business-unit.entity");
 const auditor_line_item_assignment_entity_1 = require("../../database/entities/auditor-line-item-assignment.entity");
+const line_item_comment_entity_1 = require("../../database/entities/line-item-comment.entity");
+const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
 let AuditorScopeModule = class AuditorScopeModule {
 };
 exports.AuditorScopeModule = AuditorScopeModule;
@@ -26,6 +28,8 @@ exports.AuditorScopeModule = AuditorScopeModule = __decorate([
                 line_item_response_entity_1.LineItemResponse,
                 audit_business_unit_entity_1.AuditBusinessUnit,
                 auditor_line_item_assignment_entity_1.AuditorLineItemAssignment,
+                line_item_comment_entity_1.LineItemComment,
+                uploaded_file_entity_1.UploadedFile,
             ]),
         ],
         controllers: [scope_controller_1.AuditorScopeController],

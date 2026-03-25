@@ -10,6 +10,7 @@ import {
   Info,
   AlertCircle
 } from 'lucide-react';
+import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -74,9 +75,8 @@ const NewAuditForm = () => {
       if (!formData.clientId) return [];
       // Assuming there's a way to get BUs for a client
       // I'll call a hypothetical endpoint or use the detail if available
-      const response = await fetch(`/api/v1/admin/clients/${formData.clientId}/business-units`);
-      const data = await response.json();
-      return data;
+      const response = await api.get(`/admin/clients/${formData.clientId}/business-units`);
+      return response.data.data || response.data;
     },
     enabled: !!formData.clientId,
   });

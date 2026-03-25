@@ -21,17 +21,23 @@ const exceptional_requests_module_1 = require("./admin/exceptional-requests/exce
 const mappings_module_1 = require("./admin/mappings/mappings.module");
 const templates_module_1 = require("./admin/templates/templates.module");
 const users_module_1 = require("./admin/users/users.module");
+const summary_module_1 = require("./admin/summary/summary.module");
 const audits_module_2 = require("./auditor/audits/audits.module");
 const exceptions_module_1 = require("./auditor/exceptions/exceptions.module");
 const scope_module_1 = require("./auditor/scope/scope.module");
+const search_module_1 = require("./auditor/search/search.module");
+const chat_module_1 = require("./auditor/chat/chat.module");
+const chat_module_2 = require("./shared/chat/chat.module");
 const audits_module_3 = require("./client/audits/audits.module");
 const clarifications_module_1 = require("./client/clarifications/clarifications.module");
 const insights_module_1 = require("./client/insights/insights.module");
 const reports_module_1 = require("./client/reports/reports.module");
-const search_module_1 = require("./client/search/search.module");
+const search_module_2 = require("./client/search/search.module");
+const corrective_actions_module_1 = require("./client/corrective-actions/corrective-actions.module");
 const assignments_module_1 = require("./manager/assignments/assignments.module");
 const audits_module_4 = require("./manager/audits/audits.module");
 const auditors_module_1 = require("./manager/auditors/auditors.module");
+const chat_module_3 = require("./manager/chat/chat.module");
 const clarifications_module_2 = require("./manager/clarifications/clarifications.module");
 const exceptions_module_2 = require("./manager/exceptions/exceptions.module");
 const reports_module_2 = require("./manager/reports/reports.module");
@@ -56,6 +62,9 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             tenant_module_1.TenantModule,
             audit_trail_module_1.AuditTrailModule,
+            notifications_module_1.NotificationsModule,
+            files_module_1.FilesModule,
+            ai_jobs_module_1.AiJobsModule,
             ai_models_module_1.AdminAiModelsModule,
             audits_module_1.AdminAuditsModule,
             business_units_module_1.AdminBusinessUnitsModule,
@@ -63,25 +72,29 @@ exports.AppModule = AppModule = __decorate([
             mappings_module_1.AdminMappingsModule,
             templates_module_1.TemplatesModule,
             users_module_1.AdminUsersModule,
+            summary_module_1.AdminSummaryModule,
             audits_module_2.AuditorAuditsModule,
             exceptions_module_1.AuditorExceptionsModule,
             scope_module_1.AuditorScopeModule,
+            search_module_1.AuditorSearchModule,
+            chat_module_1.AuditorChatModule,
+            chat_module_2.ChatModule,
             audits_module_3.ClientAuditsModule,
             clarifications_module_1.ClientClarificationsModule,
             insights_module_1.ClientInsightsModule,
             reports_module_1.ClientReportsModule,
-            search_module_1.ClientSearchModule,
+            search_module_2.ClientSearchModule,
+            corrective_actions_module_1.ClientCorrectiveActionsModule,
             assignments_module_1.ManagerAssignmentsModule,
             auditors_module_1.ManagerAuditorsModule,
+            chat_module_3.ManagerChatModule,
             audits_module_4.ManagerAuditsModule,
             clarifications_module_2.ManagerClarificationsModule,
             exceptions_module_2.ManagerExceptionsModule,
             reports_module_2.ManagerReportsModule,
             scope_module_2.ManagerScopeModule,
             exceptional_requests_module_2.ManagerExceptionalRequestsModule,
-            ai_jobs_module_1.AiJobsModule,
-            files_module_1.FilesModule,
-            notifications_module_1.NotificationsModule,
+            ManagerSettingsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

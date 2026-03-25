@@ -9,6 +9,8 @@ import { Audit } from '../../database/entities/audit.entity';
 import { NotificationsModule } from '../../shared/notifications/notifications.module';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 import { UploadedFile } from '../../database/entities/uploaded-file.entity';
+import { ExceptionComment } from '../../database/entities/exception-comment.entity';
+import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { UploadedFile } from '../../database/entities/uploaded-file.entity';
       AuditScopeLineItem,
       Audit,
       UploadedFile,
+      ExceptionComment,
+      AuditBusinessUnit,
     ]),
     NotificationsModule,
     AuditTrailModule,

@@ -49,6 +49,12 @@ let AuditorAuditsController = class AuditorAuditsController {
     createException(id, dto, user) {
         return this.exceptionsService.create(id, user, dto);
     }
+    getScopeItemComments(liId) {
+        return this.scopeService.getComments(liId);
+    }
+    addScopeItemComment(liId, content, user) {
+        return this.scopeService.addComment(liId, user, content);
+    }
 };
 exports.AuditorAuditsController = AuditorAuditsController;
 __decorate([
@@ -103,6 +109,22 @@ __decorate([
         user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], AuditorAuditsController.prototype, "createException", null);
+__decorate([
+    (0, common_1.Get)(':id/scope/:liId/comments'),
+    __param(0, (0, common_1.Param)('liId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuditorAuditsController.prototype, "getScopeItemComments", null);
+__decorate([
+    (0, common_1.Post)(':id/scope/:liId/comments'),
+    __param(0, (0, common_1.Param)('liId')),
+    __param(1, (0, common_1.Body)('content')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, user_entity_1.User]),
+    __metadata("design:returntype", void 0)
+], AuditorAuditsController.prototype, "addScopeItemComment", null);
 exports.AuditorAuditsController = AuditorAuditsController = __decorate([
     (0, common_1.Controller)('auditor/audits'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),

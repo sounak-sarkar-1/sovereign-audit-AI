@@ -1,0 +1,499 @@
+SOVEREIGN AUDIT AI
+UI Screen Specification
+Auditor Persona  |  Dashboard · Scope Workspace · Responses · Exceptions · Submit
+UI Library
+Shadcn/ui + Tailwind CSS
+Navigation
+Collapsible left sidebar + top header bar
+Dark Mode
+Supported via Tailwind dark: prefix + theme toggle
+Primary Colour
+#4f2d7f
+Dark Colour
+#2b144d
+Accent Colour
+#a06dff
+Background (Light)
+#f2f0ee
+Background (Mid)
+#e0dcd7
+Background (Muted)
+#ccc4bd
+Spec Version
+v1.0 — Full Specification
+Table of Contents
+1. Auditor Sidebar Navigation
+Icon
+Label
+Route
+Badge
+LayoutDashboard
+My Audits
+/auditor
+—
+ClipboardCheck
+My Work
+/auditor/work
+Open items count
+AlertOctagon
+My Exceptions
+/auditor/exceptions
+Returned count badge
+2. Auditor Dashboard
+SCR-AUD-001 — My Audits Dashboard
+Screen ID
+SCR-AUD-001
+Route
+/auditor
+Persona
+Auditor
+Purpose
+Overview of all audit engagements assigned to the auditor. Shows progress, pending items, and co-auditor status.
+Layout
+Top: 3 KPI cards. Below: audit engagement cards in a grid (2-col desktop, 1-col mobile). Each card shows per-audit progress and quick navigation.
+KPI Cards
+Card
+Data Source
+Behaviour
+Total Open Items
+Count of not_started + draft_saved + returned items across all active audits
+Click → /auditor/work filtered by open
+Items Submitted Today
+line_item_responses where submitted_at = today
+Click → /auditor/work filtered by today
+Returned Exceptions
+exception_requests where status=rejected for this auditor
+Red if > 0; click → /auditor/exceptions
+Audit Engagement Card Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Audit name
+Text (bold, link)
+audit.name
+Click → /auditor/audits/:auditId
+Client name
+Text (muted)
+client.full_name
+—
+My progress bar
+Progress bar (primary colour)
+Own submitted / own total assigned
+Label: 'My Progress: N%'
+Co-auditor progress
+Progress bar (muted/accent)
+Co-auditor completion % only
+Label: 'Team Progress: N%'; no individual co-auditor names shown separately
+My BUs list
+Tag chips
+auditor_audit_assignments
+Compact list of assigned BU names
+Open items count
+Badge
+Own not_started + returned items
+Destructive badge if > 0
+Due date
+Text with calendar icon
+expected_completion_date
+Red if overdue
+Continue Working button
+Button (primary, on card)
+—
+Navigates to first open item in /auditor/audits/:id/scope
+States
+State
+Trigger
+UI Behaviour
+Loading
+Page mount
+Skeleton cards with pulse animation
+No assignments
+Auditor has no active assignments
+Illustration + 'No audits assigned to you yet. Your manager will assign audits when ready.'
+All complete
+All assigned items submitted/excepted
+Card shows green checkmark: 'All items submitted. Awaiting manager review.'
+3. Audit Scope Workspace
+SCR-AUD-002 — Audit Scope Workspace
+Screen ID
+SCR-AUD-002
+Route
+/auditor/audits/:auditId
+Persona
+Auditor
+Purpose
+Main working screen. Shows assigned scope line items grouped by BU. Auditor navigates, fills responses, uploads documents, raises exceptions.
+Layout
+Two-panel layout. Left sidebar (250px, collapsible): BU list with per-BU progress rings. Main area: line items list for selected BU. Each line item is a collapsible card. Top header shows audit name, client, overall progress, and Submit to Manager button (enabled only when eligible).
+Left BU Navigation Panel
+Component
+Type
+Data Source / API
+Behaviour / Notes
+BU list items
+List with progress rings
+auditor_audit_assignments
+Each BU: name, circular mini-progress ring (own items), item count badge
+Co-auditor section (per BU)
+Expandable sub-list
+auditor_audit_assignments (others)
+Shows other auditor names + their completion % for the BU (no response values)
+Active BU indicator
+Left border accent
+Client state (selected BU)
+Highlighted with accent colour left border
+Line Item Card Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Item header
+Card header
+audit_scope_line_items
+Item name, status badge, Optional badge (if is_optional=true), expand chevron
+Item description
+Expandable text
+line_item.description
+Shown when card is expanded
+Response area
+Conditional input
+line_item.input_method
+free_text: multi-line Textarea. multiple_choice: RadioGroup or Select
+Comment field
+Textarea (optional)
+—
+Always shown below response area; placeholder: 'Add a note or comment (optional)'
+Attached documents list
+File chips row
+uploaded_files for this line item
+Each file: name chip with download + remove icon (remove only before submission)
+Attach Document button
+Button (ghost + PaperClip icon)
+—
+Opens file picker; triggers SCR-AUD-004
+Raise Exception button
+Button (ghost + AlertTriangle icon, destructive)
+—
+Opens exception form inline (SCR-AUD-005); not shown if item already has open exception
+Save Draft button
+Button (outline)
+PUT .../response (isDraft=true)
+Saves without locking; shown when response has unsaved changes
+Submit Item button
+Button (primary)
+PUT .../response (isDraft=false)
+Locks response; triggers status→submitted. Confirm dialog for final items.
+Item Status Indicators
+Status
+Badge Colour
+Card Background
+Available Actions
+Not Started
+Muted grey
+White
+Enter response, Raise Exception
+Draft Saved
+Amber
+Warm tint
+Continue editing, Submit, Raise Exception
+Submitted
+Green
+Green light tint
+View only (locked); response shown read-only
+Exception Pending
+Orange
+Orange light tint
+View exception details; no editing
+Exception Approved
+Blue
+Blue light tint
+View only; exception justification shown
+Returned
+Red
+Red light tint
+Re-enter response + manager's rejection comment shown prominently
+States
+State
+Trigger
+UI Behaviour
+Loading
+BU selected / page mount
+Skeleton line item cards
+Item returned
+Exception rejected by manager
+Red banner on card top: 'Exception Rejected — [Manager's rejection comment]'. Response area re-enabled.
+Unsaved changes warning
+User navigates to another BU with unsaved response
+Toast: 'You have unsaved changes. Save draft before leaving?' with Save Draft / Discard buttons
+SCR-AUD-003 — Free Text Response
+Screen ID
+SCR-AUD-003
+Route
+Inline within SCR-AUD-002
+Persona
+Auditor
+Purpose
+Enter a free-text response for a line item. Supports draft save and final submission.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Response textarea
+Textarea (min-height 120px, auto-expand)
+line_item_responses.response_text
+Placeholder: 'Enter your response here...'; character count shown at bottom right
+Auto-save indicator
+Small text (muted)
+Client state
+Shows 'Draft saved [time]' after auto-save (every 30s if content changed)
+Character count
+Text (muted, right-aligned)
+Client state
+e.g. '245 characters'; no hard limit but visible
+Validations
+Field
+Rule
+Error Message
+Response text
+Required on Submit (not on Save Draft); min 10 chars
+Please enter a response before submitting
+SCR-AUD-004 — Multiple Choice Response
+Screen ID
+SCR-AUD-004
+Route
+Inline within SCR-AUD-002
+Persona
+Auditor
+Purpose
+Select a single option from manager-defined choices for a multiple-choice line item.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Option list
+RadioGroup
+audit_scope_line_item_options
+Each option rendered as a radio button with label; vertical list
+Selected indicator
+Radio selected state
+line_item_responses.selected_option_id
+Pre-selected if draft response exists
+Validations
+Field
+Rule
+Error Message
+Selected option
+Required on Submit; one option must be selected
+Please select an option before submitting
+4. Document Upload
+SCR-AUD-005 — Document Upload
+Screen ID
+SCR-AUD-005
+Route
+Inline panel within SCR-AUD-002 (line item card)
+Persona
+Auditor
+Purpose
+Attach one or more supporting documents to a line item. Available before submission.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+File dropzone
+Compact dropzone
+—
+Opens on 'Attach Document' click; accepts JPG, PNG, PDF, DOCX; max 10 MB per file
+Upload progress bar
+Progress bar per file
+Upload progress event
+Shown while file uploads to server
+Uploaded file chips
+File chip list
+GET uploaded_files for line item
+Each chip: file icon, name (truncated), size, download icon, remove icon
+Remove file button
+× icon on chip
+DELETE /auditor/audits/:id/scope/:liId/documents/:fileId
+Only available before item is submitted; confirm inline
+States
+State
+Trigger
+UI Behaviour
+Uploading
+File selected/dropped
+Progress bar shown; other uploads blocked until complete
+Upload error — size
+File > 10 MB
+Red inline error: 'File exceeds the 10 MB limit'
+Upload error — type
+Unsupported MIME type
+Red inline error: 'Only JPG, PNG, PDF, and DOCX files are accepted'
+Item submitted (locked)
+status=submitted
+Remove buttons hidden; files shown as read-only download chips
+5. Exception Request
+SCR-AUD-006 — Raise Exception Inline Form
+Screen ID
+SCR-AUD-006
+Route
+Inline expansion within line item card (SCR-AUD-002)
+Persona
+Auditor
+Purpose
+Raise a formal exception against a line item when unable to complete it. Requires justification + evidence.
+Layout
+The line item card expands downward when 'Raise Exception' is clicked. The exception form replaces the response area. A warning banner reminds the auditor that exceptions require manager approval.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Warning banner
+Alert (warning)
+—
+'Raising an exception will notify your manager and pause this item pending their decision.'
+Justification textarea
+Textarea
+exception_requests.justification
+Required; min 20 chars; placeholder: 'Explain why this item cannot be completed...'
+Evidence upload zone
+File dropzone
+uploaded_files (entity_type=exception_evidence)
+Required; min 1 file; same file type/size rules as document upload
+Evidence file chips
+File chip list
+Client state (pre-submit)
+Shows files queued for upload
+Submit Exception button
+Button (destructive primary)
+POST .../scope/:liId/exceptions
+Disabled until justification valid + at least 1 evidence file uploaded
+Cancel button
+Button (ghost)
+—
+Collapses form; returns to normal item view
+States
+State
+Trigger
+UI Behaviour
+Default
+Form opened
+Empty fields; Submit disabled
+Submitting
+Submit Exception clicked
+Spinner on button; form locked
+Success
+201 from API
+Form collapses; item card status badge → 'Exception Pending'; toast: 'Exception raised. Your manager has been notified.'
+Already has open exception
+Raise Exception clicked on item with pending exception
+Button hidden; item card shows 'Exception Pending' with view-only justification + evidence
+Validations
+Field
+Rule
+Error Message
+Justification
+Required; min 20 chars; max 2000 chars
+Please provide a justification of at least 20 characters
+Evidence file
+Required; min 1 file uploaded
+Please upload at least one evidence document
+6. Submit to Manager
+SCR-AUD-007 — Submit to Manager Confirmation
+Screen ID
+SCR-AUD-007
+Route
+Modal dialog triggered from SCR-AUD-002
+Persona
+Auditor
+Purpose
+Explicit final submission action. Available only when all mandatory assigned items are in terminal state.
+Layout
+Triggered by the sticky 'Submit to Manager' button in the audit workspace header. Opens an AlertDialog modal — not a full page.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Completion summary
+Read-only checklist in modal
+Line item status counts
+Shows: N submitted, N exception approved, N optional items skipped. All mandatory items must show submitted or exception approved.
+Outstanding items warning
+Alert (destructive) in modal
+—
+If any mandatory items are not terminal: 'N items are still incomplete. Please complete or raise exceptions before submitting.' Modal submit button disabled.
+Confirm Submit button
+Button (primary)
+POST /auditor/audits/:id/submit
+Enabled only when all mandatory items terminal
+Cancel button
+Button (ghost)
+—
+Closes modal; returns to workspace
+States
+State
+Trigger
+UI Behaviour
+Submit button disabled (workspace)
+Not all mandatory items terminal
+Button greyed out; tooltip: 'Complete all mandatory items to submit'
+Submit button enabled (workspace)
+All mandatory items terminal
+Button turns primary; tooltip: 'Submit your work to the manager'
+Modal — incomplete items
+Some mandatory items not terminal
+Incomplete items listed in red; Confirm Submit disabled
+Modal — all complete
+All mandatory items terminal
+Green checklist summary; Confirm Submit enabled
+Success
+200 from API
+Modal closes; toast: 'Work submitted to your manager.'; workspace refreshes; all items locked
+7. My Exceptions View
+SCR-AUD-008 — My Exceptions
+Screen ID
+SCR-AUD-008
+Route
+/auditor/exceptions
+Persona
+Auditor
+Purpose
+Centralised view of all exception requests raised by this auditor across all audits, with current status.
+Layout
+Filter tabs: All | Pending | Approved | Rejected/Returned. Card list below. Returned/Rejected cards highlighted prominently — these require auditor action.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Exception card
+Card
+exception_requests for this auditor
+Line Item name, Audit name (link), BU name, Status badge, Justification preview, Raised date
+Manager comment (on rejected)
+Alert (destructive) on card
+exception_requests.manager_comment
+Shown prominently on rejected exceptions: 'Manager's feedback: [comment]'
+Go to Item button (on rejected)
+Button (primary, on rejected cards)
+—
+Deep-links directly to the returned line item in the audit workspace
+Evidence files chips
+Collapsed file list
+uploaded_files
+Click to expand and download
+States
+State
+Trigger
+UI Behaviour
+Returned tab
+Exceptions with status=rejected
+Cards have red left border and destructive badge; 'Action Required' label visible
+Empty tab
+No exceptions in selected status
+Muted illustration + 'No exceptions in this category'

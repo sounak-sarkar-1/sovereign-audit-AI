@@ -27,6 +27,18 @@ let AdminMappingsService = AdminMappingsService_1 = class AdminMappingsService {
         this.auditTrailService = auditTrailService;
         this.logger = new common_1.Logger(AdminMappingsService_1.name);
     }
+    async getManagerAuditorMappings() {
+        return await this.managerAuditorRepo.find({
+            relations: ['manager', 'auditor'],
+            order: { createdAt: 'DESC' }
+        });
+    }
+    async getManagerClientMappings() {
+        return await this.managerClientRepo.find({
+            relations: ['manager', 'client'],
+            order: { createdAt: 'DESC' }
+        });
+    }
     async addManagerAuditorMapping(dto, actor) {
         const existing = await this.managerAuditorRepo.findOne({
             where: { managerId: dto.managerId, auditorId: dto.targetId }

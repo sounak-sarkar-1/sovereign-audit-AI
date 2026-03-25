@@ -24,6 +24,12 @@ let AdminMappingsController = class AdminMappingsController {
     constructor(service) {
         this.service = service;
     }
+    async getManagerAuditorMappings() {
+        return await this.service.getManagerAuditorMappings();
+    }
+    async getManagerClientMappings() {
+        return await this.service.getManagerClientMappings();
+    }
     async addManagerAuditor(dto, req) {
         return await this.service.addManagerAuditorMapping(dto, {
             id: req.user.id,
@@ -54,6 +60,18 @@ let AdminMappingsController = class AdminMappingsController {
     }
 };
 exports.AdminMappingsController = AdminMappingsController;
+__decorate([
+    (0, common_1.Get)('manager-auditor'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminMappingsController.prototype, "getManagerAuditorMappings", null);
+__decorate([
+    (0, common_1.Get)('manager-client'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminMappingsController.prototype, "getManagerClientMappings", null);
 __decorate([
     (0, common_1.Post)('manager-auditor'),
     __param(0, (0, common_1.Body)()),

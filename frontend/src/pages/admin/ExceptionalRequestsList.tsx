@@ -21,12 +21,14 @@ export default function ExceptionalRequestsList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
 
-  const { data: requests, isLoading, refetch } = useQuery({
+  const { data: requestsData, isLoading, refetch } = useQuery({
     queryKey: ['exceptional-requests', activeTab],
     queryFn: () => exceptionalRequestService.getRequests(activeTab),
   });
 
-  const filteredRequests = requests?.filter((req: any) => 
+  const requests = Array.isArray(requestsData) ? requestsData : (requestsData as any)?.data || [];
+
+  const filteredRequests = requests.filter((req: any) => 
     req.audit?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     req.requester?.fullName.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -44,18 +46,18 @@ export default function ExceptionalRequestsList() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <AlertTriangle className="text-accent" />
+          <h1 className="text-2xl font-bold text-dark dark:text-white flex items-center gap-2">
+            <AlertTriangle className="text-primary dark:text-accent" />
             Exceptional Requests
           </h1>
-          <p className="text-white/60">Review and approve audit deletion or reopening requests from managers.</p>
+          <p className="text-bg-muted font-medium">Review and approve audit deletion or reopening requests from managers.</p>
         </div>
       </div>
 
       <div className="flex flex-col gap-6">
         {/* Tabs & Search */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex p-1 bg-white/5 rounded-lg border border-white/10">
+          <div className="flex p-1 bg-bg-warm dark:bg-white/5 rounded-lg border border-bg-mid dark:border-white/10">
             {(['pending', 'approved', 'rejected'] as const).map((tab) => (
               <button
                 key={tab}
@@ -63,8 +65,8 @@ export default function ExceptionalRequestsList() {
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-medium transition-all capitalize",
                   activeTab === tab 
-                    ? "bg-accent text-white shadow-lg" 
-                    : "text-white/60 hover:text-white hover:bg-white/5"
+                    ? "bg-primary dark:bg-accent text-white shadow-lg" 
+                    : "text-bg-muted hover:text-dark dark:text-white/60 dark:hover:text-white hover:bg-white/5"
                 )}
               >
                 {tab}
@@ -73,12 +75,12 @@ export default function ExceptionalRequestsList() {
           </div>
 
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-bg-muted" size={18} />
             <Input
               placeholder="Search audits or managers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30"
+              className="pl-10 bg-white dark:bg-white/5 border-bg-mid dark:border-white/10 text-dark dark:text-white placeholder:text-bg-muted"
             />
           </div>
         </div>
@@ -110,12 +112,12 @@ export default function ExceptionalRequestsList() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-white font-semibold">{req.audit?.name}</h3>
-                        <Badge variant="outline" className="capitalize bg-white/5 border-white/10 text-white/70">
+                        <h3 className="text-dark dark:text-white font-semibold">{req.audit?.name}</h3>
+                        <Badge variant="outline" className="capitalize bg-bg-warm dark:bg-white/5 border-bg-mid dark:border-white/10 text-bg-muted dark:text-white/70">
                           {req.actionType}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-white/50">
+                      <div className="flex items-center gap-4 text-sm text-bg-muted">
                         <span>By: {req.requester?.fullName}</span>
                         <span>•</span>
                         <span>{format(new Date(req.createdAt), 'MMM d, yyyy')}</span>
@@ -127,19 +129,19 @@ export default function ExceptionalRequestsList() {
                       <div className="flex items-center gap-1.5 text-sm font-medium capitalize mb-1">
                         {getStatusIcon(req.status)}
                         <span className={cn(
-                          req.status === 'pending' ? "text-amber-500" :
-                          req.status === 'approved' ? "text-green-500" : "text-red-500"
+                          req.status === 'pending' ? "text-amber-500 font-bold" :
+                          req.status === 'approved' ? "text-green-500 font-bold" : "text-red-500 font-bold"
                         )}>
                           {req.status}
                         </span>
                       </div>
                       {req.resolvedAt && (
-                        <span className="text-[10px] text-white/30 uppercase tracking-wider">
+                        <span className="text-[10px] text-bg-muted uppercase tracking-wider font-bold">
                           Resolved {format(new Date(req.resolvedAt), 'MMM d')}
                         </span>
                       )}
                     </div>
-                    <ChevronRight className="text-white/20 group-hover:text-accent transition-colors" />
+                    <ChevronRight className="text-bg-mid group-hover:text-primary dark:group-hover:text-accent transition-colors" />
                   </div>
                 </div>
               </Card>

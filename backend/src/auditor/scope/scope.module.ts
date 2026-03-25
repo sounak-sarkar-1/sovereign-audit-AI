@@ -7,6 +7,8 @@ import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-ite
 import { LineItemResponse } from '../../database/entities/line-item-response.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { AuditorLineItemAssignment } from '../../database/entities/auditor-line-item-assignment.entity';
+import { LineItemComment } from '../../database/entities/line-item-comment.entity';
+import { UploadedFile } from '../../database/entities/uploaded-file.entity';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { AuditorLineItemAssignment } from '../../database/entities/auditor-line-
       LineItemResponse,
       AuditBusinessUnit,
       AuditorLineItemAssignment,
+      LineItemComment,
+      UploadedFile,
     ]),
   ],
   controllers: [AuditorScopeController],

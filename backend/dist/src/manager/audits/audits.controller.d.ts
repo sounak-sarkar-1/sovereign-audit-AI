@@ -64,6 +64,7 @@ export declare class ManagerAuditsController {
         updatedAt: Date;
         deletedAt: Date;
     }>;
+    getTrail(id: string): Promise<import("../../database/entities/audit-trail-log.entity").AuditTrailLog[]>;
     update(id: string, updateDto: UpdateAuditDto, req: any): Promise<{
         businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
@@ -99,4 +100,21 @@ export declare class ManagerAuditsController {
         deletedAt: Date;
     }>;
     getClients(req: any): Promise<import("../../database/entities/user.entity").User[]>;
+    archive(id: string, req: any): Promise<{
+        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
+        id: string;
+        name: string;
+        clientId: string;
+        client: import("../../database/entities/user.entity").User;
+        managerId: string;
+        manager: import("../../database/entities/user.entity").User;
+        status: AuditStatus;
+        description: string;
+        startDate: Date;
+        expectedCompletionDate: Date;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date;
+    }>;
 }

@@ -20,8 +20,8 @@ __decorate([
     __metadata("design:type", String)
 ], RespondToClarificationDto.prototype, "message", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], RespondToClarificationDto.prototype, "attachmentFileId", void 0);
+    IsUUID('4', { each: true }),
+    __metadata("design:type", Array)
+], RespondToClarificationDto.prototype, "attachmentFileIds", void 0);
 //# sourceMappingURL=respond-clarification.dto.js.map

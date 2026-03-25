@@ -25,7 +25,7 @@ exports.ClientClarificationsModule = ClientClarificationsModule = __decorate([
         ],
         controllers: [clarifications_controller_1.ClientClarificationsController],
         providers: [clarifications_service_1.ClientClarificationsService],
-        exports: [clarifications_service_1.ClientClarificationsService],
+        exports: [clarifications_service_1.ClientClarificationsService]
     })
 ], ClientClarificationsModule);
 //# sourceMappingURL=clarifications.module.js.map

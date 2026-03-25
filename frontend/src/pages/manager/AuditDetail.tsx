@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Settings, 
   Play, 
@@ -11,8 +11,12 @@ import {
   Clock,
   MoreVertical,
   AlertTriangle,
-  User as UserIcon
+  History,
+  User as UserIcon,
+  Archive,
+  MessageSquare
 } from 'lucide-react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   Card, 
@@ -21,8 +25,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { auditService } from '@/services/auditService';
+import { managerService } from '@/services/managerService';
 import { AuditStatus } from '@/types/audit';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 import { 
   Tooltip, 
   TooltipContent, 
@@ -33,10 +39,21 @@ import ScopeTab from './ScopeTab';
 import AssignmentsTab from './AssignmentsTab';
 import ExceptionsTab from './ExceptionsTab';
 import ReportsTab from './ReportsTab';
+import AuditTrail from './AuditTrail';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetDescription,
+} from "@/components/ui/sheet";
 
 const AuditDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showTrail, setShowTrail] = React.useState(false);
+  const queryClient = useQueryClient();
 
   const { data: audit, isLoading } = useQuery({
     queryKey: ['audit', id],
@@ -44,11 +61,31 @@ const AuditDetail = () => {
     enabled: !!id,
   });
 
+  const archiveMutation = useMutation({
+    mutationFn: (id: string) => managerService.archiveAudit(id),
+    onSuccess: () => {
+      toast.success('Audit archived successfully');
+      queryClient.invalidateQueries({ queryKey: ['audit', id] });
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to archive audit');
+    }
+  });
+
+  const startMutation = useMutation({
+    mutationFn: (id: string) => auditService.startAudit(id),
+    onSuccess: () => {
+      toast.success('Audit started successfully');
+      queryClient.invalidateQueries({ queryKey: ['audit', id] });
+    },
+  });
+
   if (isLoading) return <div className="p-12 text-center">Loading audit details...</div>;
   if (!audit) return <div className="p-12 text-center">Audit not found</div>;
 
   const isDraft = audit.status === AuditStatus.DRAFT;
   const canStart = isDraft && (audit.assignments?.length || 0) > 0;
+  const canArchive = audit.status === AuditStatus.CLOSED || audit.status === 'deleted' || audit.status === 'archived';
 
   const getStatusVariant = (status: AuditStatus) => {
     switch (status) {
@@ -87,7 +124,8 @@ const AuditDetail = () => {
                   <span>
                     <Button
                       className="rounded-full shadow-elevated"
-                      disabled={!canStart}
+                      disabled={!canStart || startMutation.isPending}
+                      onClick={() => startMutation.mutate(id!)}
                     >
                       <Play className="mr-2 h-4 w-4" /> Start Audit
                     </Button>
@@ -101,8 +139,25 @@ const AuditDetail = () => {
               </Tooltip>
             </TooltipProvider>
           )}
+
+          {canArchive && audit.status !== 'archived' && (
+             <Button 
+                variant="outline" 
+                className="rounded-full border-bg-mid hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
+                onClick={() => archiveMutation.mutate(id!)}
+                disabled={archiveMutation.isPending}
+             >
+                <Archive className="mr-2 h-4 w-4" /> Archive Engagement
+             </Button>
+          )}
+
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="rounded-full h-9 px-3 border-bg-mid">
+            <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full h-9 px-3 border-bg-mid"
+                onClick={() => navigate('/manager/settings')}
+            >
               <Settings className="mr-2 h-4 w-4" /> Settings
             </Button>
             <Button variant="outline" size="icon" className="rounded-full w-9 h-9 border-bg-mid">
@@ -137,13 +192,21 @@ const AuditDetail = () => {
             </TabsContent>
 
             <TabsContent value="interactions" className="mt-0">
-               <Card className="flex flex-col items-center justify-center py-20 text-center">
-                 <div className="w-16 h-16 bg-bg-warm dark:bg-[#1a0d35] rounded-full flex items-center justify-center mb-4 text-bg-muted">
-                    <Users size={32} />
-                 </div>
-                 <h3 className="text-sm font-medium text-dark dark:text-bg-mid">Interactions Hub</h3>
-                 <p className="text-xs text-bg-muted mt-1 max-w-[240px]">Direct client communications and clarification threads will appear here.</p>
-               </Card>
+                <Card className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                     <MessageSquare size={32} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-dark">Interactions Hub</h3>
+                    <p className="text-xs text-muted-foreground max-w-[280px]">Collaborate with the client and audit team in real-time.</p>
+                  </div>
+                  <Button 
+                    className="rounded-full bg-primary hover:bg-primary/90 shadow-sm"
+                    onClick={() => navigate(`/manager/chats/${id}`)}
+                  >
+                    Open Engagement Chat
+                  </Button>
+                </Card>
             </TabsContent>
 
             <TabsContent value="report" className="mt-0">
@@ -158,57 +221,57 @@ const AuditDetail = () => {
 
         {/* Right Panel: Summary */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="p-6">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-bg-muted mb-6">Audit Summary</h3>
+          <Card className="p-6 shadow-card border-none bg-white">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-6">Audit Summary</h3>
             
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="flex justify-between items-end">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-bg-muted">Overall Progress</span>
-                  <span className="text-lg font-bold text-dark dark:text-white leading-none">{audit.completionPercentage || 0}%</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Overall Progress</span>
+                  <span className="text-lg font-bold text-dark leading-none">{audit.completionPercentage || 0}%</span>
                 </div>
-                <Progress value={audit.completionPercentage || 0} className="h-2" />
+                <Progress value={audit.completionPercentage || 0} className="h-2 bg-muted/30" />
               </div>
 
-              <div className="h-px bg-bg-mid dark:bg-[#3d2a5a]" />
+              <div className="h-px bg-muted/20" />
 
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-bg-warm dark:bg-[#1a0d35] flex items-center justify-center shrink-0">
-                    <UserIcon className="h-5 w-5 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 text-primary">
+                    <UserIcon className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-bg-muted uppercase font-bold tracking-tight">Client Contact</p>
-                    <p className="text-sm font-semibold text-dark dark:text-bg-mid">{audit.client?.fullName}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Client Contact</p>
+                    <p className="text-sm font-bold text-dark">{audit.client?.fullName}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-bg-warm dark:bg-[#1a0d35] flex items-center justify-center shrink-0">
-                    <Building2 className="h-5 w-5 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-accent/5 flex items-center justify-center shrink-0 text-accent">
+                    <Building2 className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-bg-muted uppercase font-bold tracking-tight">Business Units</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Business Units</p>
                     <div className="flex flex-wrap gap-1.5 mt-1">
                       {audit.businessUnits?.map((bu: any) => (
-                        <Badge key={bu.id} variant="secondary" className="text-[10px] px-2 py-0 h-5">{bu.name}</Badge>
+                        <Badge key={bu.id} variant="secondary" className="text-[10px] px-2 py-0 h-5 font-bold uppercase tracking-tight">{bu.name}</Badge>
                       ))}
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-bg-warm dark:bg-[#1a0d35] flex items-center justify-center shrink-0">
-                    <Calendar className="h-5 w-5 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 text-orange-600">
+                    <Calendar className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-bg-muted uppercase font-bold tracking-tight">Engagement Timeline</p>
-                    <p className="text-sm font-semibold text-dark dark:text-bg-mid">
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Engagement Timeline</p>
+                    <p className="text-sm font-bold text-dark">
                       {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'TBD'} - 
                       {audit.expectedCompletionDate ? format(new Date(audit.expectedCompletionDate), 'MMM d, yyyy') : 'TBD'}
                     </p>
                     {audit.expectedCompletionDate && new Date(audit.expectedCompletionDate) < new Date() && (
-                      <div className="flex items-center gap-1 text-destructive font-bold text-[10px] mt-1 bg-destructive/10 px-2 py-0.5 rounded-full w-fit">
+                      <div className="flex items-center gap-1 text-red-600 font-black text-[10px] mt-1 bg-red-50 px-2 py-0.5 rounded-full w-fit uppercase tracking-widest">
                         <AlertTriangle size={10} /> OVERDUE
                       </div>
                     )}
@@ -216,23 +279,23 @@ const AuditDetail = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-bg-warm dark:bg-[#1a0d35] flex items-center justify-center shrink-0">
-                    <Users className="h-5 w-5 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 text-blue-600">
+                    <Users className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] text-bg-muted uppercase font-bold tracking-tight">Audit Team</p>
+                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Audit Team</p>
                     <div className="flex -space-x-2 mt-1">
                       {audit.assignments?.map((as: any, i: number) => (
                         <div 
                           key={i} 
-                          className="w-8 h-8 rounded-full border-2 border-white dark:border-[#2d1f45] bg-bg-mid dark:bg-[#3d2a5a] flex items-center justify-center text-[10px] font-bold text-dark dark:text-white" 
+                          className="w-8 h-8 rounded-full border-2 border-white bg-muted/20 flex items-center justify-center text-[10px] font-bold text-dark uppercase" 
                           title={as.auditor.fullName}
                         >
                           {as.auditor.fullName.charAt(0)}
                         </div>
                       ))}
                       {(audit.assignments?.length || 0) === 0 && (
-                        <span className="text-xs text-bg-muted italic font-normal">Unassigned</span>
+                        <span className="text-[10px] text-muted-foreground italic font-bold">UNASSIGNED</span>
                       )}
                     </div>
                   </div>
@@ -241,19 +304,34 @@ const AuditDetail = () => {
             </div>
           </Card>
 
-          <Card className="p-5 bg-primary/5 dark:bg-accent/5 border border-primary/10 dark:border-accent/10 shadow-none">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-primary dark:text-accent flex items-center gap-2 mb-3">
+          <Card className="p-5 bg-muted/10 border-none shadow-none">
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2 mb-3">
               <Info size={14} />
               Quick Status
             </h4>
             <div className="space-y-4">
-              <p className="text-xs text-dark/70 dark:text-bg-muted leading-relaxed">
+              <p className="text-xs text-dark/70 leading-relaxed font-medium">
                 Management view for <strong>{audit.name}</strong>. Currently <strong>{audit.status.replace('_', ' ')}</strong>. 
                 {isDraft ? "Complete the scope definition and auditor assignments to start." : "Monitor auditor progress and approve exceptions."}
               </p>
-              <Button variant="secondary" size="sm" className="w-full justify-start h-8 px-3 text-[11px] font-bold bg-white dark:bg-[#1a0d35] shadow-sm">
-                <Clock className="mr-2 h-3.5 w-3.5" /> VIEW AUDIT TRAIL
-              </Button>
+              <Sheet open={showTrail} onOpenChange={setShowTrail}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-full justify-start h-8 px-3 text-[10px] font-black uppercase tracking-widest bg-white shadow-sm hover:bg-muted/5 transition-colors border-muted/30">
+                    <Clock className="mr-2 h-3.5 w-3.5" /> VIEW AUDIT TRAIL
+                  </Button>
+                </SheetTrigger>
+                <SheetContent className="overflow-y-auto sm:max-w-xl">
+                  <SheetHeader className="mb-6">
+                    <SheetTitle className="flex items-center gap-3">
+                       <History className="text-primary" /> Audit Activity Trail
+                    </SheetTitle>
+                    <SheetDescription className="text-xs font-medium">
+                       Chronological log of all actions taken on this audit engagement.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <AuditTrail auditId={audit.id} />
+                </SheetContent>
+              </Sheet>
             </div>
           </Card>
         </div>

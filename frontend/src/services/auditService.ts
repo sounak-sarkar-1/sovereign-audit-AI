@@ -63,4 +63,9 @@ export const auditService = {
     const response = await api.delete(`/manager/audits/${auditId}/assignments/line-items/${assignmentId}`);
     return response.data;
   },
+
+  getAuditTrail: async (auditId: string) => {
+    const response = await api.get<any[]>(`/manager/audits/${auditId}/trail`);
+    return response.data;
+  },
 };

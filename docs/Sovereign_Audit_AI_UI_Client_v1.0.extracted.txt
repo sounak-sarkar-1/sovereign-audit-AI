@@ -1,0 +1,485 @@
+SOVEREIGN AUDIT AI
+UI Screen Specification
+Client Persona  |  Executive Cockpit · Insights · NL Search · Clarifications · Report Review
+UI Library
+Shadcn/ui + Tailwind CSS
+Navigation
+Collapsible left sidebar + top header bar
+Dark Mode
+Supported via Tailwind dark: prefix + theme toggle
+Primary Colour
+#4f2d7f
+Dark Colour
+#2b144d
+Accent Colour
+#a06dff
+Background (Light)
+#f2f0ee
+Background (Mid)
+#e0dcd7
+Background (Muted)
+#ccc4bd
+Spec Version
+v1.0 — Full Specification
+Table of Contents
+1. Client Sidebar Navigation
+Icon
+Label
+Route
+Badge
+BarChart3
+Executive Cockpit
+/client
+—
+TrendingUp
+Insights
+/client/insights
+—
+Search
+Search Reports
+/client/search
+—
+MessageCircle
+Clarifications
+/client/clarifications
+Pending count badge
+FileText
+Reports
+/client/reports
+Pending review badge
+2. Executive Cockpit
+SCR-CLI-001 — Executive Cockpit (Home)
+Screen ID
+SCR-CLI-001
+Route
+/client
+Persona
+Client
+Purpose
+Landing page. Real-time status of all active audits + summary of last completed audit. Designed for senior executive consumption.
+Layout
+Hero KPI row (4 cards). Below: two-column layout. Left (60%): Active Audits list with status cards. Right (40%): Pending Actions panel (clarifications + report reviews needing attention). Clean, data-forward design.
+Hero KPI Cards
+Card
+Metric
+Source
+Active Audits
+Count of in_progress + under_manager_review + pending_client_review
+GET /client/audits
+Pending My Action
+Clarifications pending response + reports pending review
+Aggregated from clarifications + reports APIs
+Open Exceptions (latest audit)
+exception_requests where status=pending in most recent active audit
+GET /client/audits?status=in_progress (latest)
+Last Audit Closed
+Date of most recently closed audit
+GET /client/audits?status=closed (latest)
+Active Audit Status Card Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Audit name
+Text (bold)
+audit.name
+—
+Status badge + progress bar
+Badge + thin bar
+audit.status + completion %
+Bar fills left-to-right; status badge colour follows lifecycle
+BU completion breakdown
+Mini bar chart
+Per-BU completion from API
+Each BU shown as a small horizontal bar with BU name and % label
+Expected completion
+Text with icon
+expected_completion_date
+Overdue = red text + warning icon
+Open exceptions count
+Badge
+open exceptions
+Only shown if > 0; destructive colour
+View Audit button
+Button (outline)
+—
+Navigates to /client/audits/:id
+Pending Actions Panel
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Clarifications needing response
+List of pending clarification requests
+GET /client/clarifications?status=pending
+Each item: audit name, manager name, message preview, 'Respond' button
+Reports pending review
+List of reports in pending_client_review
+GET /client/reports?status=sent_for_client_review
+Each item: audit name, report version, sent date, 'Review Report' button
+States
+State
+Trigger
+UI Behaviour
+Loading
+Page mount
+All cards and panels show skeleton loaders
+No active audits
+All audits closed or none exist
+Active Audits panel: illustration + 'No active audits. Your completed audits are available in Insights.'
+No pending actions
+Nothing requires client action
+Pending Actions panel: green checkmark + 'No actions required right now.'
+SCR-CLI-002 — Active Audit Detail
+Screen ID
+SCR-CLI-002
+Route
+/client/audits/:auditId
+Persona
+Client
+Purpose
+Detailed view of a single active audit. Shows BU-level breakdown, exception summary, and linked clarifications.
+Layout
+Full page. Top: audit header card. Below: tabbed panels — Overview, Exceptions Summary, Clarifications. Read-only; no editing capability.
+Overview Tab
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Per-BU progress table
+Data table
+audit_business_units + line item counts
+Columns: BU Name, Total Items, Submitted, Excepted, Outstanding, Completion %
+Auditor count
+Text
+auditor_audit_assignments (anonymised)
+N auditors assigned; no individual names shown to client
+Timeline (audit milestones)
+Vertical timeline
+audit status history from audit_trail_logs
+Key dates: Initiated, Started, Under Review, etc.
+Exceptions Summary Tab
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Exception count cards
+KPI cards
+exception_requests aggregated
+Total / Pending / Approved / Rejected
+Exception list (approved only)
+Data table
+exception_requests where status=approved
+Columns: Line Item Name, BU, Justification preview, Approved date. Client sees only approved exceptions (not pending).
+3. Historical Insights
+SCR-CLI-003 — Insights Dashboard
+Screen ID
+SCR-CLI-003
+Route
+/client/insights
+Persona
+Client
+Purpose
+Analytics and trends from all completed audits. Executive-grade visualisations for recurring findings, risk trends, and compliance scores.
+Layout
+Full page with date range filter at top (default: last 12 months). Dashboard sections arranged vertically. Each section is an expandable card. Charts are interactive (hover tooltips, click-to-filter).
+Insight Sections
+Section
+Chart Type
+Data Source
+Key Interactions
+Audit Frequency
+Timeline bar chart
+/client/insights — auditFrequency
+Click bar → opens that audit's detail
+Compliance Scores Over Time
+Line chart
+/client/insights — complianceScores
+Hover shows score + audit name; trend line
+Risk Trend by BU
+Grouped bar or heatmap grid
+/client/insights — riskTrendByBU
+Each BU = a row; columns = audit cycles; cell colour = exception rate
+Recurring Findings
+Tag cloud or ranked list
+/client/insights — recurringFindings
+Items flagged in 2+ audits; click → shows which audits
+Open vs Closed Action Items
+Donut chart + aging table
+/client/insights — actionItems
+Donut: open vs closed ratio. Table: open items by age (days)
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Date range picker
+DateRangePicker
+—
+Filters all charts; defaults to last 12 months; presets: 6M, 1Y, 2Y, All time
+BU filter
+Multi-select
+client_business_units
+Filter charts to specific BUs
+Export insights button
+Button (outline)
+—
+Downloads current insights view as PDF report
+Chart cards
+Card (recharts/D3 chart inside)
+GET /client/insights
+Each section in collapsible card with chart + data table toggle
+States
+State
+Trigger
+UI Behaviour
+Loading
+Page mount / filter change
+Skeleton chart placeholders in each section card
+No completed audits
+No closed audits for this client
+Full page empty state: 'No completed audits yet. Insights will appear here once your first audit is closed.'
+Insufficient data for chart
+< 2 data points for a specific chart
+Chart section shows: 'Not enough data yet. This will populate as more audits are completed.'
+4. Natural Language Search
+SCR-CLI-004 — NL Search Interface
+Screen ID
+SCR-CLI-004
+Route
+/client/search
+Persona
+Client
+Purpose
+Conversational search over all completed audit reports. Powered by active Gen AI model. Returns synthesised answers with source citations.
+Layout
+Clean, search-focused layout. Large search input centred on page (similar to a chat/search interface). Below: search history (previous queries in current session). Results appear below the input after each search. Suggested prompts shown on empty state.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Search input
+Large Textarea (single-line expand on focus)
+—
+Placeholder: 'Ask anything about your audits... e.g. What were the key findings in Q2?'. Max 500 chars. Enter or Search button triggers.
+Search button
+Button (primary, icon only on mobile)
+POST /client/search
+Disabled when input empty or job in progress
+Suggested prompts
+Chip buttons below input
+—
+Shown when no results yet: 3-4 example queries. Click fills input.
+Processing indicator
+Animated search spinner card
+Poll GET /ai-jobs/:jobId every 2s
+'Searching your audit reports...' with animated dots
+Answer card
+Result card below input
+AI job outputPayload.answer
+AI-synthesised answer in readable prose with accent left border
+Source citations
+Expandable chip list below answer
+outputPayload.sources
+Each source: audit name + date chip. Click expands to show excerpt context.
+Search history
+Collapsible list
+Session state
+Previous queries in session; click re-runs query
+No AI configured warning
+Alert replacing search input
+Active AI model check
+If no active model: 'AI search is not available. Contact your administrator.' Search input hidden.
+States
+State
+Trigger
+UI Behaviour
+Empty — first visit
+No prior searches
+Suggested prompts shown; search history empty
+Searching (async)
+Job queued or processing
+Processing indicator card shown below input; input locked
+Answer received
+Job completed
+Answer card fades in below input; sources listed below; input unlocked for next query
+Search failed
+Job failed
+Error card: 'Search could not be completed. Please try again.' + retry button
+No results found
+AI returns empty answer
+Answer card shows: 'No relevant information found in your audit reports for this query.'
+Validations
+Field
+Rule
+Error Message
+Query
+Required; min 5 chars; max 500 chars
+Please enter a question of at least 5 characters
+5. Clarifications
+SCR-CLI-005 — Clarifications Inbox
+Screen ID
+SCR-CLI-005
+Route
+/client/clarifications
+Persona
+Client
+Purpose
+All clarification requests from Managers. Client responds here. Two-panel conversation interface.
+Layout
+Two-panel layout (same pattern as Manager clarifications, but from client perspective). Left: thread list. Right: selected thread conversation. Pending (unanswered) threads are sorted to top and visually elevated.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Thread list (left panel)
+Scrollable list
+GET /client/clarifications
+Each thread: Audit name, Manager name, message preview, date, status badge. Pending badge highlighted.
+Conversation view (right panel)
+Chat bubbles
+clarification_responses
+Manager message: primary bg, left-aligned. Client responses: accent bg, right-aligned.
+Reply textarea
+Textarea + Send button
+POST /client/clarifications/:id/respond
+Shown for pending threads only; disabled after responded (thread auto-closes or manager closes)
+Attach file to response
+File attach icon on reply area
+—
+Optional; same file rules (JPG, PNG, PDF, DOCX; 10 MB)
+Related exception badge
+Badge link in thread header
+relatedExceptionId
+If linked to exception: shows 'Re: Exception — [Item Name]' badge (read-only)
+States
+State
+Trigger
+UI Behaviour
+Pending thread
+Manager sent, no response yet
+Left border: accent; 'Respond Required' badge; reply area active
+Responded thread
+Client has responded
+Status badge: 'Responded'; reply area hidden; conversation shown read-only
+Empty inbox
+No clarifications received
+Right panel: illustration + 'No clarification requests yet'
+Validations
+Field
+Rule
+Error Message
+Reply message
+Required; min 10 chars; max 2000 chars
+Please enter a response of at least 10 characters
+6. Draft Report Review
+SCR-CLI-006 — Reports Inbox
+Screen ID
+SCR-CLI-006
+Route
+/client/reports
+Persona
+Client
+Purpose
+List of all audit reports shared with the client. Pending review reports prominently flagged.
+Layout
+Filter tabs: Pending Review | All Reports. Card list. Pending Review tab shown with badge count if any awaiting.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Report card
+Card
+GET /client/audits (with report data)
+Audit name, Report version badge, Sent date, Status badge (Pending Review / Reviewed / Final)
+Download Report button
+Button (outline)
+GET /client/reports/:id/download
+Downloads DOCX for reading
+Submit Feedback button
+Button (primary)
+—
+Navigates to SCR-CLI-007; only on pending review reports
+View Feedback button (past)
+Button (ghost)
+—
+On reviewed reports; opens SCR-CLI-007 in read-only mode
+SCR-CLI-007 — Report Feedback Form
+Screen ID
+SCR-CLI-007
+Route
+/client/reports/:reportId/feedback
+Persona
+Client
+Purpose
+Section-by-section structured feedback on a draft audit report. Submit back to Manager for action.
+Layout
+Full page. Top: Download Report button (prominent — client should read report before giving feedback). Below: accordion list of report sections. Each section is expandable with a feedback form. Footer: Submit All Feedback button.
+Components
+Component
+Type
+Data Source / API
+Behaviour / Notes
+Download prompt card
+Alert (info) with download button
+—
+Prominent reminder at top: 'Please download and review the full report before providing feedback.' Download button.
+Report sections accordion
+Accordion list
+Standard report sections (pre-defined list)
+Sections: Executive Summary, Scope & Methodology, Findings by BU (one per BU), Exception Summary, Recommendations
+Section status selector
+RadioGroup per section
+—
+Options: Accepted ✓ / Requires Revision ✗ / No Comment (default)
+Section comment textarea
+Textarea per section
+client_report_feedback.comment
+Required if 'Requires Revision' selected; optional otherwise. Placeholder: 'Enter your feedback for this section...'
+Section feedback summary
+Mini status chips in accordion header
+client state
+Shows current selection (Accepted / Requires Revision / No Comment) in closed header
+Submit All Feedback button
+Button (primary, sticky footer)
+POST /client/reports/:id/feedback
+Submits all section feedback in one request; confirm dialog shown
+Submit confirm dialog
+AlertDialog
+—
+Shows: N sections accepted, N require revision, N with no comment. 'Submit feedback to manager?'
+States
+State
+Trigger
+UI Behaviour
+Default
+Page load
+All sections collapsed; No Comment selected for each; Submit button enabled
+Section expanded
+Accordion item clicked
+Status selector and comment textarea revealed
+Requires Revision selected
+RadioGroup = Requires Revision
+Comment textarea highlighted with required indicator
+Submitting
+Submit clicked + confirmed
+Spinner on button; all inputs disabled
+Success
+201 from API
+Toast: 'Feedback submitted. The manager has been notified.'; navigate back to /client/reports
+Read-only mode
+Feedback already submitted
+All inputs disabled; status selectors show submitted values; no Submit button; 'Feedback submitted on [date]' banner
+Validations
+Field
+Rule
+Error Message
+Comment (Requires Revision)
+Required when status = Requires Revision
+Please describe what changes are needed for this section
+Overall
+At least one section must have Accepted or Requires Revision (not all No Comment)
+Please review at least one section before submitting feedback

@@ -20,12 +20,31 @@ const typeorm_2 = require("typeorm");
 const audit_scope_line_item_entity_1 = require("../../database/entities/audit-scope-line-item.entity");
 const line_item_response_entity_1 = require("../../database/entities/line-item-response.entity");
 const audit_business_unit_entity_1 = require("../../database/entities/audit-business-unit.entity");
+const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
+const line_item_comment_entity_1 = require("../../database/entities/line-item-comment.entity");
 let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
-    constructor(lineItemRepo, responseRepo, auditBURepo) {
+    constructor(lineItemRepo, responseRepo, auditBURepo, fileRepo, commentRepo) {
         this.lineItemRepo = lineItemRepo;
         this.responseRepo = responseRepo;
         this.auditBURepo = auditBURepo;
+        this.fileRepo = fileRepo;
+        this.commentRepo = commentRepo;
         this.logger = new common_1.Logger(AuditorScopeService_1.name);
+    }
+    async getComments(liId) {
+        return this.commentRepo.find({
+            where: { lineItemId: liId },
+            relations: ['author'],
+            order: { createdAt: 'ASC' },
+        });
+    }
+    async addComment(liId, user, content) {
+        const comment = this.commentRepo.create({
+            lineItemId: liId,
+            authorId: user.id,
+            content,
+        });
+        return this.commentRepo.save(comment);
     }
     async getScope(auditId, user) {
         const bus = await this.auditBURepo.find({
@@ -84,6 +103,10 @@ let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
         response.comment = dto.comment;
         response.isDraft = dto.isDraft;
         await this.responseRepo.save(response);
+        if (dto.evidenceFileIds && dto.evidenceFileIds.length > 0) {
+            this.logger.log(`Linking ${dto.evidenceFileIds.length} files to response ${response.id}`);
+            await this.fileRepo.update({ id: (0, typeorm_2.In)(dto.evidenceFileIds), entityType: uploaded_file_entity_1.FileEntityType.LINE_ITEM_EVIDENCE }, { entityId: response.id });
+        }
         if (dto.isDraft) {
             lineItem.status = audit_scope_line_item_entity_1.LineItemStatus.DRAFT_SAVED;
         }
@@ -106,7 +129,11 @@ exports.AuditorScopeService = AuditorScopeService = AuditorScopeService_1 = __de
     __param(0, (0, typeorm_1.InjectRepository)(audit_scope_line_item_entity_1.AuditScopeLineItem)),
     __param(1, (0, typeorm_1.InjectRepository)(line_item_response_entity_1.LineItemResponse)),
     __param(2, (0, typeorm_1.InjectRepository)(audit_business_unit_entity_1.AuditBusinessUnit)),
+    __param(3, (0, typeorm_1.InjectRepository)(uploaded_file_entity_1.UploadedFile)),
+    __param(4, (0, typeorm_1.InjectRepository)(line_item_comment_entity_1.LineItemComment)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], AuditorScopeService);

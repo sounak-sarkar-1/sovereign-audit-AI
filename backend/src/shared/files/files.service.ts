@@ -74,7 +74,6 @@ export class FilesService {
       const filePath = path.join(this.uploadDir, storedFilename);
 
       this.logger.log(`Saving file ${file.originalname} to ${filePath}`);
-      // In a real scenario with large files, we should use streams.
       await fs.promises.writeFile(filePath, file.buffer);
 
       const uploadedFile = this.fileRepository.create({
@@ -101,6 +100,12 @@ export class FilesService {
       throw new NotFoundException('File not found');
     }
     return file;
+  }
+
+  async updateAnnotations(id: string, annotations: any): Promise<UploadedFile> {
+    const file = await this.findOne(id);
+    file.annotations = annotations;
+    return await this.fileRepository.save(file);
   }
 
   async deleteFile(id: string): Promise<void> {

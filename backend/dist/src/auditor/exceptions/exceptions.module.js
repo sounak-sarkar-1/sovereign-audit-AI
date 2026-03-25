@@ -17,6 +17,8 @@ const audit_entity_1 = require("../../database/entities/audit.entity");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
 const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
 const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
+const exception_comment_entity_1 = require("../../database/entities/exception-comment.entity");
+const audit_business_unit_entity_1 = require("../../database/entities/audit-business-unit.entity");
 let AuditorExceptionsModule = class AuditorExceptionsModule {
 };
 exports.AuditorExceptionsModule = AuditorExceptionsModule;
@@ -28,6 +30,8 @@ exports.AuditorExceptionsModule = AuditorExceptionsModule = __decorate([
                 audit_scope_line_item_entity_1.AuditScopeLineItem,
                 audit_entity_1.Audit,
                 uploaded_file_entity_1.UploadedFile,
+                exception_comment_entity_1.ExceptionComment,
+                audit_business_unit_entity_1.AuditBusinessUnit,
             ]),
             notifications_module_1.NotificationsModule,
             audit_trail_module_1.AuditTrailModule,

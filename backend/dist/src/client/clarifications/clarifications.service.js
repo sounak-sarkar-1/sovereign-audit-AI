@@ -19,14 +19,36 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const clarification_request_entity_1 = require("../../database/entities/clarification-request.entity");
 const clarification_response_entity_1 = require("../../database/entities/clarification-response.entity");
+const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
 const notifications_service_1 = require("../../shared/notifications/notifications.service");
 const notification_entity_1 = require("../../database/entities/notification.entity");
 let ClientClarificationsService = ClientClarificationsService_1 = class ClientClarificationsService {
-    constructor(clarificationRepo, responseRepo, notificationsService) {
+    constructor(clarificationRepo, responseRepo, fileRepo, notificationsService) {
         this.clarificationRepo = clarificationRepo;
         this.responseRepo = responseRepo;
+        this.fileRepo = fileRepo;
         this.notificationsService = notificationsService;
         this.logger = new common_1.Logger(ClientClarificationsService_1.name);
+    }
+    async findAll(clientId, status) {
+        const query = this.clarificationRepo.createQueryBuilder('c')
+            .leftJoinAndSelect('c.audit', 'audit')
+            .leftJoinAndSelect('c.manager', 'manager')
+            .where('c.clientId = :clientId', { clientId });
+        if (status) {
+            query.andWhere('c.status = :status', { status });
+        }
+        return query.orderBy('c.createdAt', 'DESC').getMany();
+    }
+    async findOne(id, clientId) {
+        const thread = await this.clarificationRepo.findOne({
+            where: { id, clientId },
+            relations: ['audit', 'manager', 'responses', 'responses.responder'],
+        });
+        if (!thread) {
+            throw new common_1.NotFoundException('Clarification thread not found');
+        }
+        return thread;
     }
     async respond(id, dto, user) {
         const clarification = await this.clarificationRepo.findOne({ where: { id } });
@@ -39,6 +61,10 @@ let ClientClarificationsService = ClientClarificationsService_1 = class ClientCl
             message: dto.message,
         });
         await this.responseRepo.save(response);
+        if (dto.attachmentFileIds && dto.attachmentFileIds.length > 0) {
+            this.logger.log(`Linking ${dto.attachmentFileIds.length} files to clarification response ${response.id}`);
+            await this.fileRepo.update({ id: (0, typeorm_2.In)(dto.attachmentFileIds), entityType: uploaded_file_entity_1.FileEntityType.CLARIFICATION_ATTACHMENT }, { entityId: response.id });
+        }
         clarification.status = clarification_request_entity_1.ClarificationStatus.RESPONDED;
         await this.clarificationRepo.save(clarification);
         await this.notificationsService.create({
@@ -58,7 +84,9 @@ exports.ClientClarificationsService = ClientClarificationsService = ClientClarif
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(clarification_request_entity_1.ClarificationRequest)),
     __param(1, (0, typeorm_1.InjectRepository)(clarification_response_entity_1.ClarificationResponse)),
+    __param(2, (0, typeorm_1.InjectRepository)(uploaded_file_entity_1.UploadedFile)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         notifications_service_1.NotificationsService])
 ], ClientClarificationsService);

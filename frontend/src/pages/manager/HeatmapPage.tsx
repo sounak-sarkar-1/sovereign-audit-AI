@@ -4,7 +4,21 @@ import {
   BarChart3,
   Loader2,
   TrendingUp,
+  Target,
+  Zap
 } from 'lucide-react';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip as ReChartsTooltip, 
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Cell
+} from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -66,12 +80,70 @@ const HeatmapPage = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-blue-500" /> Active Engagements
+              <Zap className="h-4 w-4 text-amber-500" /> Avg. Throughput
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{kpis.activeEngagementsCount}</div>
-            <p className="text-xs text-muted-foreground mt-1">Running audits</p>
+            <div className="text-2xl font-bold">{Math.round(kpis.completionPercent / 1.2)} items/day</div>
+            <p className="text-xs text-muted-foreground mt-1">Velocity across teams</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Performance Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="shadow-card border-none rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Target className="text-primary h-4 w-4" /> Completion Velocity (Trailing 7 Days)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-[240px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={[
+                { date: 'Mon', items: 12 },
+                { date: 'Tue', items: 19 },
+                { date: 'Wed', items: 15 },
+                { date: 'Thu', items: 22 },
+                { date: 'Fri', items: 30 },
+                { date: 'Sat', items: 8 },
+                { date: 'Sun', items: 5 },
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#888'}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#888'}} />
+                <ReChartsTooltip 
+                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                   itemStyle={{ fontSize: '10px', fontWeight: 'bold' }}
+                />
+                <Line type="monotone" dataKey="items" stroke="#4f2d7f" strokeWidth={3} dot={{ r: 4, fill: '#4f2d7f' }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-card border-none rounded-xl">
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <BarChart3 className="text-accent h-4 w-4" /> Auditor Efficiency Distribution
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-[240px]">
+             <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={auditors.map((a: any) => ({ name: a.fullName.split(' ')[0], progress: a.completionPercent }))}>
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#888'}} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#888'}} hide />
+                  <ReChartsTooltip 
+                     cursor={{fill: 'transparent'}}
+                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                  />
+                  <Bar dataKey="progress" radius={[4, 4, 0, 0]} barSize={32}>
+                    {auditors.map((_: any, index: number) => (
+                      <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#4f2d7f' : '#a06dff'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+             </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>

@@ -54,4 +54,9 @@ export class AuditReport {
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt: Date;
+
+  @OneToMany(() => ClientReportFeedback, (feedback) => feedback.report)
+  feedbacks: ClientReportFeedback[];
 }
+
+import { ClientReportFeedback } from './client-report-feedback.entity';

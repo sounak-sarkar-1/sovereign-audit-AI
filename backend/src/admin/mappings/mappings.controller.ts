@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Body, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Query, UseGuards, Req } from '@nestjs/common';
 import { AdminMappingsService } from './mappings.service';
 import { CreateMappingDto } from './dto/create-mapping.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -11,6 +11,16 @@ import { Roles } from '../../common/decorators/roles.decorator';
 @Roles('admin')
 export class AdminMappingsController {
   constructor(private readonly service: AdminMappingsService) {}
+
+  @Get('manager-auditor')
+  async getManagerAuditorMappings() {
+    return await this.service.getManagerAuditorMappings();
+  }
+
+  @Get('manager-client')
+  async getManagerClientMappings() {
+    return await this.service.getManagerClientMappings();
+  }
 
   @Post('manager-auditor')
   async addManagerAuditor(@Body() dto: CreateMappingDto, @Req() req: any) {

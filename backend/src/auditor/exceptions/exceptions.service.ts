@@ -5,6 +5,9 @@ import { ExceptionRequest } from '../../database/entities/exception-request.enti
 import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
 import { Audit } from '../../database/entities/audit.entity';
 import { User } from '../../database/entities/user.entity';
+import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
+import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
+import { ExceptionComment } from '../../database/entities/exception-comment.entity';
 import { CreateExceptionDto } from './dto/create-exception.dto';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
@@ -21,6 +24,12 @@ export class AuditorExceptionsService {
     private readonly lineItemRepo: Repository<AuditScopeLineItem>,
     @InjectRepository(Audit)
     private readonly auditRepo: Repository<Audit>,
+    @InjectRepository(UploadedFile)
+    private readonly fileRepo: Repository<UploadedFile>,
+    @InjectRepository(AuditBusinessUnit)
+    private readonly auditBURepo: Repository<AuditBusinessUnit>,
+    @InjectRepository(ExceptionComment)
+    private readonly commentRepo: Repository<ExceptionComment>,
     private readonly notificationsService: NotificationsService,
     private readonly auditTrailService: AuditTrailService,
   ) {}
@@ -29,6 +38,14 @@ export class AuditorExceptionsService {
     return this.exceptionRepo.find({
       where: { auditScopeLineItem: { auditId }, auditorId: user.id },
       relations: ['auditScopeLineItem'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async findAllGlobal(user: User) {
+    return this.exceptionRepo.find({
+      where: { auditorId: user.id },
+      relations: ['auditScopeLineItem', 'manager'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -64,6 +81,15 @@ export class AuditorExceptionsService {
 
     await this.exceptionRepo.save(exception);
 
+    // Link evidence files if provided
+    if (dto.evidenceFileIds && dto.evidenceFileIds.length > 0) {
+      this.logger.log(`Linking ${dto.evidenceFileIds.length} files to exception ${exception.id}`);
+      await this.fileRepo.update(
+        { id: In(dto.evidenceFileIds), entityType: FileEntityType.EXCEPTION_EVIDENCE },
+        { entityId: exception.id }
+      );
+    }
+
     // Update line item status
     lineItem.status = LineItemStatus.EXCEPTION_PENDING;
     await this.lineItemRepo.save(lineItem);
@@ -90,6 +116,23 @@ export class AuditorExceptionsService {
     });
 
     return exception;
+  }
+
+  async getComments(exceptionId: string) {
+    return this.commentRepo.find({
+      where: { exceptionRequestId: exceptionId },
+      relations: ['author'],
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  async addComment(exceptionId: string, user: User, content: string) {
+    const comment = this.commentRepo.create({
+      exceptionRequestId: exceptionId,
+      authorId: user.id,
+      content,
+    });
+    return this.commentRepo.save(comment);
   }
 }
 

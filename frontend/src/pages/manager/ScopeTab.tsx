@@ -6,7 +6,8 @@ import {
   Plus,
   Loader2,
   FileText,
-  CheckCircle2
+  CheckCircle2,
+  Library
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { scopeService } from '@/services/scopeService';
+import { templateService } from '@/services/templateService';
 import ScopeItemsTable from './ScopeItemsTable';
 import type { ScopeLineItem, InputMethod, ImportSession } from '@/types/scope';
 import type { Audit } from '@/types/audit';
@@ -68,10 +70,20 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
     descriptionColumn: '',
     inputMethodColumn: ''
   });
+  
+  // Template Import State
+  const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
 
   const { data: scopeItemsByBu, isLoading } = useQuery({
     queryKey: ['scope', audit.id],
     queryFn: () => scopeService.getScope(audit.id),
+  });
+
+  const { data: templatesData } = useQuery({
+    queryKey: ['admin-templates'],
+    queryFn: () => templateService.getTemplates(1, 100),
+    enabled: isTemplateDialogOpen
   });
 
   const upsertMutation = useMutation({
@@ -136,6 +148,18 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsExcelDialogOpen(false);
       setImportSession(null);
+    }
+  });
+
+  const templateImportMutation = useMutation({
+    mutationFn: (templateId: string) => scopeService.importFromTemplate(audit.id, { 
+      templateIds: [templateId], 
+      auditBusinessUnitId: activeBuId 
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
+      setIsTemplateDialogOpen(false);
+      setSelectedTemplateId('');
     }
   });
 
@@ -227,6 +251,9 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
             )}
             <Button size="sm" variant="outline" onClick={() => setIsAiDialogOpen(true)} className="rounded-full gap-2 border-primary/20 text-primary dark:text-accent font-bold bg-primary/5 dark:bg-accent/5 hover:bg-primary/10 transition-all">
               <Sparkles className="h-4 w-4" /> AI EXTRACT
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => setIsTemplateDialogOpen(true)} className="rounded-full gap-2 border-bg-mid font-medium">
+              <Library className="h-4 w-4" /> Template Import
             </Button>
             <Button size="sm" variant="outline" onClick={() => setIsExcelDialogOpen(true)} className="rounded-full gap-2 border-bg-mid font-medium">
               <FileSpreadsheet className="h-4 w-4" /> Excel Import
@@ -444,6 +471,48 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
               </DialogFooter>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Template Import Dialog */}
+      <Dialog open={isTemplateDialogOpen} onOpenChange={setIsTemplateDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Library className="h-5 w-5 text-accent" /> Import from Template
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Select Template</Label>
+              <Select value={selectedTemplateId} onValueChange={setSelectedTemplateId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Browse templates..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {templatesData?.items.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {selectedTemplateId && (
+              <p className="text-xs text-muted-foreground italic">
+                {templatesData?.items.find(t => t.id === selectedTemplateId)?.description || 'No description available.'}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsTemplateDialogOpen(false)}>Cancel</Button>
+            <Button 
+               className="bg-accent" 
+               disabled={!selectedTemplateId || templateImportMutation.isPending}
+               onClick={() => templateImportMutation.mutate(selectedTemplateId)}
+            >
+              {templateImportMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Import Template Items
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

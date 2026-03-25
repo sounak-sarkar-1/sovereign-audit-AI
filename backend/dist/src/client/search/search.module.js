@@ -8,12 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientSearchModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const search_controller_1 = require("./search.controller");
 const search_service_1 = require("./search.service");
+const ai_job_entity_1 = require("../../database/entities/ai-job.entity");
 let ClientSearchModule = class ClientSearchModule {
 };
 exports.ClientSearchModule = ClientSearchModule;
 exports.ClientSearchModule = ClientSearchModule = __decorate([
-    (0, common_1.Module)({ controllers: [search_controller_1.ClientSearchController], providers: [search_service_1.ClientSearchService], exports: [search_service_1.ClientSearchService] })
+    (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([ai_job_entity_1.AiJob])],
+        controllers: [search_controller_1.ClientSearchController],
+        providers: [search_service_1.ClientSearchService],
+        exports: [search_service_1.ClientSearchService]
+    })
 ], ClientSearchModule);
 //# sourceMappingURL=search.module.js.map

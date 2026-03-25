@@ -164,8 +164,6 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
         });
         if (!audit)
             throw new common_1.NotFoundException('Audit not found');
-        if (audit.status !== audit_entity_1.AuditStatus.DRAFT && audit.status !== audit_entity_1.AuditStatus.REOPENED) {
-        }
         if (updateDto.name)
             audit.name = updateDto.name;
         if (updateDto.description !== undefined)
@@ -210,6 +208,27 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
         await this.auditTrailService.log({
             actorId: managerId,
             action: audit_trail_service_1.AuditAction.AUDIT_STARTED,
+            entityType: 'Audit',
+            entityId: id,
+        });
+        return this.findOne(id);
+    }
+    async getTrail(id) {
+        return this.auditTrailService.findForAudit(id);
+    }
+    async archive(id, managerId) {
+        const audit = await this.auditRepo.findOne({
+            where: { id, managerId, deletedAt: (0, typeorm_2.IsNull)() }
+        });
+        if (!audit)
+            throw new common_1.NotFoundException('Audit not found');
+        if (audit.status !== audit_entity_1.AuditStatus.CLOSED && audit.status !== audit_entity_1.AuditStatus.DELETED) {
+        }
+        audit.status = audit_entity_1.AuditStatus.ARCHIVED;
+        await this.auditRepo.save(audit);
+        await this.auditTrailService.log({
+            actorId: managerId,
+            action: audit_trail_service_1.AuditAction.AUDIT_CLOSED,
             entityType: 'Audit',
             entityId: id,
         });
