@@ -43,9 +43,10 @@ export class ClientInsightsService {
       .leftJoin('li.auditBusinessUnit', 'bu')
       .select('bu.name', 'buName')
       .addSelect('COUNT(li.id)', 'totalItems')
-      .addSelect('SUM(CASE WHEN li.status = :exApproved THEN 1 ELSE 0 END)', 'exceptionCount', { exApproved: LineItemStatus.EXCEPTION_APPROVED })
+      .addSelect('SUM(CASE WHEN li.status = :exApproved THEN 1 ELSE 0 END)', 'exceptionCount')
       .where('audit.clientId = :clientId', { clientId })
       .andWhere('audit.status = :closed', { closed: AuditStatus.CLOSED })
+      .setParameters({ exApproved: LineItemStatus.EXCEPTION_APPROVED })
       .groupBy('bu.name')
       .getRawMany();
 

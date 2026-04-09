@@ -42,7 +42,11 @@ export declare class AuditorAuditsService {
             submittedItems: number;
             pendingExceptions: number;
             completionPercent: number;
-            buStats: any;
+            buStats: {
+                id: string;
+                name: string;
+                coAuditorCompletion: number;
+            }[];
         };
         id: string;
         name: string;

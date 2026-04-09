@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
       });
 
       updateUser({ isFirstLogin: false });
-      navigate('/dashboard', { replace: true });
+      navigate('/', { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error updating password. Please check your current password.');
     } finally {

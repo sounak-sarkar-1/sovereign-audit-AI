@@ -34,9 +34,10 @@ let NotificationsService = NotificationsService_1 = class NotificationsService {
         if (isRead !== undefined) {
             where.isRead = isRead;
         }
+        const sortProperty = sortBy === 'created_at' ? 'createdAt' : sortBy;
         const [data, total] = await this.repository.findAndCount({
             where,
-            order: { [sortBy]: sortOrder },
+            order: { [sortProperty]: sortOrder },
             take: limit,
             skip,
         });

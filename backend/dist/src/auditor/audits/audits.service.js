@@ -104,6 +104,10 @@ let AuditorAuditsService = AuditorAuditsService_1 = class AuditorAuditsService {
                 status: audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_PENDING
             },
         });
+        const bus = await this.auditBURepo.find({
+            where: { auditId },
+            relations: ['businessUnit'],
+        });
         const buStats = await Promise.all(bus.map(async (bu) => {
             const buTotalItems = await this.lineItemRepo.count({
                 where: { auditBusinessUnitId: bu.id },

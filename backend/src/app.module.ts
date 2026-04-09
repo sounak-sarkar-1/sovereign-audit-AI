@@ -42,6 +42,7 @@ import { ManagerExceptionsModule } from './manager/exceptions/exceptions.module'
 import { ManagerReportsModule } from './manager/reports/reports.module';
 import { ManagerScopeModule } from './manager/scope/scope.module';
 import { ManagerExceptionalRequestsModule } from './manager/exceptional-requests/exceptional-requests.module';
+import { ManagerSettingsModule } from './manager/settings/settings.module';
 
 // Shared modules
 import { AiJobsModule } from './shared/ai-jobs/ai-jobs.module';

@@ -21,7 +21,7 @@ __decorate([
 ], RespondToClarificationDto.prototype, "message", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    IsUUID('4', { each: true }),
+    (0, class_validator_1.IsUUID)('4', { each: true }),
     __metadata("design:type", Array)
 ], RespondToClarificationDto.prototype, "attachmentFileIds", void 0);
 //# sourceMappingURL=respond-clarification.dto.js.map

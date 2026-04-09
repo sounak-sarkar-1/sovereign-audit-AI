@@ -1,0 +1,194 @@
+﻿[32m[Nest] 20520  - [39m24/03/2026, 10:14:19 pm [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 20520  - [39m24/03/2026, 10:14:19 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDatabaseModule dependencies initialized[39m[38;5;3m +50ms[39m
+[32m[Nest] 20520  - [39m24/03/2026, 10:14:19 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTypeOrmModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20520  - [39m24/03/2026, 10:14:19 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPassportModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 20520  - [39m24/03/2026, 10:14:19 pm [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mTenantModule dependencies initialized[39m[38;5;3m +0ms[39m
+node : [31m[Nest] 
+20520  - 
+[39m24/03/2026, 
+10:14:19 pm [31m  
+ERROR[39m [38;5;3m[Ex
+ceptionHandler] [39mUn
+knownDependenciesExcept
+ion [Error]: Nest 
+can't resolve 
+dependencies of the Man
+agerClarificationsServi
+ce (ClarificationReques
+tRepository, ExceptionR
+equestRepository, 
+NotificationsService, 
+?). Please make sure 
+that the argument 
+AuditTrailService at 
+index [3] is available 
+in the ManagerClarifica
+tionsModule module.
+At line:1 char:1
++ node 
+dist/src/main.js > 
+bootstrap_log.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31m[Nest] 2   
+ 05...sModule modul    
+e.:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+Potential solutions:
+- Is ManagerClarificati
+onsModule a valid 
+NestJS module?
+- If AuditTrailService 
+is a provider, is it 
+part of the current Man
+agerClarificationsModul
+e?
+- If AuditTrailService 
+is exported from a 
+separate @Module, is 
+that module imported 
+within ManagerClarifica
+tionsModule?
+  @Module({
+    imports: [ /* the 
+Module containing 
+AuditTrailService */ ]
+  })
+
+For more common 
+dependency resolution 
+issues, see: https://do
+cs.nestjs.com/faq/commo
+n-errors
+    at Injector.lookupC
+omponentInParentModules
+ [90m(F:\Sovereign-Aud
+it-AI\backend\[39mnode
+_modules\[4m@nestjs[2
+4m\core\injector\inject
+or.js:290:19[90m)[39m
+    at async 
+resolveParam [90m(F:\S
+overeign-Audit-AI\backe
+nd\[39mnode_modules\[
+4m@nestjs[24m\core\inj
+ector\injector.js:140:3
+8[90m)[39m
+    at async 
+Promise.all (index 3)
+    at async Injector.r
+esolveConstructorParams
+ [90m(F:\Sovereign-Aud
+it-AI\backend\[39mnode
+_modules\[4m@nestjs[2
+4m\core\injector\inject
+or.js:169:27[90m)[39m
+    at async 
+Injector.loadInstance 
+[90m(F:\Sovereign-Audit
+-AI\backend\[39mnode_m
+odules\[4m@nestjs[24m
+\core\injector\injector
+.js:75:13[90m)[39m
+    at async 
+Injector.loadProvider 
+[90m(F:\Sovereign-Audit
+-AI\backend\[39mnode_m
+odules\[4m@nestjs[24m
+\core\injector\injector
+.js:103:9[90m)[39m
+    at async [90mF:\So
+vereign-Audit-AI\backen
+d\[39mnode_modules\[4
+m@nestjs[24m\core\inje
+ctor\instance-loader.js
+:56:13
+    at async 
+Promise.all (index 3)
+    at async InstanceLo
+ader.createInstancesOfP
+roviders [90m(F:\Sover
+eign-Audit-AI\backend\
+[39mnode_modules\[4m@n
+estjs[24m\core\injecto
+r\instance-loader.js:55
+:9[90m)[39m
+    at async [90mF:\So
+vereign-Audit-AI\backen
+d\[39mnode_modules\[4
+m@nestjs[24m\core\inje
+ctor\instance-loader.js
+:40:13
+    at async 
+Promise.all (index 51)
+    at async InstanceLo
+ader.createInstances [
+90m(F:\Sovereign-Audit-
+AI\backend\[39mnode_mo
+dules\[4m@nestjs[24m\
+core\injector\instance-
+loader.js:39:9[90m)[3
+9m
+    at async InstanceLo
+ader.createInstancesOfD
+ependencies [90m(F:\So
+vereign-Audit-AI\backen
+d\[39mnode_modules\[4
+m@nestjs[24m\core\inje
+ctor\instance-loader.js
+:22:13[90m)[39m
+    at async [90mF:\So
+vereign-Audit-AI\backen
+d\[39mnode_modules\[4
+m@nestjs[24m\core\nest
+-factory.js:112:17
+    at async Exceptions
+Zone.asyncRun [90m(F:\
+Sovereign-Audit-AI\back
+end\[39mnode_modules\
+[4m@nestjs[24m\core\er
+rors\exceptions-zone.js
+:22:13[90m)[39m
+    at async NestFactor
+yStatic.initialize [90
+m(F:\Sovereign-Audit-AI
+\backend\[39mnode_modu
+les\[4m@nestjs[24m\co
+re\nest-factory.js:110:
+13[90m)[39m {
+  type: [32m'ManagerCl
+arificationsService'[3
+9m,
+  context: {
+    index: [33m3[39m,
+    dependencies: [
+      [32m'Clarificati
+onRequestRepository'[3
+9m,
+      [32m'ExceptionRe
+questRepository'[39m,
+      [36m[class Notif
+icationsService][39m,
+      [36m[class 
+AuditTrailService][39m
+    ],
+    name: [36m[class 
+AuditTrailService][39m
+  },
+  metadata: {
+    id: [32m'3bc15397c
+5db99f79314f'[39m
+  },
+  moduleRef: {
+    id: [32m'2719a8e5f
+3f6a6010db29'[39m
+  }
+}

@@ -82,7 +82,7 @@ const AuditorDashboard: React.FC = () => {
 
         <TabsContent value="list" className="mt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {audits?.map((audit: any) => (
+            {Array.isArray(audits) && audits.map((audit: any) => (
               <div 
                 key={audit.id} 
                 className="bg-white dark:bg-[#1a0d35] rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card overflow-hidden hover:shadow-elevated hover:-translate-y-1 transition-all duration-150 flex flex-col"
@@ -94,10 +94,10 @@ const AuditorDashboard: React.FC = () => {
                       audit.status === 'submitted' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' :
                       'bg-green-100 text-green-700 hover:bg-green-100'
                     )}>
-                      {audit.status.replace('_', ' ')}
+                      {audit.status?.replace('_', ' ') || 'UNKNOWN'}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
-                      Ends {format(new Date(audit.endDate), 'MMM dd, yyyy')}
+                      Ends {audit.endDate ? format(new Date(audit.endDate), 'MMM dd, yyyy') : 'N/A'}
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-dark dark:text-white line-clamp-1">{audit.name}</h3>

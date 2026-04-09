@@ -71,7 +71,7 @@ export class ClientReportsService {
       // 3. Notify manager
       await this.notificationsService.create({
         userId: report.audit.managerId,
-        type: NotificationType.FEEDBACK_RECEIVED,
+        type: NotificationType.CLIENT_FEEDBACK_RECEIVED,
         title: 'Report Feedback Received',
         message: `Client has submitted feedback for the audit report of ${report.audit.name}`,
         relatedEntityType: 'AuditReport',

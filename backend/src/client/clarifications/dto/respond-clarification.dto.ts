@@ -1,4 +1,4 @@
-import { IsString, MinLength, IsOptional } from 'class-validator';
+import { IsString, MinLength, IsOptional, IsUUID } from 'class-validator';
 
 export class RespondToClarificationDto {
   @IsString()

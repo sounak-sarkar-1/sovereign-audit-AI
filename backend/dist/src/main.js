@@ -8,7 +8,9 @@ const global_exception_filter_1 = require("./common/filters/global-exception.fil
 const transform_response_interceptor_1 = require("./common/interceptors/transform-response.interceptor");
 const logging_interceptor_1 = require("./common/interceptors/logging.interceptor");
 async function bootstrap() {
+    console.log('Bootstrap starting...');
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    console.log('Nest application created');
     app.setGlobalPrefix('api/v1');
     app.use(cookieParser());
     app.useGlobalPipes(new common_1.ValidationPipe({
@@ -22,8 +24,12 @@ async function bootstrap() {
         origin: process.env.FRONTEND_URL || 'http://localhost:5173',
         credentials: true,
     });
-    await app.listen(process.env.PORT ?? 3000);
+    const port = process.env.PORT ?? 3000;
+    console.log(`Attempting to listen on port ${port}...`);
+    await app.listen(port);
     console.log(`Application is running on: ${await app.getUrl()}`);
 }
-bootstrap();
+bootstrap().catch(err => {
+    console.error('Bootstrap failed!', err);
+});
 //# sourceMappingURL=main.js.map

@@ -119,6 +119,10 @@ function App() {
                       <Route path="settings" element={<Settings />} />
 
                       <Route path="/" element={<NavigateToDashboard />} />
+                      
+                      {/* Redirect old /dashboard to root */}
+                      <Route path="dashboard" element={<Navigate to="/" replace />} />
+                      
                       <Route path="*" element={<div>404 Not Found</div>} />
                     </Routes>
                   </MainLayout>

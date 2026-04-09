@@ -1,0 +1,8738 @@
+﻿
+> backend@0.0.1 build
+> nest build
+
+node.exe : [96msrc/adm
+in/ai-models/ai-models.
+controller.ts[0m:[93m
+2[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+ai-models.service"' 
+declares 
+'AdminAiModelsService' 
+locally, but it is not 
+exported.
+At C:\nvm4w\nodejs\npm.
+ps1:29 char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([96msrc/admi   
+ n/...s not exporte    
+d.:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+[7m2[0m import { 
+AdminAiModelsService } 
+from 
+'./ai-models.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/admin/ai-mod
+els/ai-models.service.t
+s[0m:[93m1[0m:[93m8
+5[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'AdminAiModelsService' 
+is declared here.
+[96msrc/admin/ai-model
+s/ai-models.module.ts[
+0m:[93m3[0m:[93m10[
+0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+ai-models.service"' 
+declares 
+'AdminAiModelsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+AdminAiModelsService } 
+from 
+'./ai-models.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/admin/ai-mod
+els/ai-models.service.t
+s[0m:[93m1[0m:[93m8
+5[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'AdminAiModelsService' 
+is declared here.
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m53
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m54
+[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m55
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m56
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m56
+[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m70
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m71
+[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m71
+[0m - 
+[91merror[0m[90m 
+TS2552: [0mCannot 
+find name 'nexport'. 
+Did you mean 'exports'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+
+  [96mnode_modules/@ty
+pes/node/module.d.ts[0
+m:[93m868[0m:[93m13
+[0m
+    [7m868[0m        
+ var exports: NodeJS.Mo
+dule["exports"];
+    [7m   [0m [96m  
+          ~~~~~~~[0m
+    'exports' is 
+declared here.
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m107
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      [0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m108
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       ~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m175
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m176
+[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/admin/ai-model
+s/ai-models.service.ts
+[0m:[93m1[0m:[93m217
+[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAiModelsService 
+{\n  private readonly 
+logger = new Logger(Adm
+inAiModelsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+[96msrc/admin/audits/a
+udits.controller.ts[0m
+:[93m2[0m:[93m10[0m
+ - [91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'AdminAuditsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+AdminAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/admin/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~[0m
+    
+'AdminAuditsService' 
+is declared here.
+[96msrc/admin/audits/a
+udits.module.ts[0m:[9
+3m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'AdminAuditsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+AdminAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/admin/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~[0m
+    
+'AdminAuditsService' 
+is declared here.
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2552: [0mCannot 
+find name 'nexport'. 
+Did you mean 'exports'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+
+  [96mnode_modules/@ty
+pes/node/module.d.ts[0
+m:[93m868[0m:[93m13
+[0m
+    [7m868[0m        
+ var exports: NodeJS.Mo
+dule["exports"];
+    [7m   [0m [96m  
+          ~~~~~~~[0m
+    'exports' is 
+declared here.
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m105[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+    [0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m106[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+     ~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m171[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m172[0m 
+- [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+  ~[0m
+[96msrc/admin/audits/a
+udits.service.ts[0m:[
+93m1[0m:[93m213[0m 
+- [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminAuditsService {\n 
+ private readonly 
+logger = new Logger(Adm
+inAuditsService.name);\
+n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                    
+[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.controller.t
+s[0m:[93m2[0m:[93m1
+0[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptional-requests.se
+rvice"' declares 'Admin
+ExceptionalRequestsServ
+ice' locally, but it 
+is not exported.
+
+[7m2[0m import { Admi
+nExceptionalRequestsSer
+vice } from './exceptio
+nal-requests.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+  [96msrc/admin/except
+ional-requests/exceptio
+nal-requests.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+    'AdminExceptionalRe
+questsService' is 
+declared here.
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.module.ts[0
+m:[93m3[0m:[93m10[0
+m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptional-requests.se
+rvice"' declares 'Admin
+ExceptionalRequestsServ
+ice' locally, but it 
+is not exported.
+
+[7m3[0m import { Admi
+nExceptionalRequestsSer
+vice } from './exceptio
+nal-requests.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+  [96msrc/admin/except
+ional-requests/exceptio
+nal-requests.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~[0m
+    'AdminExceptionalRe
+questsService' is 
+declared here.
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m53[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m54[
+0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m55[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m56[
+0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m56[
+0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m70[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m71[
+0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m71[
+0m - 
+[91merror[0m[90m 
+TS2552: [0mCannot 
+find name 'nexport'. 
+Did you mean 'exports'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+
+  [96mnode_modules/@ty
+pes/node/module.d.ts[0
+m:[93m868[0m:[93m13
+[0m
+    [7m868[0m        
+ var exports: NodeJS.Mo
+dule["exports"];
+    [7m   [0m [96m  
+          ~~~~~~~[0m
+    'exports' is 
+declared here.
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m118
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                 [0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m119
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                  ~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m197
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+    [0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m198
+[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     ~[0m
+[96msrc/admin/exceptio
+nal-requests/exceptiona
+l-requests.service.ts[
+0m:[93m1[0m:[93m239
+[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AdminExceptiona
+lRequestsService {\n  
+private readonly 
+logger = new Logger(Adm
+inExceptionalRequestsSe
+rvice.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+[0m
+[96msrc/admin/template
+s/templates.controller.
+ts[0m:[93m2[0m:[93m
+10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+templates.service"' 
+declares 'AdminTemplate
+sService' locally, but 
+it is not exported.
+
+[7m2[0m import { 
+AdminTemplatesService 
+} from 
+'./templates.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/admin/templa
+tes/templates.service.t
+s[0m:[93m1[0m:[93m8
+5[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'AdminTemplatesServ
+ice' is declared here.
+[96msrc/admin/template
+s/templates.module.ts[
+0m:[93m3[0m:[93m10[
+0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+templates.service"' 
+declares 'AdminTemplate
+sService' locally, but 
+it is not exported.
+
+[7m3[0m import { 
+AdminTemplatesService 
+} from 
+'./templates.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/admin/templa
+tes/templates.service.t
+s[0m:[93m1[0m:[93m8
+5[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'AdminTemplatesServ
+ice' is declared here.
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m53
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m54
+[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m55
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m56
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m56
+[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m70
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m71
+[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m71
+[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m108
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m109
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m177
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m178
+[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/admin/template
+s/templates.service.ts
+[0m:[93m1[0m:[93m219
+[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AdminTemplatesService 
+{\n  private readonly 
+logger = new Logger(Adm
+inTemplatesService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/auditor/audits
+/audits.controller.ts[
+0m:[93m2[0m:[93m10[
+0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'AuditorAuditsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+AuditorAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/auditor/audi
+ts/audits.service.ts[0
+m:[93m1[0m:[93m85[0
+m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'AuditorAuditsService' 
+is declared here.
+[96msrc/auditor/audits
+/audits.module.ts[0m:
+[93m3[0m:[93m10[0m 
+- [91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'AuditorAuditsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+AuditorAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/auditor/audi
+ts/audits.service.ts[0
+m:[93m1[0m:[93m85[0
+m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'AuditorAuditsService' 
+is declared here.
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m53[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m54[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m55[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m70[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m107[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      [0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m108[0m
+ - [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       ~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m175[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m176[0m
+ - [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/auditor/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m217[0m
+ - [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorAuditsService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+[96msrc/auditor/except
+ions/exceptions.control
+ler.ts[0m:[93m2[0m:
+[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptions.service"' 
+declares 'AuditorExcept
+ionsService' locally, 
+but it is not exported.
+
+[7m2[0m import { Audi
+torExceptionsService } 
+from 
+'./exceptions.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+  [96msrc/auditor/exce
+ptions/exceptions.servi
+ce.ts[0m:[93m1[0m:[
+93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+    'AuditorExceptionsS
+ervice' is declared 
+here.
+[96msrc/auditor/except
+ions/exceptions.module.
+ts[0m:[93m3[0m:[93m
+10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptions.service"' 
+declares 'AuditorExcept
+ionsService' locally, 
+but it is not exported.
+
+[7m3[0m import { Audi
+torExceptionsService } 
+from 
+'./exceptions.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+  [96msrc/auditor/exce
+ptions/exceptions.servi
+ce.ts[0m:[93m1[0m:[
+93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+    'AuditorExceptionsS
+ervice' is declared 
+here.
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m111[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+          [0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m112[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+           ~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m183[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+             [0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m184[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+              ~[0m
+[96msrc/auditor/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m225[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AuditorExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(AuditorExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+         [0m
+[96msrc/auditor/scope/
+scope.controller.ts[0m
+:[93m2[0m:[93m10[0m
+ - [91merror[0m[90m 
+TS2459: [0mModule 
+'"./scope.service"' 
+declares 
+'AuditorScopeService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+AuditorScopeService } 
+from './scope.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/auditor/scop
+e/scope.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'AuditorScopeService' 
+is declared here.
+[96msrc/auditor/scope/
+scope.module.ts[0m:[9
+3m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./scope.service"' 
+declares 
+'AuditorScopeService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+AuditorScopeService } 
+from './scope.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/auditor/scop
+e/scope.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'AuditorScopeService' 
+is declared here.
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m106[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m107[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m173[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m174[0m 
+- [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+    ~[0m
+[96msrc/auditor/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m215[0m 
+- [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+AuditorScopeService 
+{\n  private readonly 
+logger = new Logger(Aud
+itorScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                      
+[0m
+[96msrc/auth/auth.modu
+le.ts[0m:[93m19[0m:
+[93m7[0m - 
+[91merror[0m[90m 
+TS2322: [0mType 
+'(config: 
+ConfigService) => { 
+secret: string; 
+signOptions: { 
+expiresIn: string; }; 
+}' is not assignable 
+to type '(...args: 
+any[]) => 
+JwtModuleOptions | Prom
+ise<JwtModuleOptions>'.
+  Type '{ secret: 
+string; signOptions: { 
+expiresIn: string; }; 
+}' is not assignable 
+to type 
+'JwtModuleOptions | Pro
+mise<JwtModuleOptions>'
+.
+    Type '{ secret: 
+string; signOptions: { 
+expiresIn: string; }; 
+}' is not assignable 
+to type 
+'JwtModuleOptions'.
+      The types of 'sig
+nOptions.expiresIn' 
+are incompatible 
+between these types.
+        Type 'string' 
+is not assignable to 
+type 'number | 
+StringValue'.
+
+[7m19[0m       
+useFactory: (config: 
+ConfigService) => ({
+[7m  [0m [91m      
+~~~~~~~~~~[0m
+
+  [96mnode_modules/@ne
+stjs/jwt/dist/interface
+s/jwt-module-options.in
+terface.d.ts[0m:[93m2
+4[0m:[93m5[0m
+    [7m24[0m     
+useFactory?: (...args: 
+any[]) => Promise<JwtMo
+duleOptions> | 
+JwtModuleOptions;
+    [7m  [0m [96m   
+ ~~~~~~~~~~[0m
+    The expected type 
+comes from property 
+'useFactory' which is 
+declared here on type 
+'JwtModuleAsyncOptions'
+[96msrc/client/audits/
+audits.controller.ts[0
+m:[93m2[0m:[93m10[0
+m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'ClientAuditsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+ClientAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/client/audit
+s/audits.service.ts[0m
+:[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ClientAuditsService' 
+is declared here.
+[96msrc/client/audits/
+audits.module.ts[0m:[
+93m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'ClientAuditsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+ClientAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/client/audit
+s/audits.service.ts[0m
+:[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ClientAuditsService' 
+is declared here.
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m53[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m54[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m55[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m70[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m106[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m107[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m173[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m174[0m 
+- [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+    ~[0m
+[96msrc/client/audits/
+audits.service.ts[0m:
+[93m1[0m:[93m215[0m 
+- [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientAuditsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entAuditsService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                      
+[0m
+[96msrc/client/clarifi
+cations/clarifications.
+controller.ts[0m:[93m
+2[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+clarifications.service"
+' declares 'ClientClari
+ficationsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { Clie
+ntClarificationsService
+ } from './clarificatio
+ns.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+  [96msrc/client/clari
+fications/clarification
+s.service.ts[0m:[93m1
+[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+    'ClientClarificatio
+nsService' is declared 
+here.
+[96msrc/client/clarifi
+cations/clarifications.
+module.ts[0m:[93m3[0
+m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+clarifications.service"
+' declares 'ClientClari
+ficationsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { Clie
+ntClarificationsService
+ } from './clarificatio
+ns.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+  [96msrc/client/clari
+fications/clarification
+s.service.ts[0m:[93m1
+[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+    'ClientClarificatio
+nsService' is declared 
+here.
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m114[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+             [0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m115[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+              ~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m189[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                   [0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m190[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                    
+~[0m
+[96msrc/client/clarifi
+cations/clarifications.
+service.ts[0m:[93m1[
+0m:[93m231[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ClientClarifica
+tionsService {\n  
+private readonly 
+logger = new Logger(Cli
+entClarificationsServic
+e.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+               [0m
+[96msrc/client/insight
+s/insights.controller.t
+s[0m:[93m2[0m:[93m1
+0[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./insights.service"' 
+declares 'ClientInsight
+sService' locally, but 
+it is not exported.
+
+[7m2[0m import { 
+ClientInsightsService 
+} from 
+'./insights.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/client/insig
+hts/insights.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'ClientInsightsServ
+ice' is declared here.
+[96msrc/client/insight
+s/insights.module.ts[0
+m:[93m3[0m:[93m10[0
+m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./insights.service"' 
+declares 'ClientInsight
+sService' locally, but 
+it is not exported.
+
+[7m3[0m import { 
+ClientInsightsService 
+} from 
+'./insights.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/client/insig
+hts/insights.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'ClientInsightsServ
+ice' is declared here.
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m53[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m54[
+0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m55[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m56[
+0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m56[
+0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m70[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m71[
+0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m71[
+0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m108
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m109
+[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m177
+[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m178
+[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/client/insight
+s/insights.service.ts[
+0m:[93m1[0m:[93m219
+[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientInsightsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entInsightsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/client/reports
+/reports.controller.ts
+[0m:[93m2[0m:[93m10
+[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./reports.service"' 
+declares 
+'ClientReportsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+ClientReportsService } 
+from 
+'./reports.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/client/repor
+ts/reports.service.ts[
+0m:[93m1[0m:[93m85[
+0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'ClientReportsService' 
+is declared here.
+[96msrc/client/reports
+/reports.module.ts[0m:
+[93m3[0m:[93m10[0m 
+- [91merror[0m[90m 
+TS2459: [0mModule 
+'"./reports.service"' 
+declares 
+'ClientReportsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+ClientReportsService } 
+from 
+'./reports.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/client/repor
+ts/reports.service.ts[
+0m:[93m1[0m:[93m85[
+0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'ClientReportsService' 
+is declared here.
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m53[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m54[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m55[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m56[0m
+ - [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m56[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m70[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m71[0m
+ - [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m71[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m107[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      [0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m108[0
+m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       ~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m175[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m176[0
+m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/client/reports
+/reports.service.ts[0m
+:[93m1[0m:[93m217[0
+m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientReportsService 
+{\n  private readonly 
+logger = new Logger(Cli
+entReportsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+[96msrc/client/search/
+search.controller.ts[0
+m:[93m2[0m:[93m10[0
+m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./search.service"' 
+declares 
+'ClientSearchService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+ClientSearchService } 
+from 
+'./search.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/client/searc
+h/search.service.ts[0m
+:[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ClientSearchService' 
+is declared here.
+[96msrc/client/search/
+search.module.ts[0m:[
+93m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./search.service"' 
+declares 
+'ClientSearchService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+ClientSearchService } 
+from 
+'./search.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/client/searc
+h/search.service.ts[0m
+:[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ClientSearchService' 
+is declared here.
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m53[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m54[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m55[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m70[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m106[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m107[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m173[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m174[0m 
+- [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+    ~[0m
+[96msrc/client/search/
+search.service.ts[0m:
+[93m1[0m:[93m215[0m 
+- [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ClientSearchService 
+{\n  private readonly 
+logger = new Logger(Cli
+entSearchService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                      
+[0m
+[96msrc/manager/assign
+ments/assignments.contr
+oller.ts[0m:[93m2[0m
+:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+assignments.service"' 
+declares 'ManagerAssign
+mentsService' locally, 
+but it is not exported.
+
+[7m2[0m import { Mana
+gerAssignmentsService 
+} from './assignments.s
+ervice';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~[0m
+
+  [96msrc/manager/assi
+gnments/assignments.ser
+vice.ts[0m:[93m1[0m:
+[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+    'ManagerAssignments
+Service' is declared 
+here.
+[96msrc/manager/assign
+ments/assignments.modul
+e.ts[0m:[93m3[0m:[9
+3m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+assignments.service"' 
+declares 'ManagerAssign
+mentsService' locally, 
+but it is not exported.
+
+[7m3[0m import { Mana
+gerAssignmentsService 
+} from './assignments.s
+ervice';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~[0m
+
+  [96msrc/manager/assi
+gnments/assignments.ser
+vice.ts[0m:[93m1[0m:
+[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~[0m
+    'ManagerAssignments
+Service' is declared 
+here.
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m112[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+           [0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m113[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+            ~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m185[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+               [0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m186[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                ~[0m
+[96msrc/manager/assign
+ments/assignments.servi
+ce.ts[0m:[93m1[0m:[
+93m227[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerAssignme
+ntsService {\n  
+private readonly 
+logger = new Logger(Man
+agerAssignmentsService.
+name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+           [0m
+[96msrc/manager/audits
+/audits.controller.ts[
+0m:[93m2[0m:[93m10[
+0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'ManagerAuditsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+ManagerAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/manager/audi
+ts/audits.service.ts[0
+m:[93m1[0m:[93m85[0
+m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'ManagerAuditsService' 
+is declared here.
+[96msrc/manager/audits
+/audits.module.ts[0m:
+[93m3[0m:[93m10[0m 
+- [91merror[0m[90m 
+TS2459: [0mModule 
+'"./audits.service"' 
+declares 
+'ManagerAuditsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+ManagerAuditsService } 
+from 
+'./audits.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/manager/audi
+ts/audits.service.ts[0
+m:[93m1[0m:[93m85[0
+m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'ManagerAuditsService' 
+is declared here.
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m53[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m54[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m55[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m56[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m70[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m71[0m 
+- [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m107[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      [0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m108[0m
+ - [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       ~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m175[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m176[0m
+ - [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/manager/audits
+/audits.service.ts[0m:
+[93m1[0m:[93m217[0m
+ - [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerAuditsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerAuditsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+[96msrc/manager/clarif
+ications/clarifications
+.controller.ts[0m:[93
+m2[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+clarifications.service"
+' declares 'ManagerClar
+ificationsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { Mana
+gerClarificationsServic
+e } from './clarificati
+ons.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+  [96msrc/manager/clar
+ifications/clarificatio
+ns.service.ts[0m:[93m
+1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+    'ManagerClarificati
+onsService' is 
+declared here.
+[96msrc/manager/clarif
+ications/clarifications
+.module.ts[0m:[93m3[
+0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+clarifications.service"
+' declares 'ManagerClar
+ificationsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { Mana
+gerClarificationsServic
+e } from './clarificati
+ons.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~[0m
+
+  [96msrc/manager/clar
+ifications/clarificatio
+ns.service.ts[0m:[93m
+1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~[0m
+    'ManagerClarificati
+onsService' is 
+declared here.
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m115[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+              [0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m116[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+               ~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m191[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                     
+[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m192[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                      
+~[0m
+[96msrc/manager/clarif
+ications/clarifications
+.service.ts[0m:[93m1
+[0m:[93m233[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerClarific
+ationsService {\n  
+private readonly 
+logger = new Logger(Man
+agerClarificationsServi
+ce.name);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                 [0m
+[96msrc/manager/except
+ions/exceptions.control
+ler.ts[0m:[93m2[0m:
+[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptions.service"' 
+declares 'ManagerExcept
+ionsService' locally, 
+but it is not exported.
+
+[7m2[0m import { Mana
+gerExceptionsService } 
+from 
+'./exceptions.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+  [96msrc/manager/exce
+ptions/exceptions.servi
+ce.ts[0m:[93m1[0m:[
+93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+    'ManagerExceptionsS
+ervice' is declared 
+here.
+[96msrc/manager/except
+ions/exceptions.module.
+ts[0m:[93m3[0m:[93m
+10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+exceptions.service"' 
+declares 'ManagerExcept
+ionsService' locally, 
+but it is not exported.
+
+[7m3[0m import { Mana
+gerExceptionsService } 
+from 
+'./exceptions.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+  [96msrc/manager/exce
+ptions/exceptions.servi
+ce.ts[0m:[93m1[0m:[
+93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+    'ManagerExceptionsS
+ervice' is declared 
+here.
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m111[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+          [0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m112[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+           ~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m183[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+             [0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m184[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+              ~[0m
+[96msrc/manager/except
+ions/exceptions.service
+.ts[0m:[93m1[0m:[93
+m225[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class ManagerExceptio
+nsService {\n  private 
+readonly logger = new L
+ogger(ManagerExceptions
+Service.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+         [0m
+[96msrc/manager/report
+s/reports.controller.ts
+[0m:[93m2[0m:[93m10
+[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./reports.service"' 
+declares 'ManagerReport
+sService' locally, but 
+it is not exported.
+
+[7m2[0m import { 
+ManagerReportsService 
+} from 
+'./reports.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/manager/repo
+rts/reports.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'ManagerReportsServ
+ice' is declared here.
+[96msrc/manager/report
+s/reports.module.ts[0m
+:[93m3[0m:[93m10[0m
+ - [91merror[0m[90m 
+TS2459: [0mModule 
+'"./reports.service"' 
+declares 'ManagerReport
+sService' locally, but 
+it is not exported.
+
+[7m3[0m import { 
+ManagerReportsService 
+} from 
+'./reports.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+  [96msrc/manager/repo
+rts/reports.service.ts
+[0m:[93m1[0m:[93m85
+[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~~[0m
+    'ManagerReportsServ
+ice' is declared here.
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m53[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m54[0
+m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m55[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m56[0
+m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m56[0
+m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m70[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m71[0
+m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m71[0
+m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m108[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m109[
+0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m177[
+0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+       [0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m178[
+0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+        ~[0m
+[96msrc/manager/report
+s/reports.service.ts[0
+m:[93m1[0m:[93m219[
+0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerReportsService 
+{\n  private readonly 
+logger = new Logger(Man
+agerReportsService.name
+);\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/manager/scope/
+scope.controller.ts[0m
+:[93m2[0m:[93m10[0m
+ - [91merror[0m[90m 
+TS2459: [0mModule 
+'"./scope.service"' 
+declares 
+'ManagerScopeService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+ManagerScopeService } 
+from './scope.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/manager/scop
+e/scope.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ManagerScopeService' 
+is declared here.
+[96msrc/manager/scope/
+scope.module.ts[0m:[9
+3m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./scope.service"' 
+declares 
+'ManagerScopeService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+ManagerScopeService } 
+from './scope.service';
+[7m [0m [91m        
+ 
+~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/manager/scop
+e/scope.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~~~~~~~[0m
+    
+'ManagerScopeService' 
+is declared here.
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m106[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m107[0m 
+- [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m173[0m 
+- [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+   [0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m174[0m 
+- [91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+    ~[0m
+[96msrc/manager/scope/
+scope.service.ts[0m:[
+93m1[0m:[93m215[0m 
+- [91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+ManagerScopeService 
+{\n  private readonly 
+logger = new Logger(Man
+agerScopeService.name);
+\n  // TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                      
+[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.controller.ts
+[0m:[93m2[0m:[93m10
+[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./ai-jobs.service"' 
+declares 
+'AiJobsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+AiJobsService } from 
+'./ai-jobs.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~[0m
+
+  [96msrc/shared/ai-jo
+bs/ai-jobs.service.ts[
+0m:[93m1[0m:[93m85[
+0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~[0m
+    'AiJobsService' is 
+declared here.
+[96msrc/shared/ai-jobs
+/ai-jobs.module.ts[0m:
+[93m3[0m:[93m10[0m 
+- [91merror[0m[90m 
+TS2459: [0mModule 
+'"./ai-jobs.service"' 
+declares 
+'AiJobsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+AiJobsService } from 
+'./ai-jobs.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~[0m
+
+  [96msrc/shared/ai-jo
+bs/ai-jobs.service.ts[
+0m:[93m1[0m:[93m85[
+0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~~[0m
+    'AiJobsService' is 
+declared here.
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m53[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m54[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m55[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m56[0m
+ - [91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m56[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m70[0m
+ - [91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m71[0m
+ - [91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m71[0m
+ - [91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m100[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                      
+[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m101[0
+m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m161[0
+m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+              [0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m162[0
+m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+               ~[0m
+[96msrc/shared/ai-jobs
+/ai-jobs.service.ts[0m
+:[93m1[0m:[93m203[0
+m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class AiJobsService 
+{\n  private readonly 
+logger = new Logger(AiJ
+obsService.name);\n  
+// TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+          [0m
+[96msrc/shared/files/f
+iles.controller.ts[0m:
+[93m2[0m:[93m10[0m 
+- [91merror[0m[90m 
+TS2459: [0mModule 
+'"./files.service"' 
+declares 
+'FilesService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+FilesService } from 
+'./files.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~[0m
+
+  [96msrc/shared/files
+/files.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~[0m
+    'FilesService' is 
+declared here.
+[96msrc/shared/files/f
+iles.module.ts[0m:[93
+m3[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule 
+'"./files.service"' 
+declares 
+'FilesService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+FilesService } from 
+'./files.service';
+[7m [0m [91m        
+ ~~~~~~~~~~~~[0m
+
+  [96msrc/shared/files
+/files.service.ts[0m:
+[93m1[0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           
+~~~~~~~~~~~~[0m
+    'FilesService' is 
+declared here.
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m99[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                     
+[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m100[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                      
+~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m159[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+            [0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m160[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+             ~[0m
+[96msrc/shared/files/f
+iles.service.ts[0m:[9
+3m1[0m:[93m201[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class FilesService 
+{\n  private readonly 
+logger = new Logger(Fil
+esService.name);\n  // 
+TODO: Implement 
+business logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+        [0m
+[96msrc/shared/notific
+ations/notifications.co
+ntroller.ts[0m:[93m2
+[0m:[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+notifications.service"'
+ declares 
+'NotificationsService' 
+locally, but it is not 
+exported.
+
+[7m2[0m import { 
+NotificationsService } 
+from './notifications.s
+ervice';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/shared/notif
+ications/notifications.
+service.ts[0m:[93m1[
+0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'NotificationsService' 
+is declared here.
+[96msrc/shared/notific
+ations/notifications.mo
+dule.ts[0m:[93m3[0m:
+[93m10[0m - 
+[91merror[0m[90m 
+TS2459: [0mModule '"./
+notifications.service"'
+ declares 
+'NotificationsService' 
+locally, but it is not 
+exported.
+
+[7m3[0m import { 
+NotificationsService } 
+from './notifications.s
+ervice';
+[7m [0m [91m        
+ ~~~~~~~~~~~~~~~~~~~~[
+0m
+
+  [96msrc/shared/notif
+ications/notifications.
+service.ts[0m:[93m1[
+0m:[93m85[0m
+    [7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+    [7m [0m [96m    
+                       
+                       
+                       
+           ~~~~~~~~~~~~
+~~~~~~~~[0m
+    
+'NotificationsService' 
+is declared here.
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m53[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                     
+[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m54[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                      
+~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m55[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m56[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m56[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+ ~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m70[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+Found 316 error(s).
+
+[7m [0m [91m        
+                       
+                       
+               [0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m71[0m - 
+[91merror[0m[90m 
+TS1435: [0mUnknown 
+keyword or identifier. 
+Did you mean 'export'?
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m71[0m - 
+[91merror[0m[90m 
+TS2304: [0mCannot 
+find name 'nexport'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                
+~~~~~~~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m107[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+      [0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m108[0m - 
+[91merror[0m[90m 
+TS1434: [0mUnexpected 
+keyword or identifier.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+       ~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m175[0m - 
+[91merror[0m[90m 
+TS1127: [0mInvalid 
+character.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+     [0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m176[0m - 
+[91merror[0m[90m 
+TS2300: [0mDuplicate 
+identifier 'n'.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+      ~[0m
+[96msrc/shared/notific
+ations/notifications.se
+rvice.ts[0m:[93m1[0m
+:[93m217[0m - 
+[91merror[0m[90m 
+TS1005: [0m'}' 
+expected.
+
+[7m1[0m import { 
+Injectable, Logger } 
+from '@nestjs/common';\
+n\n@Injectable()\nexpor
+t class 
+NotificationsService 
+{\n  private readonly 
+logger = new Logger(Not
+ificationsService.name)
+;\n  // TODO: 
+Implement business 
+logic\n}\n
+[7m [0m [91m        
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+ [0m
+

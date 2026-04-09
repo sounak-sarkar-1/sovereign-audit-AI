@@ -12,7 +12,8 @@ import {
   FileIcon,
   Loader2
 } from 'lucide-react';
-import { fileService, FileEntityType, UploadedFile } from '@/services/fileService';
+import { fileService, FileEntityType } from '@/services/fileService';
+import type { UploadedFile } from '@/services/fileService';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

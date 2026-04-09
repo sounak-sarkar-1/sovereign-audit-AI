@@ -70,7 +70,7 @@ let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
             await manager.save(report.audit);
             await this.notificationsService.create({
                 userId: report.audit.managerId,
-                type: notification_entity_1.NotificationType.FEEDBACK_RECEIVED,
+                type: notification_entity_1.NotificationType.CLIENT_FEEDBACK_RECEIVED,
                 title: 'Report Feedback Received',
                 message: `Client has submitted feedback for the audit report of ${report.audit.name}`,
                 relatedEntityType: 'AuditReport',

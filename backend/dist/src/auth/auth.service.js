@@ -34,14 +34,19 @@ let AuthService = AuthService_1 = class AuthService {
         this.logger = new common_1.Logger(AuthService_1.name);
     }
     async login(loginDto) {
+        console.log(`Login attempt for email: ${loginDto.email}`);
         const user = await this.usersService.findByEmail(loginDto.email);
         if (!user) {
+            console.log(`User not found: ${loginDto.email}`);
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
+        console.log(`User found: ${user.email}, Role: ${user.role}, Status: ${user.status}`);
         if (user.status === 'inactive') {
+            console.log(`User account is inactive: ${user.email}`);
             throw new common_1.ForbiddenException('Account is inactive');
         }
         const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+        console.log(`Password valid: ${isPasswordValid}`);
         if (!isPasswordValid) {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }

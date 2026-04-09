@@ -13,6 +13,7 @@ const clarifications_controller_1 = require("./clarifications.controller");
 const clarifications_service_1 = require("./clarifications.service");
 const clarification_request_entity_1 = require("../../database/entities/clarification-request.entity");
 const clarification_response_entity_1 = require("../../database/entities/clarification-response.entity");
+const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
 let ClientClarificationsModule = class ClientClarificationsModule {
 };
@@ -20,7 +21,7 @@ exports.ClientClarificationsModule = ClientClarificationsModule;
 exports.ClientClarificationsModule = ClientClarificationsModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([clarification_request_entity_1.ClarificationRequest, clarification_response_entity_1.ClarificationResponse]),
+            typeorm_1.TypeOrmModule.forFeature([clarification_request_entity_1.ClarificationRequest, clarification_response_entity_1.ClarificationResponse, uploaded_file_entity_1.UploadedFile]),
             notifications_module_1.NotificationsModule,
         ],
         controllers: [clarifications_controller_1.ClientClarificationsController],

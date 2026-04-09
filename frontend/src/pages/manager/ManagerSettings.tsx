@@ -12,22 +12,23 @@ import {
   Lock,
   Globe
 } from 'lucide-react';
-import { managerService } from '@/services/managerService';
 import { 
   Card, 
   CardContent, 
   CardHeader, 
   CardTitle, 
   CardDescription 
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+} from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Switch } from '../../components/ui/switch';
+import { Badge } from '../../components/ui/badge';
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
-} from '@/components/ui/tabs';
+} from '../../components/ui/tabs';
+import { managerService } from '../../services/managerService';
 import { toast } from 'sonner';
 
 const ManagerSettings: React.FC = () => {

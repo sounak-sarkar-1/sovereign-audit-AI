@@ -15,22 +15,39 @@ import { AiJob } from '../../database/entities/ai-job.entity';
 export class AiJobsService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(AiJobsService.name);
   private boss: PgBoss;
+  private ready: Promise<void>;
+  private resolveReady: () => void;
 
   constructor(
     private readonly configService: ConfigService,
     @InjectRepository(AiJob)
     private readonly aiJobRepository: Repository<AiJob>,
-  ) {}
+  ) {
+    this.ready = new Promise((resolve) => {
+      this.resolveReady = resolve;
+    });
+  }
 
   async onModuleInit() {
+    this.logger.log('AI Jobs Module Init started');
     const dbUrl = this.configService.get<string>('database.url');
     try {
+      this.logger.log(`Initializing PgBoss...`);
       this.boss = new PgBoss(dbUrl);
-      this.boss.on('error', (error) => this.logger.error(error));
-      await this.boss.start();
-      this.logger.log('PgBoss started');
+      this.boss.on('error', (error) => this.logger.error(`PgBoss Error: ${error.message}`, error.stack));
+      
+      this.logger.log('Starting PgBoss in background...');
+      this.boss.start()
+        .then(() => {
+          this.logger.log('PgBoss started successfully, resolving ready signal');
+          this.resolveReady();
+        })
+        .catch((err) => {
+          this.logger.error(`Failed to start PgBoss: ${err.message}`, err.stack);
+        });
+        
     } catch (error) {
-      this.logger.error(`Failed to start PgBoss: ${error.message}`);
+      this.logger.error(`Critical PgBoss Initialization Failure: ${error.message}`, error.stack);
     }
   }
 
@@ -42,10 +59,12 @@ export class AiJobsService implements OnModuleInit, OnModuleDestroy {
   }
 
   async send(queue: string, data: any, options?: any) {
+    await this.ready;
     return await this.boss.send(queue, data, options);
   }
 
   async work<T = any>(queue: string, handler: WorkHandler<T>) {
+    await this.ready;
     return await this.boss.work(queue, handler);
   }
 

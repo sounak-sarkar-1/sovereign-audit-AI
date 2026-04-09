@@ -25,17 +25,29 @@ let AiJobsService = AiJobsService_1 = class AiJobsService {
         this.configService = configService;
         this.aiJobRepository = aiJobRepository;
         this.logger = new common_1.Logger(AiJobsService_1.name);
+        this.ready = new Promise((resolve) => {
+            this.resolveReady = resolve;
+        });
     }
     async onModuleInit() {
+        this.logger.log('AI Jobs Module Init started');
         const dbUrl = this.configService.get('database.url');
         try {
+            this.logger.log(`Initializing PgBoss...`);
             this.boss = new pg_boss_1.PgBoss(dbUrl);
-            this.boss.on('error', (error) => this.logger.error(error));
-            await this.boss.start();
-            this.logger.log('PgBoss started');
+            this.boss.on('error', (error) => this.logger.error(`PgBoss Error: ${error.message}`, error.stack));
+            this.logger.log('Starting PgBoss in background...');
+            this.boss.start()
+                .then(() => {
+                this.logger.log('PgBoss started successfully, resolving ready signal');
+                this.resolveReady();
+            })
+                .catch((err) => {
+                this.logger.error(`Failed to start PgBoss: ${err.message}`, err.stack);
+            });
         }
         catch (error) {
-            this.logger.error(`Failed to start PgBoss: ${error.message}`);
+            this.logger.error(`Critical PgBoss Initialization Failure: ${error.message}`, error.stack);
         }
     }
     async onModuleDestroy() {
@@ -45,9 +57,11 @@ let AiJobsService = AiJobsService_1 = class AiJobsService {
         }
     }
     async send(queue, data, options) {
+        await this.ready;
         return await this.boss.send(queue, data, options);
     }
     async work(queue, handler) {
+        await this.ready;
         return await this.boss.work(queue, handler);
     }
     async findOne(id) {

@@ -43,6 +43,7 @@ const exceptions_module_2 = require("./manager/exceptions/exceptions.module");
 const reports_module_2 = require("./manager/reports/reports.module");
 const scope_module_2 = require("./manager/scope/scope.module");
 const exceptional_requests_module_2 = require("./manager/exceptional-requests/exceptional-requests.module");
+const settings_module_1 = require("./manager/settings/settings.module");
 const ai_jobs_module_1 = require("./shared/ai-jobs/ai-jobs.module");
 const files_module_1 = require("./shared/files/files.module");
 const notifications_module_1 = require("./shared/notifications/notifications.module");
@@ -94,7 +95,7 @@ exports.AppModule = AppModule = __decorate([
             reports_module_2.ManagerReportsModule,
             scope_module_2.ManagerScopeModule,
             exceptional_requests_module_2.ManagerExceptionalRequestsModule,
-            ManagerSettingsModule,
+            settings_module_1.ManagerSettingsModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

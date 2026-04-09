@@ -1,4 +1,3 @@
-```typescript
 import { Controller, Get, UseGuards, Request } from '@nestjs/common';
 import { ClientInsightsService } from './insights.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -18,4 +17,3 @@ export class ClientInsightsController {
     return this.service.getGlobalInsights(req.user.id);
   }
 }
-```

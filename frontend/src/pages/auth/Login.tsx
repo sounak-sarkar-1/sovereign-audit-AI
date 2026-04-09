@@ -52,7 +52,8 @@ export default function LoginPage() {
       const { accessToken, user } = response.data.data;
       setAuth(user, accessToken, values.tenantSlug);
 
-      const from = (location.state as any)?.from?.pathname || '/dashboard';
+      let from = (location.state as any)?.from?.pathname || '/';
+      if (from === '/dashboard') from = '/';
       navigate(from, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email, password, or tenant ID');

@@ -61,7 +61,7 @@ const adminNavItems = [
 ];
 
 const managerNavItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/manager/audits' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/manager/dashboard' },
   { icon: ClipboardList, label: 'Audit Portfolio', path: '/manager/audits' },
   { icon: MessageSquare, label: 'Clarifications', path: '/manager/clarifications' },
   { icon: Map, label: 'Heatmap', path: '/manager/heatmap' },

@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { 
   History, 
   Search, 
-  Filter, 
   User, 
   Database, 
   Activity,
@@ -13,6 +12,7 @@ import {
   Info
 } from 'lucide-react';
 import api from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

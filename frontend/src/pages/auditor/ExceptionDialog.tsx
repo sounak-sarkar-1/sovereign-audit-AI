@@ -12,7 +12,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, ShieldAlert, Upload, X, FileIcon } from 'lucide-react';
 import type { ScopeLineItemExtended } from '@/types/scope';
-import { fileService, FileEntityType, UploadedFile } from '@/services/fileService';
+import { fileService, FileEntityType } from '@/services/fileService';
+import type { UploadedFile } from '@/services/fileService';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 

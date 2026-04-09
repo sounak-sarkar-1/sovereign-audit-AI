@@ -8,6 +8,8 @@ export declare class AiJobsService implements OnModuleInit, OnModuleDestroy {
     private readonly aiJobRepository;
     private readonly logger;
     private boss;
+    private ready;
+    private resolveReady;
     constructor(configService: ConfigService, aiJobRepository: Repository<AiJob>);
     onModuleInit(): Promise<void>;
     onModuleDestroy(): Promise<void>;

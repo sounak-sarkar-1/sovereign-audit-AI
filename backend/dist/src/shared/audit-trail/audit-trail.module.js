@@ -7,16 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuditTrailModule = void 0;
+const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const audit_trail_log_entity_1 = require("../../database/entities/audit-trail-log.entity");
+const audit_trail_service_1 = require("./audit-trail.service");
 const audit_trail_controller_1 = require("../../admin/audit-trail/audit-trail.controller");
 let AuditTrailModule = class AuditTrailModule {
 };
 exports.AuditTrailModule = AuditTrailModule;
 exports.AuditTrailModule = AuditTrailModule = __decorate([
-    Module({
-        imports: [TypeOrmModule.forFeature([AuditTrailLog])],
+    (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([audit_trail_log_entity_1.AuditTrailLog])],
         controllers: [audit_trail_controller_1.AdminAuditTrailController],
-        providers: [AuditTrailService],
-        exports: [AuditTrailService],
+        providers: [audit_trail_service_1.AuditTrailService],
+        exports: [audit_trail_service_1.AuditTrailService],
     })
 ], AuditTrailModule);
 //# sourceMappingURL=audit-trail.module.js.map

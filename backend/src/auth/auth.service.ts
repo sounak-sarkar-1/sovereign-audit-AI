@@ -26,16 +26,21 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
+    console.log(`Login attempt for email: ${loginDto.email}`);
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) {
+      console.log(`User not found: ${loginDto.email}`);
       throw new UnauthorizedException('Invalid credentials');
     }
+    console.log(`User found: ${user.email}, Role: ${user.role}, Status: ${user.status}`);
 
     if (user.status === 'inactive') {
+      console.log(`User account is inactive: ${user.email}`);
       throw new ForbiddenException('Account is inactive');
     }
 
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+    console.log(`Password valid: ${isPasswordValid}`);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

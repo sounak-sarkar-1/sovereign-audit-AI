@@ -1,13 +1,15 @@
 import api from '../lib/api';
 
-export enum FileEntityType {
-  LINE_ITEM_EVIDENCE = 'line_item_evidence',
-  EXCEPTION_EVIDENCE = 'exception_evidence',
-  SOP_DOCUMENT = 'sop_document',
-  AUDIT_REPORT = 'audit_report',
-  EXCEPTIONAL_ACTION_EVIDENCE = 'exceptional_action_evidence',
-  CLARIFICATION_ATTACHMENT = 'clarification_attachment',
-}
+export const FileEntityType = {
+  LINE_ITEM_EVIDENCE: 'line_item_evidence',
+  EXCEPTION_EVIDENCE: 'exception_evidence',
+  SOP_DOCUMENT: 'sop_document',
+  AUDIT_REPORT: 'audit_report',
+  EXCEPTIONAL_ACTION_EVIDENCE: 'exceptional_action_evidence',
+  CLARIFICATION_ATTACHMENT: 'clarification_attachment',
+} as const;
+
+export type FileEntityType = typeof FileEntityType[keyof typeof FileEntityType];
 
 export interface UploadedFile {
   id: string;
