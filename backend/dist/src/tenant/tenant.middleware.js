@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 let TenantMiddleware = class TenantMiddleware {
     async use(req, _res, next) {
         const slug = req.headers['x-tenant-slug'];
-        const schema = slug ? `tenant_${slug}` : 'public';
+        const schema = slug ? slug : 'public';
         req.tenantSlug = slug;
         req.tenantSchema = schema;
         next();

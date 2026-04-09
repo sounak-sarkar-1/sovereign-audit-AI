@@ -39,7 +39,7 @@ let TenantGuard = class TenantGuard {
             });
         }
         request.tenantSlug = slug;
-        request.tenantSchema = `tenant_${slug}`;
+        request.tenantSchema = slug;
         return true;
     }
 };
