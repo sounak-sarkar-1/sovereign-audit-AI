@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 export class TenantMiddleware implements NestMiddleware {
   async use(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const slug = req.headers['x-tenant-slug'] as string | undefined;
-    const schema = slug ? `tenant_${slug}` : 'public';
+    const schema = slug ? slug : 'public';
 
     // Attach to request for legacy/guard support
     (req as any).tenantSlug = slug;

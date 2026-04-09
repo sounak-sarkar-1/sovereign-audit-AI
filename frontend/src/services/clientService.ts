@@ -12,9 +12,19 @@ export const clientService = {
     return response.data;
   },
 
+  getAuditProgress: async (auditId: string) => {
+    const response = await api.get(`/client/audits/${auditId}/progress`);
+    return response.data;
+  },
+
   // Insights
-  getInsights: async () => {
-    const response = await api.get('/client/insights');
+  getInsights: async (params?: { auditId?: string }) => {
+    const response = await api.get('/client/insights', { params });
+    return response.data;
+  },
+
+  getAuditInsights: async (auditId: string) => {
+    const response = await api.get(`/client/insights`, { params: { auditId } });
     return response.data;
   },
 

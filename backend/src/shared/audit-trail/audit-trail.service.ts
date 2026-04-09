@@ -8,6 +8,7 @@ export enum AuditAction {
   USER_UPDATED = 'USER_UPDATED',
   USER_DELETED = 'USER_DELETED',
   AUDIT_CREATED = 'AUDIT_CREATED',
+  AUDIT_UPDATED = 'AUDIT_UPDATED',
   AUDIT_STARTED = 'AUDIT_STARTED',
   SCOPE_DEFINED = 'SCOPE_DEFINED',
   AUDITOR_ASSIGNED = 'AUDITOR_ASSIGNED',
@@ -31,6 +32,7 @@ export enum AuditAction {
   TEMPLATE_UPDATED = 'TEMPLATE_UPDATED',
   TEMPLATE_DELETED = 'TEMPLATE_DELETED',
   CLARIFICATION_CLOSED = 'CLARIFICATION_CLOSED',
+  CLARIFICATION_RESPONDED = 'CLARIFICATION_RESPONDED',
 }
 
 interface LogEntry {
@@ -77,6 +79,8 @@ export class AuditTrailService {
     entityType?: string;
     actorId?: string;
     search?: string;
+    startDate?: string;
+    endDate?: string;
   }): Promise<{ data: AuditTrailLog[]; meta: any }> {
     const page = query.page || 1;
     const limit = query.limit || 20;
@@ -104,6 +108,14 @@ export class AuditTrailService {
       qb.andWhere('(log.entityId ILIKE :search OR CAST(log.payload AS TEXT) ILIKE :search)', { 
         search: `%${query.search}%` 
       });
+    }
+
+    if (query.startDate) {
+      qb.andWhere('log.createdAt >= :startDate', { startDate: query.startDate });
+    }
+
+    if (query.endDate) {
+      qb.andWhere('log.createdAt <= :endDate', { endDate: query.endDate });
     }
 
     const [items, total] = await qb.getManyAndCount();

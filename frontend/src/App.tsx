@@ -24,6 +24,7 @@ import AdminAuditLogs from './pages/admin/AdminAuditLogs';
 import AdminMappings from './pages/admin/AdminMappings';
 import BusinessUnitsList from './pages/admin/BusinessUnitsList';
 import AccessControl from './pages/admin/AccessControl';
+import AdminAuditDetail from './pages/admin/AdminAuditDetail';
 import Settings from './pages/admin/Settings';
 import EngagementChat from './pages/shared/EngagementChat';
 
@@ -82,6 +83,7 @@ function App() {
                       <Route path="admin/templates/new" element={<TemplateEditor />} />
                       <Route path="admin/templates/:id" element={<TemplateEditor />} />
                       <Route path="admin/audit-oversight" element={<AuditOversight />} />
+                      <Route path="admin/audits/:id" element={<AdminAuditDetail />} />
                       <Route path="admin/exceptional-requests" element={<ExceptionalRequestsList />} />
                       <Route path="admin/access-control" element={<AccessControl />} />
                       <Route path="admin/mappings" element={<AdminMappings />} />
@@ -92,6 +94,7 @@ function App() {
                       <Route path="manager/dashboard" element={<Navigate to="/manager/audits" replace />} />
                       <Route path="manager/audits/new" element={<NewAuditForm />} />
                       <Route path="manager/audits/:id" element={<AuditDetail />} />
+                      <Route path="manager/audits/:id/edit" element={<AuditDetail editMode={true} />} />
                       <Route path="manager/heatmap" element={<HeatmapPage />} />
                       <Route path="manager/clarifications" element={<ClarificationsPage />} />
                       <Route path="manager/chats/:id" element={<EngagementChat />} />
@@ -111,7 +114,7 @@ function App() {
                       <Route path="client/clarifications" element={<ClientClarifications />} />
                       <Route path="client/reports" element={<ClientReportsList />} />
                       <Route path="client/reports/:id/review" element={<ClientReportReview />} />
-                      <Route path="client/remediation" element={<CorrectiveActionPlans />} />
+                      <Route path="client/corrective-actions" element={<CorrectiveActionPlans />} />
                       <Route path="client/chat/:id" element={<EngagementChat />} />
                       <Route path="client/settings" element={<ClientSettings />} />
 

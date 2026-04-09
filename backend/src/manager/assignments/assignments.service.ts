@@ -13,6 +13,8 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 import { ManagerAuditorMapping } from '../../database/entities/manager-auditor-mapping.entity';
 import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import { NotificationsService } from '../../shared/notifications/notifications.service';
+import { NotificationType } from '../../database/entities/notification.entity';
 import { AssignAuditorDto } from './dto/assign-auditor.dto';
 import { AssignLineItemDto } from './dto/assign-line-item.dto';
 
@@ -34,8 +36,17 @@ export class ManagerAssignmentsService {
     @InjectRepository(ManagerAuditorMapping)
     private readonly mappingRepo: Repository<ManagerAuditorMapping>,
     private readonly auditTrailService: AuditTrailService,
+    private readonly notificationsService: NotificationsService,
     private readonly dataSource: DataSource,
   ) {}
+
+  private async getAuditBuName(abuId: string) {
+    const abu = await this.abuRepo.findOne({
+      where: { id: abuId },
+      relations: ['businessUnit'],
+    });
+    return abu?.businessUnit?.name || 'Unknown BU';
+  }
 
   async getAssignments(auditId: string) {
     const audit = await this.auditRepo.findOne({
@@ -70,14 +81,28 @@ export class ManagerAssignmentsService {
     // Filter liAssignments for this audit
     const filteredLiAssignments = liAssignments.filter(la => la.auditScopeLineItem?.auditId === auditId);
 
+    // Derive unique auditors from buAssignments
+    const auditors = Array.from(
+      new Map(buAssignments.map(a => [a.auditorId, a.auditor])).values()
+    );
+
+    // Get all auditors mapped to this manager
+    const availableAuditors = await this.mappingRepo.find({
+      where: { managerId: audit.managerId, deletedAt: IsNull() },
+      relations: ['auditor'],
+    });
+
     return {
       audit,
       businessUnits: bus,
       buAssignments,
+      auditors,
+      availableAuditors: availableAuditors.map(m => m.auditor),
       lineItems: lineItems.map(li => ({
         ...li,
         assignment: filteredLiAssignments.find(la => la.auditScopeLineItemId === li.id),
       })),
+      lineItemAssignments: filteredLiAssignments,
     };
   }
 
@@ -123,6 +148,16 @@ export class ManagerAssignmentsService {
       entityType: 'AuditorAuditAssignment',
       entityId: saved.id,
       metadata: { auditId, auditorId: dto.auditorId, abuId: dto.auditBusinessUnitId },
+    });
+
+    await this.notificationsService.create({
+      userId: dto.auditorId,
+      type: NotificationType.AUDIT_ASSIGNED,
+      title: 'You have been assigned to an audit',
+      message: `You have been assigned to audit "${audit.name}" for ${await this.getAuditBuName(dto.auditBusinessUnitId)}`,
+      relatedEntityType: 'AuditorAuditAssignment',
+      relatedEntityId: saved.id,
+      metadata: { auditId },
     });
 
     return saved;

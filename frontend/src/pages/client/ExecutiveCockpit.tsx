@@ -92,7 +92,7 @@ const ExecutiveCockpit: React.FC = () => {
            </Button>
            <Button 
                 className="rounded-full bg-primary hover:bg-primary/90 shadow-sm gap-2"
-                onClick={() => navigate('/client/remediation')}
+                onClick={() => navigate('/client/corrective-actions')}
             >
              <Zap size={16} /> Remediation Tracking
            </Button>
@@ -145,10 +145,13 @@ const ExecutiveCockpit: React.FC = () => {
             <CardTitle className="text-xs font-bold text-white/70 uppercase tracking-widest">Compliance Health</CardTitle>
             <ShieldCheck className="h-4 w-4 text-white/50" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">94%</div>
+          <CardContent title={insights.complianceTrend.length === 0 ? "No completed audits yet" : undefined}>
+            <div className="text-3xl font-bold">
+              {insights.complianceTrend.length > 0 ? `${insights.complianceScore}%` : 'N/A'}
+            </div>
             <p className="text-[10px] text-white/60 font-medium mt-1 flex items-center gap-1">
-              <TrendingUp size={10} /> +2% from last quarter
+              <TrendingUp size={10} className={cn(insights.complianceDelta < 0 && "rotate-180")} />
+              {insights.complianceDelta >= 0 ? '+' : ''}{insights.complianceDelta ?? 0}% from last audit
             </p>
           </CardContent>
         </Card>
@@ -200,7 +203,7 @@ const ExecutiveCockpit: React.FC = () => {
         <div className="col-span-3 space-y-6">
            <Card 
                 className="shadow-card border-none bg-white hover:bg-muted/5 transition-colors cursor-pointer group"
-                onClick={() => navigate('/client/remediation')}
+                onClick={() => navigate('/client/corrective-actions')}
             >
               <CardContent className="p-6 flex items-center justify-between">
                  <div className="flex items-center gap-4">

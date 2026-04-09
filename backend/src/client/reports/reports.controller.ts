@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request, Res, StreamableFile } from '@nestjs/common';
-import * as fs from 'fs';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { ClientReportsService } from './reports.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from '../../database/entities/user.entity';
-import { SubmitReportFeedbackDto } from './dto/submit-feedback.dto';
+import { UserRole, User } from '../../database/entities/user.entity';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('client/reports')
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
@@ -24,27 +24,21 @@ export class ClientReportsController {
     return this.service.findOne(id, req.user.id);
   }
 
-  @Post(':id/feedback')
+  @Post(':reportId/feedback')
   async submitFeedback(
-    @Param('id') id: string,
-    @Body() dto: SubmitReportFeedbackDto,
-    @Request() req: any,
+    @Param('reportId') reportId: string,
+    @Body('feedback') feedback: any[],
+    @CurrentUser() client: User,
   ) {
-    return this.service.submitFeedback(id, dto, req.user.id);
+    return this.service.submitFeedback(reportId, feedback, client.id);
   }
 
-  @Get(':id/download')
+  @Get(':reportId/download')
   async download(
-    @Param('id') id: string,
-    @Request() req: any,
-    @Res({ passthrough: true }) res: any,
+    @Param('reportId') reportId: string,
+    @CurrentUser() client: User,
+    @Res() res: Response,
   ) {
-    const file = await this.service.download(id, req.user.id);
-    const stream = fs.createReadStream(file.filePath);
-    res.set({
-      'Content-Type': file.mimeType,
-      'Content-Disposition': `attachment; filename="${file.originalFilename}"`,
-    });
-    return new StreamableFile(stream);
+    return this.service.download(reportId, client.id, res);
   }
 }

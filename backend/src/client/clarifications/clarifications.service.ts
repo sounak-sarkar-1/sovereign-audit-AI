@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ClarificationRequest, ClarificationStatus } from '../../database/entities/clarification-request.entity';
@@ -49,40 +49,47 @@ export class ClientClarificationsService {
     return thread;
   }
 
-  async respond(id: string, dto: RespondToClarificationDto, user: User) {
-    const clarification = await this.clarificationRepo.findOne({ where: { id } });
-    if (!clarification) {
+  async respond(id: string, clientId: string, message: string, attachmentFileIds?: string[]) {
+    const thread = await this.clarificationRepo.findOne({
+      where: { id, clientId },
+      relations: ['audit'],
+    });
+    if (!thread) {
       throw new NotFoundException('Clarification thread not found');
     }
+    if (thread.status === ClarificationStatus.CLOSED) {
+      throw new BadRequestException('Cannot reply to a closed thread');
+    }
 
+    // Save response
     const response = this.responseRepo.create({
       clarificationRequestId: id,
-      respondedBy: user.id,
-      message: dto.message,
+      respondedBy: clientId,
+      message,
     });
     await this.responseRepo.save(response);
 
-    // Link attachments if provided
-    if (dto.attachmentFileIds && dto.attachmentFileIds.length > 0) {
-      this.logger.log(`Linking ${dto.attachmentFileIds.length} files to clarification response ${response.id}`);
+    // Link file attachments if any
+    if (attachmentFileIds?.length) {
       await this.fileRepo.update(
-        { id: In(dto.attachmentFileIds), entityType: FileEntityType.CLARIFICATION_ATTACHMENT },
+        { id: In(attachmentFileIds) },
         { entityId: response.id }
       );
     }
 
-    clarification.status = ClarificationStatus.RESPONDED;
-    await this.clarificationRepo.save(clarification);
+    // Update thread status
+    thread.status = ClarificationStatus.PENDING; // Back to pending = manager's turn
+    await this.clarificationRepo.save(thread);
 
     // Notify manager
     await this.notificationsService.create({
-      userId: clarification.managerId,
-      type: NotificationType.CLARIFICATION_RESPONDED,
-      title: 'Clarification Responded',
-      message: `Client ${user.fullName} has responded to your clarification request.`,
+      userId: thread.managerId,
+      type: NotificationType.CLARIFICATION_REQUEST,
+      title: 'Client replied to a clarification',
+      message: `Client has responded to your clarification on audit "${thread.audit?.name}"`,
       relatedEntityType: 'ClarificationRequest',
-      relatedEntityId: clarification.id,
-      metadata: { auditId: clarification.auditId },
+      relatedEntityId: id,
+      metadata: { auditId: thread.auditId },
     });
 
     return response;

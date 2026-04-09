@@ -58,6 +58,10 @@ export class AdminExceptionalRequestsService {
       throw new BadRequestException(`Request is already ${request.status}`);
     }
 
+    if (!file) {
+      throw new BadRequestException('Evidence file is required to approve an exceptional request');
+    }
+
     // Upload evidence file
     const uploadedFile = await this.filesService.uploadFile(
       file,
@@ -132,6 +136,10 @@ export class AdminExceptionalRequestsService {
 
     if (request.status !== ExceptionalRequestStatus.PENDING) {
       throw new BadRequestException(`Request is already ${request.status}`);
+    }
+
+    if (!adminComment || adminComment.trim().length < 10) {
+      throw new BadRequestException('Admin comment must be at least 10 characters for rejection');
     }
 
     request.status = ExceptionalRequestStatus.REJECTED;

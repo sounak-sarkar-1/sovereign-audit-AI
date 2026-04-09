@@ -35,7 +35,28 @@ export const reportService = {
     return response.data;
   },
 
-  download: async (auditId: string, reportId: string) => {
-    window.open(`${import.meta.env.VITE_API_URL}/manager/audits/${auditId}/reports/${reportId}/download`, '_blank');
+  download: async (auditId: string, reportId: string, filename: string = 'report.docx') => {
+    const response = await api.get(`/manager/audits/${auditId}/reports/${reportId}/download`, {
+      responseType: 'blob',
+    });
+    
+    // Create a link element, trigger download, and cleanup
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
+
+  uploadVersion: async (auditId: string, reportId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post(`/manager/audits/${auditId}/reports/${reportId}/upload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
   }
 };

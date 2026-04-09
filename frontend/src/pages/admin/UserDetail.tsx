@@ -23,7 +23,7 @@ import { MappingPanel } from '@/components/admin/MappingPanel';
 import { BusinessUnitPanel } from '@/components/admin/BusinessUnitPanel';
 
 const UserDetail: React.FC = () => {
-  const { userId } = useParams<{ userId: string }>();
+  const { id: userId } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const { data: rawUser, isLoading } = useQuery<any>({

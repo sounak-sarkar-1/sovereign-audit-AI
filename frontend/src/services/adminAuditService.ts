@@ -19,6 +19,12 @@ export const adminAuditService = {
     return response.data;
   },
 
+  getAuditById: async (id: string | undefined) => {
+    if (!id) return null;
+    const response = await api.get(`/admin/audits/${id}`);
+    return response.data;
+  },
+
   exportAudits: async (params: AuditFilterParams) => {
     const response = await api.get('/admin/audits/export', {
       params,

@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { 
   ClipboardList, 
+  Activity,
   ArrowRight, 
   CheckCircle2, 
   Clock, 
@@ -49,6 +50,57 @@ const AuditorDashboard: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-dark dark:text-white">Auditor Command Center</h1>
           <p className="text-muted-foreground">Manage your assignments and track upcoming deadlines.</p>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="bg-white dark:bg-[#1a0d35] p-6 rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Assigned</p>
+              <h3 className="text-3xl font-bold text-dark dark:text-white">{audits?.length || 0}</h3>
+            </div>
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <ClipboardList size={20} />
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-4 font-medium">Audit engagements currently on your desk</p>
+        </div>
+
+        <div className="bg-white dark:bg-[#1a0d35] p-6 rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">In Progress</p>
+              <h3 className="text-3xl font-bold text-dark dark:text-white">
+                {audits?.filter((a: any) => a.status === 'in_progress').length || 0}
+              </h3>
+            </div>
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <Activity size={20} />
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-4 font-medium">Engagements requiring active fieldwork</p>
+        </div>
+
+        <div className="bg-white dark:bg-[#1a0d35] p-6 rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Avg. Completion</p>
+              <h3 className="text-3xl font-bold text-dark dark:text-white">
+                {audits?.length > 0 
+                  ? Math.round(audits.reduce((acc: number, a: any) => acc + (a.stats?.completionPercent || 0), 0) / audits.length) 
+                  : 0}%
+              </h3>
+            </div>
+            <div className="p-2 bg-green-100 rounded-lg text-green-600">
+              <CheckCircle2 size={20} />
+            </div>
+          </div>
+          <Progress 
+            value={audits?.length > 0 ? (audits.reduce((acc: number, a: any) => acc + (a.stats?.completionPercent || 0), 0) / audits.length) : 0} 
+            className="h-1 mt-4" 
+          />
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import {
   User,
   X
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { adminAuditService } from '@/services/adminAuditService';
 import type { AuditFilterParams } from '@/services/adminAuditService';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ import {
 import { Card } from '@/components/ui/card';
 
 export default function AuditOversight() {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState<AuditFilterParams>({
     sortBy: 'createdAt',
     sortOrder: 'DESC'
@@ -193,7 +195,12 @@ export default function AuditOversight() {
                        </div>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <Button variant="outline" size="sm" className="rounded-full border-bg-mid font-bold text-[10px] h-8 px-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="rounded-full border-bg-mid font-bold text-[10px] h-8 px-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => navigate(`/admin/audits/${audit.id}`)}
+                      >
                         VIEW DETAILS
                       </Button>
                     </td>

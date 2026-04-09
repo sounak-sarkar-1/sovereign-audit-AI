@@ -9,15 +9,44 @@ import {
   User,
   ExternalLink,
   Loader2,
-  Inbox
+  Inbox,
+  Plus
 } from 'lucide-react';
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 import { 
   Tooltip, 
   TooltipContent, 
@@ -25,6 +54,8 @@ import {
   TooltipTrigger 
 } from '@/components/ui/tooltip';
 import { clarificationService } from '@/services/clarificationService';
+import { auditService } from '@/services/auditService';
+import { exceptionService } from '@/services/exceptionService';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/stores/auth';
@@ -36,6 +67,7 @@ const ClarificationsPage = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [reply, setReply] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
 
   const { data: threads, isLoading: isListLoading } = useQuery({
     queryKey: ['clarifications', activeTab],
@@ -85,7 +117,19 @@ const ClarificationsPage = () => {
           <h1 className="text-2xl font-bold tracking-tight">Clarifications Hub</h1>
           <p className="text-muted-foreground">Manage and track client communication across all audits.</p>
         </div>
+        <Button onClick={() => setIsNewDialogOpen(true)} className="bg-accent shadow-sm h-10 px-6">
+          <Plus size={18} className="mr-2" /> New Clarification
+        </Button>
       </div>
+
+      <NewClarificationModal 
+        isOpen={isNewDialogOpen} 
+        onClose={() => setIsNewDialogOpen(false)}
+        onCreated={(id) => {
+          setSelectedId(id);
+          queryClient.invalidateQueries({ queryKey: ['clarifications'] });
+        }}
+      />
 
       <div className="flex-1 flex gap-4 overflow-hidden">
         {/* Left Panel: Thread List */}
@@ -268,6 +312,170 @@ const ClarificationsPage = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+const clarificationSchema = z.object({
+  auditId: z.string().min(1, 'Please select an audit'),
+  message: z.string().min(20, 'Message must be at least 20 characters'),
+  relatedExceptionId: z.string().optional(),
+});
+
+type ClarificationFormValues = z.infer<typeof clarificationSchema>;
+
+const NewClarificationModal = ({ isOpen, onClose, onCreated }: { isOpen: boolean, onClose: () => void, onCreated: (id: string) => void }) => {
+  const form = useForm<ClarificationFormValues>({
+    resolver: zodResolver(clarificationSchema),
+    defaultValues: {
+      auditId: '',
+      message: '',
+      relatedExceptionId: '',
+    },
+  });
+
+  const selectedAuditId = form.watch('auditId');
+  const message = form.watch('message');
+
+  const { data: auditsData } = useQuery({
+    queryKey: ['manager-audits-simple'],
+    queryFn: () => auditService.getAudits({ limit: 100 }),
+    enabled: isOpen,
+  });
+
+  const selectedAudit = auditsData?.items?.find(a => a.id === selectedAuditId);
+
+  const { data: exceptions } = useQuery({
+    queryKey: ['exceptions-pending', selectedAuditId],
+    queryFn: () => exceptionService.getExceptions(selectedAuditId, 'pending'),
+    enabled: !!selectedAuditId,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (values: ClarificationFormValues) => 
+      clarificationService.createClarification(values.auditId, {
+        auditId: values.auditId,
+        clientId: selectedAudit!.clientId,
+        message: values.message,
+        relatedExceptionId: values.relatedExceptionId || undefined,
+      }),
+    onSuccess: (data) => {
+      toast.success('Clarification thread started');
+      onCreated(data.id);
+      onClose();
+      form.reset();
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to start clarification');
+    }
+  });
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Start New Clarification</DialogTitle>
+          <DialogDescription>
+            Initiate a new communication thread with a client regarding an audit or exception.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit((v) => createMutation.mutate(v))} className="space-y-4 pt-4">
+            <FormField
+              control={form.control}
+              name="auditId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Audit Engagement</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an audit" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {auditsData?.items?.map(audit => (
+                        <SelectItem key={audit.id} value={audit.id}>{audit.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground uppercase font-black tracking-widest">Client</Label>
+              <div className="h-10 px-3 flex items-center bg-muted/50 rounded-md border border-input text-sm font-medium">
+                {selectedAudit ? selectedAudit.client?.fullName : 'Select an audit first'}
+              </div>
+            </div>
+
+            <FormField
+              control={form.control}
+              name="relatedExceptionId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Related Exception (Optional)</FormLabel>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    value={field.value}
+                    disabled={!selectedAuditId || !exceptions?.length}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={!selectedAuditId ? "Select audit first" : !exceptions?.length ? "No pending exceptions" : "Select an exception"} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {exceptions?.map(ex => (
+                        <SelectItem key={ex.id} value={ex.id}>
+                          {ex.auditScopeLineItem?.name || 'Exception Request'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex justify-between">
+                    <FormLabel>Initial Message</FormLabel>
+                    <span className={cn("text-[10px] font-bold", message.length < 20 ? "text-amber-600" : "text-green-600")}>
+                      {message.length}/20 min
+                    </span>
+                  </div>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Enter your question or clarification request..."
+                      className="min-h-[120px] resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="pt-4">
+              <Button type="button" variant="ghost" onClick={onClose} disabled={createMutation.isPending}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createMutation.isPending} className="bg-accent shadow-sm">
+                {createMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Send size={16} className="mr-2" />}
+                Send to Client
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

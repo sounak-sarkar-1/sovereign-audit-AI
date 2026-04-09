@@ -26,6 +26,11 @@ export class AuditorAuditsController {
     return this.service.findAll(user);
   }
 
+  @Get('performance')
+  getPerformance(@CurrentUser() user: User) {
+    return this.service.getPerformance(user);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.service.findOne(id, user);

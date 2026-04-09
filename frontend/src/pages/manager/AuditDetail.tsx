@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   Settings, 
   Play, 
-  Calendar, 
   Building2, 
   Users, 
   ChevronRight,
@@ -14,13 +13,24 @@ import {
   History,
   User as UserIcon,
   Archive,
-  MessageSquare
+  MessageSquare,
+  Save,
+  X
 } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { 
   Card, 
 } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -49,7 +59,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 
-const AuditDetail = () => {
+const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showTrail, setShowTrail] = React.useState(false);
@@ -60,6 +70,41 @@ const AuditDetail = () => {
     queryFn: () => auditService.getAudit(id!),
     enabled: !!id,
   });
+
+  const [isEditing, setIsEditing] = React.useState(editMode);
+  const [formData, setFormData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    if (audit) {
+      setFormData({
+        name: audit.name,
+        description: audit.description || '',
+        startDate: audit.startDate ? new Date(audit.startDate) : undefined,
+        expectedCompletionDate: audit.expectedCompletionDate ? new Date(audit.expectedCompletionDate) : undefined,
+      });
+    }
+  }, [audit]);
+
+  const updateMutation = useMutation({
+    mutationFn: (data: any) => managerService.updateAudit(id!, data),
+    onSuccess: () => {
+      toast.success('Audit updated successfully');
+      queryClient.invalidateQueries({ queryKey: ['audit', id] });
+      setIsEditing(false);
+      navigate(`/manager/audits/${id}`);
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to update audit');
+    }
+  });
+
+  const handleSave = () => {
+    if (!formData.name) {
+      toast.error('Engagement name is required');
+      return;
+    }
+    updateMutation.mutate(formData);
+  };
 
   const archiveMutation = useMutation({
     mutationFn: (id: string) => managerService.archiveAudit(id),
@@ -85,7 +130,7 @@ const AuditDetail = () => {
 
   const isDraft = audit.status === AuditStatus.DRAFT;
   const canStart = isDraft && (audit.assignments?.length || 0) > 0;
-  const canArchive = audit.status === AuditStatus.CLOSED || audit.status === 'deleted' || audit.status === 'archived';
+  const canArchive = audit.status === AuditStatus.CLOSED || audit.status === 'deleted' || audit.status === AuditStatus.ARCHIVED;
 
   const getStatusVariant = (status: AuditStatus) => {
     switch (status) {
@@ -95,6 +140,7 @@ const AuditDetail = () => {
       case 'pending_client_review': return 'pendingClient';
       case 'closed': return 'closed';
       case 'reopened': return 'default';
+      case 'archived': return 'secondary';
       default: return 'default';
     }
   };
@@ -110,60 +156,92 @@ const AuditDetail = () => {
             <span className="text-dark dark:text-bg-mid">{audit.name}</span>
           </div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-dark dark:text-white">{audit.name}</h1>
+            {isEditing ? (
+              <Input 
+                value={formData?.name} 
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="text-2xl font-bold h-10 border-bg-mid min-w-[300px]"
+              />
+            ) : (
+              <h1 className="text-2xl font-bold text-dark dark:text-white">{audit.name}</h1>
+            )}
             <Badge variant={getStatusVariant(audit.status)} className="capitalize">
               {audit.status.replace('_', ' ')}
             </Badge>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {isDraft && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span>
-                    <Button
-                      className="rounded-full shadow-elevated"
-                      disabled={!canStart || startMutation.isPending}
-                      onClick={() => startMutation.mutate(id!)}
-                    >
-                      <Play className="mr-2 h-4 w-4" /> Start Audit
-                    </Button>
-                  </span>
-                </TooltipTrigger>
-                {!canStart && (
-                  <TooltipContent>
-                    <p>Requires at least one auditor assignment</p>
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-          )}
-
-          {canArchive && audit.status !== 'archived' && (
-             <Button 
+          {isEditing ? (
+            <div className="flex items-center gap-2">
+              <Button 
                 variant="outline" 
-                className="rounded-full border-bg-mid hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
-                onClick={() => archiveMutation.mutate(id!)}
-                disabled={archiveMutation.isPending}
-             >
-                <Archive className="mr-2 h-4 w-4" /> Archive Engagement
-             </Button>
-          )}
+                className="rounded-full shadow-sm"
+                onClick={() => {
+                  setIsEditing(false);
+                  navigate(`/manager/audits/${id}`);
+                }}
+              >
+                <X className="mr-2 h-4 w-4" /> Cancel
+              </Button>
+              <Button 
+                className="rounded-full bg-primary shadow-elevated"
+                onClick={handleSave}
+                disabled={updateMutation.isPending}
+              >
+                <Save className="mr-2 h-4 w-4" /> {updateMutation.isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          ) : (
+            <>
+              {isDraft && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <Button
+                          className="rounded-full shadow-elevated"
+                          disabled={!canStart || startMutation.isPending}
+                          onClick={() => startMutation.mutate(id!)}
+                        >
+                          <Play className="mr-2 h-4 w-4" /> Start Audit
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    {!canStart && (
+                      <TooltipContent>
+                        <p>Requires at least one auditor assignment</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              )}
 
-          <div className="flex items-center gap-2">
-            <Button 
-                variant="outline" 
-                size="sm" 
-                className="rounded-full h-9 px-3 border-bg-mid"
-                onClick={() => navigate('/manager/settings')}
-            >
-              <Settings className="mr-2 h-4 w-4" /> Settings
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-full w-9 h-9 border-bg-mid">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </div>
+              {canArchive && audit.status !== AuditStatus.ARCHIVED && (
+                <Button 
+                    variant="outline" 
+                    className="rounded-full border-bg-mid hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
+                    onClick={() => archiveMutation.mutate(id!)}
+                    disabled={archiveMutation.isPending}
+                >
+                    <Archive className="mr-2 h-4 w-4" /> Archive Engagement
+                </Button>
+              )}
+
+              <div className="flex items-center gap-2">
+                <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="rounded-full h-9 px-3 border-bg-mid"
+                    onClick={() => setIsEditing(true)}
+                >
+                  <Settings className="mr-2 h-4 w-4" /> Edit Audit
+                </Button>
+                <Button variant="outline" size="icon" className="rounded-full w-9 h-9 border-bg-mid">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -247,6 +325,25 @@ const AuditDetail = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center shrink-0 text-primary">
+                    <Info className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1 w-full">
+                    <Label className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Description</Label>
+                    {isEditing ? (
+                      <Textarea 
+                        value={formData?.description} 
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        className="text-xs h-20 border-bg-mid mt-1"
+                        placeholder="Engagement context..."
+                      />
+                    ) : (
+                      <p className="text-sm font-bold text-dark line-clamp-3">{audit.description || 'No description'}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-accent/5 flex items-center justify-center shrink-0 text-accent">
                     <Building2 className="h-5 w-5" />
                   </div>
@@ -262,15 +359,52 @@ const AuditDetail = () => {
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 text-orange-600">
-                    <Calendar className="h-5 w-5" />
+                    <Clock className="h-5 w-5" />
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Engagement Timeline</p>
-                    <p className="text-sm font-bold text-dark">
-                      {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'TBD'} - 
-                      {audit.expectedCompletionDate ? format(new Date(audit.expectedCompletionDate), 'MMM d, yyyy') : 'TBD'}
-                    </p>
-                    {audit.expectedCompletionDate && new Date(audit.expectedCompletionDate) < new Date() && (
+                  <div className="space-y-1 w-full">
+                    <Label className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Engagement Timeline</Label>
+                    {isEditing ? (
+                      <div className="grid grid-cols-1 gap-2 mt-1">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className="w-full justify-start text-[11px] h-8 px-2 border-bg-mid">
+                              <Clock className="mr-2 h-3.5 w-3.5" />
+                              {formData?.startDate ? format(formData.startDate, "MMM d, y") : "Start"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={formData?.startDate}
+                              onSelect={(date) => setFormData({ ...formData, startDate: date })}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className="w-full justify-start text-[11px] h-8 px-2 border-bg-mid">
+                              <Clock className="mr-2 h-3.5 w-3.5" />
+                              {formData?.expectedCompletionDate ? format(formData.expectedCompletionDate, "MMM d, y") : "End"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={formData?.expectedCompletionDate}
+                              onSelect={(date) => setFormData({ ...formData, expectedCompletionDate: date })}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    ) : (
+                      <p className="text-sm font-bold text-dark">
+                        {audit.startDate ? format(new Date(audit.startDate), 'MMM d, yyyy') : 'TBD'} - 
+                        {audit.expectedCompletionDate ? format(new Date(audit.expectedCompletionDate), 'MMM d, yyyy') : 'TBD'}
+                      </p>
+                    )}
+                    {!isEditing && audit.expectedCompletionDate && new Date(audit.expectedCompletionDate) < new Date() && (
                       <div className="flex items-center gap-1 text-red-600 font-black text-[10px] mt-1 bg-red-50 px-2 py-0.5 rounded-full w-fit uppercase tracking-widest">
                         <AlertTriangle size={10} /> OVERDUE
                       </div>

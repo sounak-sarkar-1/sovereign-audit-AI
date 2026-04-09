@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   FileText, 
@@ -35,6 +35,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
   const queryClient = useQueryClient();
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [jobProgress, setJobProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: reports, isLoading: isReportsLoading } = useQuery<AuditReport[]>({
     queryKey: ['reports', auditId],
@@ -47,6 +48,13 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
       setActiveJobId(data.jobId);
       setJobProgress(10);
       queryClient.invalidateQueries({ queryKey: ['audit', auditId] });
+    },
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => reportService.uploadVersion(auditId, latestReport!.id, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports', auditId] });
     },
   });
 
@@ -182,8 +190,23 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
                   Review the generated DOCX file. You can edit it locally and re-upload if needed.
                 </p>
                 <div className="flex gap-4">
-                   <Button variant="secondary">
-                     <Upload size={14} className="mr-2" /> Upload Edited Version
+                   <input
+                     type="file"
+                     ref={fileInputRef}
+                     className="hidden"
+                     accept=".docx"
+                     onChange={(e) => {
+                       const file = e.target.files?.[0];
+                       if (file) uploadMutation.mutate(file);
+                     }}
+                   />
+                   <Button 
+                    variant="secondary" 
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadMutation.isPending}
+                   >
+                     {uploadMutation.isPending ? <Loader2 size={14} className="animate-spin mr-2" /> : <Upload size={14} className="mr-2" />}
+                     Upload Edited Version
                    </Button>
                 </div>
               </div>

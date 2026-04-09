@@ -8,11 +8,13 @@ import { User } from '../../database/entities/user.entity';
 import { ManagerClientMapping } from '../../database/entities/manager-client-mapping.entity';
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { BusinessUnit } from '../../database/entities/business-unit.entity';
-import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { ExceptionalActionRequest } from '../../database/entities/exceptional-action-request.entity';
+import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import { BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 
 describe('ManagerAuditsService', () => {
   let service: ManagerAuditsService;
+  let module: TestingModule;
   let auditRepo: any;
   let managerClientRepo: any;
   let assignmentRepo: any;
@@ -47,7 +49,7 @@ describe('ManagerAuditsService', () => {
       query: jest.fn(),
     };
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         ManagerAuditsService,
         {
@@ -107,6 +109,12 @@ describe('ManagerAuditsService', () => {
           useValue: dataSource,
         },
         {
+          provide: getRepositoryToken(ExceptionalActionRequest),
+          useValue: {
+            findOne: jest.fn().mockResolvedValue(null),
+          },
+        },
+        {
           provide: AuditTrailService,
           useValue: {
             log: jest.fn().mockResolvedValue(undefined),
@@ -127,10 +135,35 @@ describe('ManagerAuditsService', () => {
 
   describe('findAll', () => {
     it('should return paginated audits with stats', async () => {
+      dataSource.query.mockResolvedValueOnce([{ total: '10', completed: '5' }]); // for completionPercentage
+      dataSource.query.mockResolvedValueOnce([{ count: '2' }]); // for openExceptionsCount
+
       const result = await service.findAll('mgr-1');
       expect(result.items).toHaveLength(1);
+      expect(result.items[0].completionPercentage).toBe(50);
+      expect(result.items[0].openExceptionsCount).toBe(2);
       expect(result.items[0]).toHaveProperty('auditorCount');
       expect(result.total).toBe(1);
+    });
+  });
+
+  describe('update', () => {
+    const updateDto = { name: 'Updated name' };
+    
+    it('should update audit and log action', async () => {
+      auditRepo.findOne.mockResolvedValue(mockAudit);
+      auditRepo.save.mockResolvedValue({ ...mockAudit, ...updateDto });
+      // mock findOne which is called at the end of update()
+      jest.spyOn(service, 'findOne').mockResolvedValue({ ...mockAudit, ...updateDto } as any);
+
+      const auditTrailService = module.get(AuditTrailService);
+      const logSpy = jest.spyOn(auditTrailService, 'log');
+
+      await service.update('audit-1', updateDto, 'mgr-1');
+
+      expect(logSpy).toHaveBeenCalledWith(expect.objectContaining({
+        action: AuditAction.AUDIT_UPDATED,
+      }));
     });
   });
 
@@ -183,6 +216,30 @@ describe('ManagerAuditsService', () => {
       
       const result = await service.start('audit-1', 'mgr-1');
       expect(mockAudit.status).toBe(AuditStatus.IN_PROGRESS);
+    });
+  });
+
+  describe('archive', () => {
+    it('should throw UnprocessableEntityException if audit is not closed', async () => {
+      const draftAudit = { ...mockAudit, status: AuditStatus.DRAFT };
+      auditRepo.findOne.mockResolvedValue(draftAudit);
+      
+      await expect(service.archive('audit-1', 'mgr-1')).rejects.toThrow(UnprocessableEntityException);
+    });
+
+    it('should transition to archived if audit is closed', async () => {
+      const closedAudit = { ...mockAudit, status: AuditStatus.CLOSED };
+      auditRepo.findOne.mockResolvedValue(closedAudit);
+      auditRepo.save.mockImplementation((val) => Promise.resolve(val));
+      jest.spyOn(service, 'findOne').mockResolvedValue({ ...closedAudit, status: AuditStatus.ARCHIVED } as any);
+      
+      const result = await service.archive('audit-1', 'mgr-1');
+      expect(result.status).toBe(AuditStatus.ARCHIVED);
+      
+      const auditTrailService = module.get(AuditTrailService);
+      expect(auditTrailService.log).toHaveBeenCalledWith(expect.objectContaining({
+        action: AuditAction.AUDIT_ARCHIVED,
+      }));
     });
   });
 });

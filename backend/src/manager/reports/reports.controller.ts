@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Put, Param, Query, UseGuards, Res } from '@nestjs/common';
+import { Controller, Post, Get, Put, Param, Query, UseGuards, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ManagerReportsService } from './reports.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -43,5 +44,25 @@ export class ManagerReportsController {
     @CurrentUser() manager: User,
   ) {
     return this.service.finalize(auditId, reportId, manager);
+  }
+
+  @Get(':rId/download')
+  async download(
+    @Param('id') auditId: string,
+    @Param('rId') reportId: string,
+    @Res() res: Response,
+  ) {
+    return this.service.download(auditId, reportId, res);
+  }
+
+  @Post(':rId/upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(
+    @Param('id') auditId: string,
+    @Param('rId') reportId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() manager: User,
+  ) {
+    return this.service.uploadVersion(auditId, reportId, file, manager);
   }
 }

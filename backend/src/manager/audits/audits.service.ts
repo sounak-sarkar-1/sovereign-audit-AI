@@ -4,7 +4,8 @@ import {
   BadRequestException, 
   NotFoundException, 
   ConflictException,
-  InternalServerErrorException
+  InternalServerErrorException,
+  UnprocessableEntityException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In, IsNull } from 'typeorm';
@@ -66,8 +67,26 @@ export class ManagerAuditsService {
         .select('COUNT(DISTINCT assignment.auditor_id)', 'count')
         .getRawOne();
 
-      const completionPercentage = 0; 
-      const openExceptionsCount = 0;
+      const lineItemStats = await this.dataSource.query(
+        `SELECT 
+          COUNT(*) FILTER (WHERE is_optional = false) as total,
+          COUNT(*) FILTER (WHERE is_optional = false AND status IN ('submitted', 'exception_approved')) as completed
+        FROM audit_scope_line_items 
+        WHERE audit_id = $1 AND deleted_at IS NULL`,
+        [audit.id]
+      );
+      const totalItems = parseInt(lineItemStats[0].total);
+      const completedItems = parseInt(lineItemStats[0].completed);
+      const completionPercentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+      const openExceptions = await this.dataSource.query(
+        `SELECT COUNT(*) as count 
+        FROM exception_requests er
+        JOIN audit_scope_line_items li ON er.audit_scope_line_item_id = li.id
+        WHERE li.audit_id = $1 AND er.status = 'pending'`,
+        [audit.id]
+      );
+      const openExceptionsCount = parseInt(openExceptions[0].count);
 
       const pendingRequest = await this.requestRepo.findOne({
         where: { auditId: audit.id, status: ExceptionalRequestStatus.PENDING },
@@ -205,7 +224,7 @@ export class ManagerAuditsService {
 
     await this.auditTrailService.log({
       actorId: managerId,
-      action: AuditAction.AUDIT_STARTED, 
+      action: AuditAction.AUDIT_UPDATED, 
       entityType: 'Audit',
       entityId: id,
       metadata: updateDto,
@@ -259,10 +278,10 @@ export class ManagerAuditsService {
     });
     if (!audit) throw new NotFoundException('Audit not found');
     
-    // Allow archiving from closed or final stages
-    if (audit.status !== AuditStatus.CLOSED && audit.status !== AuditStatus.DELETED) {
-      // Logic might vary, but usually you archive closed audits.
-      // For remediation, I'll allow archiving if status is CLOSED or DELETED
+    if (audit.status !== AuditStatus.CLOSED) {
+      throw new UnprocessableEntityException(
+        'Only closed audits can be archived. To delete or cancel an in-progress audit, submit an Exceptional Action Request.'
+      );
     }
 
     audit.status = AuditStatus.ARCHIVED;
@@ -270,7 +289,7 @@ export class ManagerAuditsService {
 
     await this.auditTrailService.log({
       actorId: managerId,
-      action: AuditAction.AUDIT_CLOSED, // Proxy for archived
+      action: AuditAction.AUDIT_ARCHIVED,
       entityType: 'Audit',
       entityId: id,
     });

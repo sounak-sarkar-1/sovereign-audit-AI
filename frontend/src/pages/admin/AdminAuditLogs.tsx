@@ -9,7 +9,8 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 import api from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -36,9 +37,11 @@ export default function AdminAuditLogs() {
   const [search, setSearch] = useState('');
   const [action, setAction] = useState<string>('all');
   const [entityType, setEntityType] = useState<string>('all');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
   const { data: logsData, isLoading } = useQuery({
-    queryKey: ['admin-audit-logs', page, search, action, entityType],
+    queryKey: ['admin-audit-logs', page, search, action, entityType, startDate, endDate],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -47,11 +50,22 @@ export default function AdminAuditLogs() {
       if (search) params.append('search', search);
       if (action !== 'all') params.append('action', action);
       if (entityType !== 'all') params.append('entityType', entityType);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
 
       const response = await api.get(`/admin/audit-logs?${params.toString()}`);
       return response.data;
     },
   });
+
+  const handleExport = () => {
+    const params = new URLSearchParams({ format: 'csv' });
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+    window.open(`${baseUrl}/admin/audit-logs/export?${params.toString()}`, '_blank');
+  };
 
   const logs = logsData?.data || [];
   const meta = logsData?.meta || { totalPages: 1, total: 0 };
@@ -73,59 +87,85 @@ export default function AdminAuditLogs() {
           </h1>
           <p className="text-muted-foreground font-medium">System-wide activity monitoring and compliance tracking.</p>
         </div>
+        <Button variant="outline" className="border-primary text-primary hover:bg-primary/10" onClick={handleExport}>
+          <Download size={16} className="mr-2" />
+          Export CSV
+        </Button>
       </div>
 
       <Card className="p-4 border-bg-mid dark:border-[#3d2a5a] bg-bg-warm/10 dark:bg-[#1a0d35]/50 shadow-sm">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-bg-muted" size={18} />
-            <Input 
-              placeholder="Search by ID or payload content..." 
-              className="pl-10 h-10 rounded-lg"
-              value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            />
+        <div className="flex flex-col space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-bg-muted" size={18} />
+              <Input 
+                placeholder="Search by ID or payload content..." 
+                className="pl-10 h-10 rounded-lg"
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              />
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Select value={action} onValueChange={(v) => { setAction(v); setPage(1); }}>
+                <SelectTrigger className="w-[160px] h-10 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Activity size={16} className="text-primary" />
+                    <SelectValue placeholder="Action Type" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Actions</SelectItem>
+                  <SelectItem value="create">Create</SelectItem>
+                  <SelectItem value="update">Update</SelectItem>
+                  <SelectItem value="delete">Delete</SelectItem>
+                  <SelectItem value="login">Login</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={entityType} onValueChange={(v) => { setEntityType(v); setPage(1); }}>
+                <SelectTrigger className="w-[160px] h-10 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Database size={16} className="text-accent" />
+                    <SelectValue placeholder="Entity Type" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Entities</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="audit">Audit</SelectItem>
+                  <SelectItem value="business_unit">Business Unit</SelectItem>
+                  <SelectItem value="ai_model">AI Model</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Select value={action} onValueChange={(v) => { setAction(v); setPage(1); }}>
-              <SelectTrigger className="w-[160px] h-10 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Activity size={16} className="text-primary" />
-                  <SelectValue placeholder="Action Type" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Actions</SelectItem>
-                <SelectItem value="create">Create</SelectItem>
-                <SelectItem value="update">Update</SelectItem>
-                <SelectItem value="delete">Delete</SelectItem>
-                <SelectItem value="login">Login</SelectItem>
-              </SelectContent>
-            </Select>
 
-            <Select value={entityType} onValueChange={(v) => { setEntityType(v); setPage(1); }}>
-              <SelectTrigger className="w-[160px] h-10 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Database size={16} className="text-accent" />
-                  <SelectValue placeholder="Entity Type" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Entities</SelectItem>
-                <SelectItem value="user">User</SelectItem>
-                <SelectItem value="audit">Audit</SelectItem>
-                <SelectItem value="business_unit">Business Unit</SelectItem>
-                <SelectItem value="ai_model">AI Model</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button variant="ghost" className="h-10 px-3 text-bg-muted hover:text-dark dark:hover:text-white" onClick={() => {
+          <div className="flex flex-col md:flex-row items-center gap-4 pt-2 border-t border-bg-mid/30 dark:border-white/5">
+            <div className="flex items-center gap-2 text-xs font-bold text-bg-muted uppercase tracking-wider">
+              <span>Date Range:</span>
+              <Input 
+                type="date" 
+                className="h-8 w-[140px] text-[10px] rounded-md"
+                value={startDate}
+                onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+              />
+              <span>to</span>
+              <Input 
+                type="date" 
+                className="h-8 w-[140px] text-[10px] rounded-md"
+                value={endDate}
+                onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+              />
+            </div>
+            <Button variant="ghost" className="h-8 px-3 text-[10px] uppercase font-bold text-bg-muted hover:text-dark dark:hover:text-white ml-auto" onClick={() => {
               setSearch('');
               setAction('all');
               setEntityType('all');
+              setStartDate('');
+              setEndDate('');
               setPage(1);
             }}>
-              Reset
+              Clear Filters
             </Button>
           </div>
         </div>

@@ -9,6 +9,7 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 import { ManagerAuditorMapping } from '../../database/entities/manager-auditor-mapping.entity';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
+import { NotificationsModule } from '../../shared/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
       ManagerAuditorMapping,
     ]),
     AuditTrailModule,
+    NotificationsModule,
   ],
   controllers: [ManagerAssignmentsController],
   providers: [ManagerAssignmentsService],

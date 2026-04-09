@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ClarificationRequest, ClarificationStatus } from '../../database/entities/clarification-request.entity';
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
+import { ClarificationResponse } from '../../database/entities/clarification-response.entity';
 import { NotificationType } from '../../database/entities/notification.entity';
 import { CreateClarificationDto } from './dto/create-clarification.dto';
 import { User } from '../../database/entities/user.entity';
@@ -18,9 +19,56 @@ export class ManagerClarificationsService {
     private readonly clarificationRepo: Repository<ClarificationRequest>,
     @InjectRepository(ExceptionRequest)
     private readonly exceptionRepo: Repository<ExceptionRequest>,
+    @InjectRepository(ClarificationResponse)
+    private readonly responseRepo: Repository<ClarificationResponse>,
     private readonly notificationsService: NotificationsService,
     private readonly auditTrailService: AuditTrailService,
   ) {}
+
+  async respond(id: string, message: string, manager: User) {
+    const clarification = await this.clarificationRepo.findOne({
+      where: { id },
+      relations: ['audit']
+    });
+    if (!clarification) throw new NotFoundException('Thread not found');
+    if (clarification.status === ClarificationStatus.CLOSED) {
+      throw new BadRequestException('Cannot reply to a closed thread');
+    }
+
+    // Insert a ClarificationResponse record
+    const response = this.responseRepo.create({
+      clarificationRequestId: id,
+      respondedBy: manager.id,
+      message,
+    });
+    const saved = await this.responseRepo.save(response);
+
+    // Update thread status to 'responded'
+    clarification.status = ClarificationStatus.RESPONDED;
+    await this.clarificationRepo.save(clarification);
+
+    // Notify client
+    await this.notificationsService.create({
+      userId: clarification.clientId,
+      type: NotificationType.CLARIFICATION_REQUEST,
+      title: 'New message on your clarification',
+      message: `Manager has replied: ${message}`,
+      relatedEntityType: 'ClarificationRequest',
+      relatedEntityId: id,
+      metadata: { auditId: clarification.auditId },
+    });
+
+    // Audit trail
+    await this.auditTrailService.log({
+      actorId: manager.id,
+      actorRole: manager.role,
+      action: AuditAction.CLARIFICATION_RESPONDED,
+      entityType: 'ClarificationRequest',
+      entityId: id,
+    });
+
+    return saved;
+  }
 
   async findAll(status?: ClarificationStatus, manager?: User) {
     const query = this.clarificationRepo.createQueryBuilder('cr')

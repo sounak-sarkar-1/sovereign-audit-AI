@@ -1,7 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { 
-  BarChart3, 
   TrendingUp, 
   Award, 
   Clock, 
@@ -13,7 +12,6 @@ import {
 import { auditorService } from '@/services/auditorService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
 import { 
   AreaChart, 
   Area, 
@@ -28,19 +26,22 @@ import {
 } from 'recharts';
 
 const AuditorPerformance: React.FC = () => {
-  const { data: audits } = useQuery({
-    queryKey: ['auditor-audits'],
-    queryFn: () => auditorService.getAudits(),
+  const { data: performance, isLoading: isPerfLoading } = useQuery({
+    queryKey: ['auditor-performance'],
+    queryFn: () => auditorService.getPerformance(),
   });
 
-  // Mock performance data based on audits
-  const totalAudits = audits?.length || 0;
-  const completedAudits = audits?.filter((a: any) => a.status === 'completed' || a.status === 'submitted').length || 0;
-  const completionRate = totalAudits > 0 ? (completedAudits / totalAudits) * 100 : 0;
-  
-  const avgCompletionPercent = audits && audits.length > 0 
-    ? audits.reduce((acc: number, curr: any) => acc + (curr.stats?.completionPercent || 0), 0) / audits.length 
-    : 0;
+  if (isPerfLoading) {
+    return (
+      <div className="flex items-center justify-center p-24">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  const completionRate = performance?.submissionRate || 0;
+  const avgCompletionPercent = performance?.submissionRate || 0; // Aligning for now
+  const activeExceptions = performance?.totalExceptions || 0;
 
   const data = [
     { name: 'Mon', value: 12 },
@@ -101,7 +102,7 @@ const AuditorPerformance: React.FC = () => {
               <div className="space-y-1">
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Active Exceptions</p>
                 <h3 className="text-2xl font-bold text-dark">
-                  {audits?.reduce((acc: number, a: any) => acc + (a.stats?.pendingExceptions || 0), 0)}
+                  {activeExceptions}
                 </h3>
               </div>
               <div className="p-2 bg-amber-100 rounded-xl text-amber-600">

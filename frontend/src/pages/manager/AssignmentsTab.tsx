@@ -82,8 +82,8 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
     );
   }
 
-  const { auditors, businessUnits, buAssignments, lineItems, lineItemAssignments } = assignmentsData || {
-    auditors: [],
+  const { availableAuditors, businessUnits, buAssignments, lineItems, lineItemAssignments } = assignmentsData || {
+    availableAuditors: [],
     businessUnits: [],
     buAssignments: [],
     lineItems: [],
@@ -100,7 +100,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
         <h3 className="text-lg font-semibold flex items-center gap-2">
           Auditor Assignments
           <Badge variant="outline" className="font-normal">
-            {auditors.length} Auditors available
+            {availableAuditors.length} Auditors available
           </Badge>
         </h3>
         <Button size="sm" variant="outline" onClick={() => setIsLineItemModalOpen(true)} className="gap-2">
@@ -118,7 +118,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-3 px-4 font-medium text-muted-foreground w-1/4">Business Unit</th>
-                  {auditors.map((auditor: any) => (
+                  {availableAuditors.map((auditor: any) => (
                     <th key={auditor.id} className="text-center py-3 px-2 font-medium text-muted-foreground">
                       <div className="flex flex-col items-center">
                         <span className="truncate max-w-[100px]">{auditor.fullName}</span>
@@ -132,7 +132,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
                 {businessUnits.map((bu: any) => (
                   <tr key={bu.id} className="border-b hover:bg-muted/30 transition-colors">
                     <td className="py-4 px-4 font-medium">{bu.businessUnit.name}</td>
-                    {auditors.map((auditor: any) => {
+                    {availableAuditors.map((auditor: any) => {
                       const assignment = getBuAssignment(bu.id, auditor.id);
                       const isAssigned = !!assignment;
                       return (
@@ -217,7 +217,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="none">Unassigned</SelectItem>
-                                    {auditors.map((a: any) => (
+                                    {availableAuditors.map((a: any) => (
                                       <SelectItem key={a.id} value={a.id}>{a.fullName}</SelectItem>
                                     ))}
                                   </SelectContent>

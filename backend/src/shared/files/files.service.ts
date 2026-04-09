@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
+import { Response } from 'express';
 import {
   UploadedFile,
   FileEntityType,
@@ -119,5 +120,20 @@ export class FilesService {
       this.logger.error(`File deletion failed: ${error.message}`);
       throw new InternalServerErrorException('Failed to delete file');
     }
+  }
+
+  streamFile(file: UploadedFile, res: Response) {
+    if (!fs.existsSync(file.filePath)) {
+      throw new NotFoundException('File not found on disk');
+    }
+
+    res.set({
+      'Content-Type': file.mimeType,
+      'Content-Disposition': `attachment; filename="${file.originalFilename}"`,
+      'Content-Length': file.fileSizeBytes,
+    });
+
+    const stream = fs.createReadStream(file.filePath);
+    stream.pipe(res);
   }
 }

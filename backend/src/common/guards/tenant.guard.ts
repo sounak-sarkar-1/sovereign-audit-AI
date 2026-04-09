@@ -49,7 +49,7 @@ export class TenantGuard implements CanActivate {
 
     // Attach to request for downstream use
     request.tenantSlug = slug;
-    request.tenantSchema = `tenant_${slug}`;
+    request.tenantSchema = slug;
 
     return true;
   }

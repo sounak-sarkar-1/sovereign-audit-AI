@@ -30,12 +30,29 @@ export class ClientInsightsService {
     }
 
     // 1. Audit Frequency & Compliance Trend
-    const complianceTrend = audits.map(audit => ({
-      auditId: audit.id,
-      name: audit.name,
-      date: audit.expectedCompletionDate,
-      score: 100, // Placeholder for real scoring logic
+    const complianceTrend = await Promise.all(audits.map(async audit => {
+      const totalItems = await this.lineItemRepo.count({ where: { auditId: audit.id } });
+      const exceptions = await this.exceptionRepo.count({ 
+        where: { 
+          auditScopeLineItem: { auditId: audit.id }, 
+          status: ExceptionStatus.APPROVED 
+        } 
+      });
+
+      const score = totalItems > 0 ? Math.round(((totalItems - exceptions) / totalItems) * 100) : 100;
+
+      return {
+        auditId: audit.id,
+        name: audit.name,
+        date: audit.expectedCompletionDate,
+        score,
+      };
     }));
+
+    // Calculate Latest Score and Delta
+    const latestScore = complianceTrend.length > 0 ? complianceTrend[complianceTrend.length - 1].score : 0;
+    const prevScore = complianceTrend.length > 1 ? complianceTrend[complianceTrend.length - 2].score : latestScore;
+    const delta = latestScore - prevScore;
 
     // 2. Risk by BU (based on exceptions)
     const riskByBu = await this.lineItemRepo.createQueryBuilder('li')
@@ -58,6 +75,8 @@ export class ClientInsightsService {
           buName: r.buName,
           rate: r.totalItems > 0 ? (r.exceptionCount / r.totalItems) * 100 : 0,
         })),
+        complianceScore: latestScore,
+        complianceDelta: delta,
         recurringFindings: [], // Placeholder
       }
     };

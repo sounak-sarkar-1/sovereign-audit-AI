@@ -24,6 +24,17 @@ import { templateService } from '@/services/templateService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UnsavedChangesGuard } from '@/components/UnsavedChangesGuard';
@@ -188,6 +199,20 @@ const TemplateEditor = () => {
     }
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => templateService.deleteTemplate(id!),
+    onSuccess: () => {
+      toast.success('Template deleted');
+      queryClient.invalidateQueries({ queryKey: ['templates'] });
+      setIsDirty(false);
+      navigate('/admin/templates');
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || 'Failed to delete template';
+      toast.error(message);
+    }
+  });
+
   const handleUpdateLineItem = (index: number, updates: Partial<AuditTemplateLineItem>) => {
     const newList = [...lineItems];
     newList[index] = { ...newList[index], ...updates };
@@ -260,7 +285,33 @@ const TemplateEditor = () => {
           </Button>
           <h1 className="text-2xl font-bold">{isEdit ? 'Edit Template' : 'Create New Template'}</h1>
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center space-x-2">
+          {isEdit && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="text-destructive border-destructive hover:bg-destructive hover:text-white" disabled={deleteMutation.isPending}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete the template. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={() => deleteMutation.mutate()}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deleteMutation.isPending ? 'Deleting...' : 'Delete Permanently'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Button variant="outline" onClick={() => navigate('/admin/templates')}>Cancel</Button>
           <Button onClick={handleSave} disabled={mutation.isPending}>
             <Save className="mr-2 h-4 w-4" /> {mutation.isPending ? 'Saving...' : 'Save Template'}

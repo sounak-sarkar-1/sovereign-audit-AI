@@ -4,8 +4,9 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AuditStatus } from '../../database/entities/audit.entity';
-import { UserRole } from '../../database/entities/user.entity';
+import { UserRole, User } from '../../database/entities/user.entity';
 
 @Controller('client/audits')
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
@@ -26,5 +27,10 @@ export class ClientAuditsController {
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req: any) {
     return this.service.findOne(id, req.user.id);
+  }
+
+  @Get(':id/progress')
+  getProgress(@Param('id') id: string, @CurrentUser() client: User) {
+    return this.service.getProgress(id, client.id);
   }
 }

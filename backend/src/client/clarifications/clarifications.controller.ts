@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Query, BadRequestException } from '@nestjs/common';
 import { ClientClarificationsService } from './clarifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -28,9 +28,13 @@ export class ClientClarificationsController {
   @Post(':id/respond')
   respond(
     @Param('id') id: string,
-    @Body() dto: RespondToClarificationDto,
-    @CurrentUser() user: User,
+    @Body('message') message: string,
+    @Body('attachmentFileIds') attachmentFileIds: string[],
+    @CurrentUser() client: User,
   ) {
-    return this.service.respond(id, dto, user);
+    if (!message || message.trim().length < 2) {
+      throw new BadRequestException('Reply message cannot be empty');
+    }
+    return this.service.respond(id, client.id, message, attachmentFileIds);
   }
 }

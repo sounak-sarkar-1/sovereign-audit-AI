@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User, UserRole, UserStatus } from '../../database/entities/user.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
@@ -78,13 +78,16 @@ export class AdminUsersService {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = {};
-    if (query.role) where.role = query.role;
-    if (query.status) where.status = query.status;
+    const baseWhere: FindOptionsWhere<User> = {};
+    if (query.role) baseWhere.role = query.role;
+    if (query.status) baseWhere.status = query.status;
     
-    if (query.search) {
-      where.email = Like(`%${query.search}%`);
-    }
+    const where = query.search
+      ? [
+          { ...baseWhere, email: Like(`%${query.search}%`) },
+          { ...baseWhere, fullName: Like(`%${query.search}%`) },
+        ]
+      : baseWhere;
 
     const [items, total] = await this.repository.findAndCount({
       where,

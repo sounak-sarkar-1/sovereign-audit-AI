@@ -71,5 +71,9 @@ export const auditorService = {
     const response = await api.post(`/auditor/audits/${auditId}/scope/${liId}/comments`, { content });
     return response.data;
   },
+  getPerformance: async () => {
+    const response = await api.get('/auditor/audits/performance');
+    return response.data;
+  },
 };
 

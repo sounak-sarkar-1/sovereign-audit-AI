@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useAuthStore } from '@/stores/auth';
+import { toast } from 'sonner';
 
 const TemplateLibraryList = () => {
   const [search, setSearch] = useState('');
@@ -46,23 +47,19 @@ const TemplateLibraryList = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => templateService.deleteTemplate(id),
     onSuccess: () => {
+      toast.success('Template deleted successfully');
       queryClient.invalidateQueries({ queryKey: ['templates'] });
       setDeleteId(null);
     },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || 'Failed to delete template';
+      toast.error(message);
+      setDeleteId(null);
+    }
   });
 
-  const handleDelete = async (id: string) => {
-    try {
-      const res = await templateService.deleteTemplate(id);
-      if (res.warningCount > 0) {
-        setWarningCount(res.warningCount);
-        setDeleteId(id);
-      } else {
-        deleteMutation.mutate(id);
-      }
-    } catch (error) {
-      console.error('Failed to pre-check delete', error);
-    }
+  const handleDelete = (id: string) => {
+    setDeleteId(id);
   };
 
   return (

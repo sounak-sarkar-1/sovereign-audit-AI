@@ -7,6 +7,7 @@ export type AuditStatus =
   | 'pending_client_review' 
   | 'closed' 
   | 'reopened' 
+  | 'archived'
   | 'deleted';
 
 export const AuditStatus = {
@@ -16,6 +17,7 @@ export const AuditStatus = {
   PENDING_CLIENT_REVIEW: 'pending_client_review' as AuditStatus,
   CLOSED: 'closed' as AuditStatus,
   REOPENED: 'reopened' as AuditStatus,
+  ARCHIVED: 'archived' as AuditStatus,
   DELETED: 'deleted' as AuditStatus,
 };
 

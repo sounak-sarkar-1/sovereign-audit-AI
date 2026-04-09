@@ -10,6 +10,9 @@ import { NotificationsService } from '../../shared/notifications/notifications.s
 import { NotificationType } from '../../database/entities/notification.entity';
 import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
 import { User } from '../../database/entities/user.entity';
+import { FilesService } from '../../shared/files/files.service';
+import { Response } from 'express';
+import { FileEntityType } from '../../database/entities/uploaded-file.entity';
 
 @Injectable()
 export class ManagerReportsService {
@@ -27,6 +30,7 @@ export class ManagerReportsService {
     private readonly aiJobsService: AiJobsService,
     private readonly notificationsService: NotificationsService,
     private readonly auditTrailService: AuditTrailService,
+    private readonly filesService: FilesService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -166,5 +170,52 @@ export class ManagerReportsService {
     });
 
     return { message: 'Audit finalized and closed' };
+  }
+
+  async download(auditId: string, reportId: string, res: Response) {
+    const report = await this.reportRepo.findOne({
+      where: { id: reportId, auditId },
+      relations: ['file'],
+    });
+    if (!report) throw new NotFoundException('Report not found');
+    if (!report.file)
+      throw new BadRequestException(
+        'Report file has not been generated yet. Please wait for AI generation to complete.',
+      );
+
+    return this.filesService.streamFile(report.file, res);
+  }
+
+  async uploadVersion(
+    auditId: string,
+    reportId: string,
+    file: Express.Multer.File,
+    manager: User,
+  ) {
+    const report = await this.reportRepo.findOne({
+      where: { id: reportId, auditId },
+    });
+    if (!report) throw new NotFoundException('Report not found');
+
+    const uploadedFile = await this.filesService.uploadFile(
+      file,
+      manager.id,
+      FileEntityType.AUDIT_REPORT,
+      report.id,
+    );
+
+    report.fileId = uploadedFile.id;
+    await this.reportRepo.save(report);
+
+    await this.auditTrailService.log({
+      actorId: manager.id,
+      actorRole: manager.role,
+      action: AuditAction.REPORT_GENERATED, // Or a new action like REPORT_UPLOADED if defined
+      entityType: 'AuditReport',
+      entityId: report.id,
+      metadata: { auditId, version: report.version },
+    });
+
+    return report;
   }
 }

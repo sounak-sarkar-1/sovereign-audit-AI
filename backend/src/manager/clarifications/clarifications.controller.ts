@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query, UseGuards, BadRequestException } from '@nestjs/common';
 import { ManagerClarificationsService } from './clarifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -44,5 +44,17 @@ export class ManagerClarificationsController {
   ) {
     dto.auditId = auditId;
     return this.service.create(dto, manager);
+  }
+
+  @Post(':id/respond')
+  respond(
+    @Param('id') id: string,
+    @Body('message') message: string,
+    @CurrentUser() manager: User,
+  ) {
+    if (!message || message.trim().length < 5) {
+      throw new BadRequestException('Reply message is too short');
+    }
+    return this.service.respond(id, message, manager);
   }
 }
