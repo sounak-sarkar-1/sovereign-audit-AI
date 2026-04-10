@@ -30,7 +30,8 @@ let NotificationsService = NotificationsService_1 = class NotificationsService {
     async findAllForUser(userId, query) {
         const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'DESC', isRead } = query;
         const skip = (page - 1) * limit;
-        const where = { userId };
+        const targetUserId = typeof userId === 'object' ? userId.id : userId;
+        const where = { userId: targetUserId };
         if (isRead !== undefined) {
             where.isRead = isRead;
         }
@@ -42,7 +43,7 @@ let NotificationsService = NotificationsService_1 = class NotificationsService {
             skip,
         });
         const unreadCount = await this.repository.count({
-            where: { userId, isRead: false },
+            where: { userId: targetUserId, isRead: false },
         });
         return {
             data,

@@ -14,7 +14,7 @@ import { exceptionalRequestService } from '@/services/exceptionalRequestService'
 import api from '@/lib/api';
 
 export default function AdminDashboard() {
-  const { data: summary, isLoading: isLoadingSummary } = useQuery({
+  const { data: summary } = useQuery({
     queryKey: ['admin-dashboard-summary'],
     queryFn: async () => {
       const response = await api.get('/admin/summary');
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody className="divide-y divide-muted/10">
                   {auditsList.slice(0, 5).map((audit: any) => (
-                    <tr key={audit.id} className="hover:bg-accent/5 transition-colors">
+                    <tr key={audit.id} className="hover:bg-accent/5 transition-colors" data-testid="audit-oversight-row">
                       <td className="px-6 py-4">
                         <div className="font-bold text-sm">{audit.name}</div>
                         <div className="text-[10px] font-mono text-muted-foreground">{audit.id}</div>
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="p-6 space-y-6">
              {pendingList.slice(0, 4).map((req: any) => (
-               <div key={req.id} className="flex items-start gap-4 group cursor-pointer border-b border-muted/10 pb-4 last:border-0 last:pb-0">
+               <div key={req.id} data-testid="exceptional-request-row" className="flex items-start gap-4 group cursor-pointer border-b border-muted/10 pb-4 last:border-0 last:pb-0">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
                     <AlertTriangle size={20} />
                   </div>

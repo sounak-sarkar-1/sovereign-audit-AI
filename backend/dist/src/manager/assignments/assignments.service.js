@@ -24,8 +24,10 @@ const audit_business_unit_entity_1 = require("../../database/entities/audit-busi
 const audit_scope_line_item_entity_1 = require("../../database/entities/audit-scope-line-item.entity");
 const manager_auditor_mapping_entity_1 = require("../../database/entities/manager-auditor-mapping.entity");
 const audit_trail_service_1 = require("../../shared/audit-trail/audit-trail.service");
+const notifications_service_1 = require("../../shared/notifications/notifications.service");
+const notification_entity_1 = require("../../database/entities/notification.entity");
 let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssignmentsService {
-    constructor(buAssignmentRepo, liAssignmentRepo, auditRepo, abuRepo, scopeRepo, mappingRepo, auditTrailService, dataSource) {
+    constructor(buAssignmentRepo, liAssignmentRepo, auditRepo, abuRepo, scopeRepo, mappingRepo, auditTrailService, notificationsService, dataSource) {
         this.buAssignmentRepo = buAssignmentRepo;
         this.liAssignmentRepo = liAssignmentRepo;
         this.auditRepo = auditRepo;
@@ -33,8 +35,16 @@ let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssig
         this.scopeRepo = scopeRepo;
         this.mappingRepo = mappingRepo;
         this.auditTrailService = auditTrailService;
+        this.notificationsService = notificationsService;
         this.dataSource = dataSource;
         this.logger = new common_1.Logger(ManagerAssignmentsService_1.name);
+    }
+    async getAuditBuName(abuId) {
+        const abu = await this.abuRepo.findOne({
+            where: { id: abuId },
+            relations: ['businessUnit'],
+        });
+        return abu?.businessUnit?.name || 'Unknown BU';
     }
     async getAssignments(auditId) {
         const audit = await this.auditRepo.findOne({
@@ -60,14 +70,22 @@ let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssig
             relations: ['auditor', 'auditScopeLineItem'],
         });
         const filteredLiAssignments = liAssignments.filter(la => la.auditScopeLineItem?.auditId === auditId);
+        const auditors = Array.from(new Map(buAssignments.map(a => [a.auditorId, a.auditor])).values());
+        const availableAuditors = await this.mappingRepo.find({
+            where: { managerId: audit.managerId, deletedAt: (0, typeorm_2.IsNull)() },
+            relations: ['auditor'],
+        });
         return {
             audit,
             businessUnits: bus,
             buAssignments,
+            auditors,
+            availableAuditors: availableAuditors.map(m => m.auditor),
             lineItems: lineItems.map(li => ({
                 ...li,
                 assignment: filteredLiAssignments.find(la => la.auditScopeLineItemId === li.id),
             })),
+            lineItemAssignments: filteredLiAssignments,
         };
     }
     async assignToBU(auditId, dto, managerId) {
@@ -106,6 +124,15 @@ let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssig
             entityType: 'AuditorAuditAssignment',
             entityId: saved.id,
             metadata: { auditId, auditorId: dto.auditorId, abuId: dto.auditBusinessUnitId },
+        });
+        await this.notificationsService.create({
+            userId: dto.auditorId,
+            type: notification_entity_1.NotificationType.AUDIT_ASSIGNED,
+            title: 'You have been assigned to an audit',
+            message: `You have been assigned to audit "${audit.name}" for ${await this.getAuditBuName(dto.auditBusinessUnitId)}`,
+            relatedEntityType: 'AuditorAuditAssignment',
+            relatedEntityId: saved.id,
+            metadata: { auditId },
         });
         return saved;
     }
@@ -187,6 +214,7 @@ exports.ManagerAssignmentsService = ManagerAssignmentsService = ManagerAssignmen
         typeorm_2.Repository,
         typeorm_2.Repository,
         audit_trail_service_1.AuditTrailService,
+        notifications_service_1.NotificationsService,
         typeorm_2.DataSource])
 ], ManagerAssignmentsService);
 //# sourceMappingURL=assignments.service.js.map

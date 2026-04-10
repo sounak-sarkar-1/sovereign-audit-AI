@@ -34,6 +34,9 @@ let AuditorAuditsController = class AuditorAuditsController {
     findAll(user) {
         return this.service.findAll(user);
     }
+    getPerformance(user) {
+        return this.service.getPerformance(user);
+    }
     findOne(id, user) {
         return this.service.findOne(id, user);
     }
@@ -64,6 +67,13 @@ __decorate([
     __metadata("design:paramtypes", [user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], AuditorAuditsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('performance'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", void 0)
+], AuditorAuditsController.prototype, "getPerformance", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

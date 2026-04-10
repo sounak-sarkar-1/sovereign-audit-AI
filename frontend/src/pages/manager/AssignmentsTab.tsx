@@ -103,7 +103,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
             {availableAuditors.length} Auditors available
           </Badge>
         </h3>
-        <Button size="sm" variant="outline" onClick={() => setIsLineItemModalOpen(true)} className="gap-2">
+        <Button size="sm" variant="outline" onClick={() => setIsLineItemModalOpen(true)} className="gap-2" data-testid="auditor-assignment-btn">
           <UserPlus className="h-4 w-4" /> Granular Assignments
         </Button>
       </div>
@@ -147,6 +147,7 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
                                 unassignBuMutation.mutate(assignment.id);
                               }
                             }}
+                            data-testid="auditor-checkbox"
                           />
                         </td>
                       );

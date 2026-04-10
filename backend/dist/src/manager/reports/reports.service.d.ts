@@ -7,6 +7,8 @@ import { AiJobsService } from '../../shared/ai-jobs/ai-jobs.service';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
 import { User } from '../../database/entities/user.entity';
+import { FilesService } from '../../shared/files/files.service';
+import { Response } from 'express';
 export declare class ManagerReportsService {
     private readonly auditRepo;
     private readonly reportRepo;
@@ -15,9 +17,10 @@ export declare class ManagerReportsService {
     private readonly aiJobsService;
     private readonly notificationsService;
     private readonly auditTrailService;
+    private readonly filesService;
     private readonly dataSource;
     private readonly logger;
-    constructor(auditRepo: Repository<Audit>, reportRepo: Repository<AuditReport>, lineItemRepo: Repository<AuditScopeLineItem>, aiJobRepo: Repository<AiJob>, aiJobsService: AiJobsService, notificationsService: NotificationsService, auditTrailService: AuditTrailService, dataSource: DataSource);
+    constructor(auditRepo: Repository<Audit>, reportRepo: Repository<AuditReport>, lineItemRepo: Repository<AuditScopeLineItem>, aiJobRepo: Repository<AiJob>, aiJobsService: AiJobsService, notificationsService: NotificationsService, auditTrailService: AuditTrailService, filesService: FilesService, dataSource: DataSource);
     generate(auditId: string, manager: User): Promise<{
         reportId: string;
         jobId: string;
@@ -29,4 +32,6 @@ export declare class ManagerReportsService {
     finalize(auditId: string, reportId: string, manager: User): Promise<{
         message: string;
     }>;
+    download(auditId: string, reportId: string, res: Response): Promise<void>;
+    uploadVersion(auditId: string, reportId: string, file: Express.Multer.File, manager: User): Promise<AuditReport>;
 }

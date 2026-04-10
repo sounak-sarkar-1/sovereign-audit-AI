@@ -103,6 +103,18 @@ let FilesService = FilesService_1 = class FilesService {
             throw new common_1.InternalServerErrorException('Failed to delete file');
         }
     }
+    streamFile(file, res) {
+        if (!fs.existsSync(file.filePath)) {
+            throw new common_1.NotFoundException('File not found on disk');
+        }
+        res.set({
+            'Content-Type': file.mimeType,
+            'Content-Disposition': `attachment; filename="${file.originalFilename}"`,
+            'Content-Length': file.fileSizeBytes,
+        });
+        const stream = fs.createReadStream(file.filePath);
+        stream.pipe(res);
+    }
 };
 exports.FilesService = FilesService;
 exports.FilesService = FilesService = FilesService_1 = __decorate([

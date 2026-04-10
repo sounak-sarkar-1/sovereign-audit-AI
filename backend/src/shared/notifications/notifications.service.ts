@@ -32,7 +32,8 @@ export class NotificationsService {
     const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'DESC', isRead } = query;
     const skip = (page - 1) * limit;
 
-    const where: any = { userId };
+    const targetUserId = typeof userId === 'object' ? (userId as any).id : userId;
+    const where: any = { userId: targetUserId };
     if (isRead !== undefined) {
       where.isRead = isRead;
     }
@@ -46,7 +47,7 @@ export class NotificationsService {
     });
 
     const unreadCount = await this.repository.count({
-      where: { userId, isRead: false },
+      where: { userId: targetUserId, isRead: false },
     });
 
     return {

@@ -3,6 +3,7 @@ import { UploadedFile } from './uploaded-file.entity';
 export declare enum ReportStatus {
     DRAFT = "draft",
     SENT_FOR_CLIENT_REVIEW = "sent_for_client_review",
+    FEEDBACK_SUBMITTED = "feedback_submitted",
     FINAL = "final"
 }
 export declare class AuditReport {

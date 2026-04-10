@@ -1,13 +1,13 @@
-import { StreamableFile } from '@nestjs/common';
+import { Response } from 'express';
 import { ClientReportsService } from './reports.service';
-import { SubmitReportFeedbackDto } from './dto/submit-feedback.dto';
+import { User } from '../../database/entities/user.entity';
 export declare class ClientReportsController {
     private readonly service;
     constructor(service: ClientReportsService);
     findAll(req: any): Promise<import("../../database/entities/audit-report.entity").AuditReport[]>;
     findOne(id: string, req: any): Promise<import("../../database/entities/audit-report.entity").AuditReport>;
-    submitFeedback(id: string, dto: SubmitReportFeedbackDto, req: any): Promise<{
+    submitFeedback(reportId: string, feedback: any[], client: User): Promise<{
         message: string;
     }>;
-    download(id: string, req: any, res: any): Promise<StreamableFile>;
+    download(reportId: string, client: User, res: Response): Promise<void>;
 }

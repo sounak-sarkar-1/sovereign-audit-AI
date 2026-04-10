@@ -102,6 +102,7 @@ const ReportFeedbackDialog: React.FC<ReportFeedbackDialogProps> = ({
             onClick={handleSubmit} 
             disabled={isPending || !feedback.trim()}
             className="flex-1 rounded-full bg-primary hover:bg-primary/90 font-bold uppercase tracking-widest text-[10px] h-10 shadow-elevated"
+            data-testid="submit-report-feedback-btn"
           >
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Submit Feedback'}
           </Button>

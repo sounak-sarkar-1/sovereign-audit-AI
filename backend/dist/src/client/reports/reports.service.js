@@ -22,17 +22,24 @@ const client_report_feedback_entity_1 = require("../../database/entities/client-
 const audit_entity_1 = require("../../database/entities/audit.entity");
 const notifications_service_1 = require("../../shared/notifications/notifications.service");
 const notification_entity_1 = require("../../database/entities/notification.entity");
+const audit_trail_service_1 = require("../../shared/audit-trail/audit-trail.service");
+const files_service_1 = require("../../shared/files/files.service");
 let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
-    constructor(reportRepo, auditRepo, notificationsService, dataSource) {
+    constructor(reportRepo, auditRepo, notificationsService, auditTrailService, filesService, dataSource) {
         this.reportRepo = reportRepo;
         this.auditRepo = auditRepo;
         this.notificationsService = notificationsService;
+        this.auditTrailService = auditTrailService;
+        this.filesService = filesService;
         this.dataSource = dataSource;
         this.logger = new common_1.Logger(ClientReportsService_1.name);
     }
     async findAll(clientId) {
         return this.reportRepo.find({
-            where: { audit: { clientId }, status: audit_report_entity_1.ReportStatus.SENT_FOR_CLIENT_REVIEW || audit_report_entity_1.ReportStatus.FINAL },
+            where: {
+                audit: { clientId },
+                status: (0, typeorm_2.In)([audit_report_entity_1.ReportStatus.SENT_FOR_CLIENT_REVIEW, audit_report_entity_1.ReportStatus.FEEDBACK_SUBMITTED, audit_report_entity_1.ReportStatus.FINAL])
+            },
             relations: ['audit', 'file'],
             order: { createdAt: 'DESC' },
         });
@@ -47,7 +54,7 @@ let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
         }
         return report;
     }
-    async submitFeedback(id, dto, clientId) {
+    async submitFeedback(id, feedback, clientId) {
         const report = await this.reportRepo.findOne({
             where: { id, audit: { clientId } },
             relations: ['audit'],
@@ -58,7 +65,7 @@ let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
             throw new common_1.BadRequestException('Feedback can only be submitted for reports pending review');
         }
         return await this.dataSource.transaction(async (manager) => {
-            const feedbackEntities = dto.feedback.map(f => manager.create(client_report_feedback_entity_1.ClientReportFeedback, {
+            const feedbackEntities = feedback.map(f => manager.create(client_report_feedback_entity_1.ClientReportFeedback, {
                 reportId: id,
                 sectionName: f.sectionName,
                 status: f.status,
@@ -66,6 +73,8 @@ let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
                 createdBy: clientId,
             }));
             await manager.save(feedbackEntities);
+            report.status = audit_report_entity_1.ReportStatus.FEEDBACK_SUBMITTED;
+            await manager.save(report);
             report.audit.status = audit_entity_1.AuditStatus.UNDER_MANAGER_REVIEW;
             await manager.save(report.audit);
             await this.notificationsService.create({
@@ -77,15 +86,28 @@ let ClientReportsService = ClientReportsService_1 = class ClientReportsService {
                 relatedEntityId: report.id,
                 metadata: { auditId: report.auditId },
             });
+            await this.auditTrailService.log({
+                actorId: clientId,
+                action: audit_trail_service_1.AuditAction.CLIENT_FEEDBACK_SUBMITTED,
+                entityType: 'AuditReport',
+                entityId: report.id,
+                metadata: { auditId: report.auditId },
+            });
             return { message: 'Feedback submitted successfully' };
         });
     }
-    async download(id, clientId) {
-        const report = await this.findOne(id, clientId);
-        if (!report.fileId) {
-            throw new common_1.NotFoundException('Report file not found');
-        }
-        return report.file;
+    async download(reportId, clientId, res) {
+        const report = await this.reportRepo.findOne({
+            where: { id: reportId },
+            relations: ['file', 'audit'],
+        });
+        if (!report)
+            throw new common_1.NotFoundException('Report not found');
+        if (report.audit.clientId !== clientId)
+            throw new common_1.ForbiddenException();
+        if (!report.file)
+            throw new common_1.BadRequestException('Report file not yet generated');
+        return this.filesService.streamFile(report.file, res);
     }
 };
 exports.ClientReportsService = ClientReportsService;
@@ -96,6 +118,8 @@ exports.ClientReportsService = ClientReportsService = ClientReportsService_1 = _
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
         notifications_service_1.NotificationsService,
+        audit_trail_service_1.AuditTrailService,
+        files_service_1.FilesService,
         typeorm_2.DataSource])
 ], ClientReportsService);
 //# sourceMappingURL=reports.service.js.map

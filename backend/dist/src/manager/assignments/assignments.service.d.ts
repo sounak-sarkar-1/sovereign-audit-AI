@@ -6,6 +6,7 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 import { ManagerAuditorMapping } from '../../database/entities/manager-auditor-mapping.entity';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
+import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { AssignAuditorDto } from './dto/assign-auditor.dto';
 import { AssignLineItemDto } from './dto/assign-line-item.dto';
 export declare class ManagerAssignmentsService {
@@ -16,13 +17,17 @@ export declare class ManagerAssignmentsService {
     private readonly scopeRepo;
     private readonly mappingRepo;
     private readonly auditTrailService;
+    private readonly notificationsService;
     private readonly dataSource;
     private readonly logger;
-    constructor(buAssignmentRepo: Repository<AuditorAuditAssignment>, liAssignmentRepo: Repository<AuditorLineItemAssignment>, auditRepo: Repository<Audit>, abuRepo: Repository<AuditBusinessUnit>, scopeRepo: Repository<AuditScopeLineItem>, mappingRepo: Repository<ManagerAuditorMapping>, auditTrailService: AuditTrailService, dataSource: DataSource);
+    constructor(buAssignmentRepo: Repository<AuditorAuditAssignment>, liAssignmentRepo: Repository<AuditorLineItemAssignment>, auditRepo: Repository<Audit>, abuRepo: Repository<AuditBusinessUnit>, scopeRepo: Repository<AuditScopeLineItem>, mappingRepo: Repository<ManagerAuditorMapping>, auditTrailService: AuditTrailService, notificationsService: NotificationsService, dataSource: DataSource);
+    private getAuditBuName;
     getAssignments(auditId: string): Promise<{
         audit: Audit;
         businessUnits: AuditBusinessUnit[];
         buAssignments: AuditorAuditAssignment[];
+        auditors: import("../../database/entities/user.entity").User[];
+        availableAuditors: import("../../database/entities/user.entity").User[];
         lineItems: {
             assignment: AuditorLineItemAssignment;
             id: string;
@@ -44,6 +49,7 @@ export declare class ManagerAssignmentsService {
             updatedAt: Date;
             deletedAt: Date;
         }[];
+        lineItemAssignments: AuditorLineItemAssignment[];
     }>;
     assignToBU(auditId: string, dto: AssignAuditorDto, managerId: string): Promise<AuditorAuditAssignment>;
     unassignFromBU(auditId: string, assignmentId: string, managerId: string): Promise<void>;

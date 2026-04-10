@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManagerReportsController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const reports_service_1 = require("./reports.service");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const tenant_guard_1 = require("../../common/guards/tenant.guard");
@@ -36,6 +37,12 @@ let ManagerReportsController = class ManagerReportsController {
     }
     finalize(auditId, reportId, manager) {
         return this.service.finalize(auditId, reportId, manager);
+    }
+    async download(auditId, reportId, res) {
+        return this.service.download(auditId, reportId, res);
+    }
+    async upload(auditId, reportId, file, manager) {
+        return this.service.uploadVersion(auditId, reportId, file, manager);
     }
 };
 exports.ManagerReportsController = ManagerReportsController;
@@ -72,6 +79,26 @@ __decorate([
     __metadata("design:paramtypes", [String, String, user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], ManagerReportsController.prototype, "finalize", null);
+__decorate([
+    (0, common_1.Get)(':rId/download'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('rId')),
+    __param(2, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], ManagerReportsController.prototype, "download", null);
+__decorate([
+    (0, common_1.Post)(':rId/upload'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('rId')),
+    __param(2, (0, common_1.UploadedFile)()),
+    __param(3, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object, user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], ManagerReportsController.prototype, "upload", null);
 exports.ManagerReportsController = ManagerReportsController = __decorate([
     (0, common_1.Controller)('manager/audits/:id/reports'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),

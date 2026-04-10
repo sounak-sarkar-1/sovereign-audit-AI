@@ -101,6 +101,7 @@ const ExceptionDialog: React.FC<ExceptionDialogProps> = ({
               placeholder="Provide a detailed reason why this item requires an exception..."
               className="min-h-[150px]"
               required
+              data-testid="exception-justification-input"
             />
             <p className="text-[10px] text-muted-foreground uppercase font-semibold">Min 20 characters.</p>
           </div>
@@ -150,6 +151,7 @@ const ExceptionDialog: React.FC<ExceptionDialogProps> = ({
             disabled={isPending || justification.length < 20}
             variant="destructive"
             className="gap-2"
+            data-testid="raise-exception-confirm-btn"
           >
             {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldAlert size={16} />}
             Raise Exception Request

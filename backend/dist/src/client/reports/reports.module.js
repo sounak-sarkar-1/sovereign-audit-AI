@@ -16,6 +16,7 @@ const client_report_feedback_entity_1 = require("../../database/entities/client-
 const audit_entity_1 = require("../../database/entities/audit.entity");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
 const files_module_1 = require("../../shared/files/files.module");
+const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
 let ClientReportsModule = class ClientReportsModule {
 };
 exports.ClientReportsModule = ClientReportsModule;
@@ -25,6 +26,7 @@ exports.ClientReportsModule = ClientReportsModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([audit_report_entity_1.AuditReport, client_report_feedback_entity_1.ClientReportFeedback, audit_entity_1.Audit]),
             notifications_module_1.NotificationsModule,
             files_module_1.FilesModule,
+            audit_trail_module_1.AuditTrailModule,
         ],
         controllers: [reports_controller_1.ClientReportsController],
         providers: [reports_service_1.ClientReportsService],

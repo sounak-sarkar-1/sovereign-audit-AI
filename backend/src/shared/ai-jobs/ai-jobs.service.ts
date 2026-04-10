@@ -38,8 +38,11 @@ export class AiJobsService implements OnModuleInit, OnModuleDestroy {
       
       this.logger.log('Starting PgBoss in background...');
       this.boss.start()
-        .then(() => {
-          this.logger.log('PgBoss started successfully, resolving ready signal');
+        .then(async () => {
+          this.logger.log('PgBoss started successfully, creating queues...');
+          await this.boss.createQueue('scope-extraction');
+          await this.boss.createQueue('report-generation');
+          this.logger.log('Queues created, resolving ready signal');
           this.resolveReady();
         })
         .catch((err) => {

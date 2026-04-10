@@ -147,6 +147,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
                 placeholder="Describe your findings and the specific evidence providing assurance..."
                 className="min-h-[120px] rounded-xl border-muted/30 focus:border-primary transition-all shadow-sm"
                 required
+                data-testid="response-text-input"
               />
             </div>
           ) : (
@@ -164,6 +165,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
                         ? "border-primary bg-primary/5 text-primary font-bold shadow-sm" 
                         : "border-muted/30 hover:border-primary/50 hover:bg-muted/20"
                     )}
+                    data-testid="response-option"
                   >
                     {opt.optionText}
                     <div className={cn(
@@ -187,6 +189,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
               placeholder="Internal notes for the manager review team..."
               className="resize-none rounded-xl border-muted/30 shadow-sm"
               rows={2}
+              data-testid="manager-comment-input"
             />
           </div>
 
@@ -285,6 +288,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
             onClick={() => handleAction(true)} 
             disabled={isPending}
             className="flex-1 rounded-full border-muted-foreground/30 font-bold uppercase tracking-widest text-[10px] h-10"
+            data-testid="save-draft-btn"
           >
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Save Draft Evidence'}
           </Button>
@@ -292,6 +296,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
             onClick={() => handleAction(false)} 
             disabled={isPending}
             className="flex-1 rounded-full bg-primary hover:bg-primary/90 font-bold uppercase tracking-widest text-[10px] h-10 shadow-elevated"
+            data-testid="submit-for-review-btn"
           >
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Submit for Review'}
           </Button>

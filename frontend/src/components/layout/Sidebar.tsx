@@ -149,7 +149,7 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
       <nav className="flex-1 py-5 overflow-y-auto hide-scrollbar space-y-1">
         {navItems.map((item) => (
           <NavLink
-            key={item.path}
+            key={item.label}
             to={item.path}
             className={({ isActive }) => cn(
               "flex items-center h-10 px-4 mx-2 transition-all duration-150 relative group rounded-full",
@@ -222,7 +222,7 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
           {isOpen ? (
             <Popover>
               <PopoverTrigger asChild>
-                <div className="rounded-2xl overflow-hidden bg-white dark:bg-[#2d1f45] shadow-card border border-bg-mid dark:border-[#3d2a5a] cursor-pointer group transition-all hover:shadow-elevated">
+                <div className="rounded-2xl overflow-hidden bg-white dark:bg-[#2d1f45] shadow-card border border-bg-mid dark:border-[#3d2a5a] cursor-pointer group transition-all hover:shadow-elevated" data-testid="user-profile-card">
                   <div className="h-14 w-full bg-gradient-to-br from-primary to-accent relative" />
                   <div className="px-4 pb-4 flex flex-col items-center -mt-5">
                     <div className="w-10 h-10 rounded-full border-2 border-white dark:border-[#2d1f45] bg-bg-warm flex items-center justify-center overflow-hidden shadow-sm z-10">

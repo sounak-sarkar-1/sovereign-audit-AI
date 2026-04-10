@@ -50,31 +50,36 @@ let ClientClarificationsService = ClientClarificationsService_1 = class ClientCl
         }
         return thread;
     }
-    async respond(id, dto, user) {
-        const clarification = await this.clarificationRepo.findOne({ where: { id } });
-        if (!clarification) {
+    async respond(id, clientId, message, attachmentFileIds) {
+        const thread = await this.clarificationRepo.findOne({
+            where: { id, clientId },
+            relations: ['audit'],
+        });
+        if (!thread) {
             throw new common_1.NotFoundException('Clarification thread not found');
+        }
+        if (thread.status === clarification_request_entity_1.ClarificationStatus.CLOSED) {
+            throw new common_1.BadRequestException('Cannot reply to a closed thread');
         }
         const response = this.responseRepo.create({
             clarificationRequestId: id,
-            respondedBy: user.id,
-            message: dto.message,
+            respondedBy: clientId,
+            message,
         });
         await this.responseRepo.save(response);
-        if (dto.attachmentFileIds && dto.attachmentFileIds.length > 0) {
-            this.logger.log(`Linking ${dto.attachmentFileIds.length} files to clarification response ${response.id}`);
-            await this.fileRepo.update({ id: (0, typeorm_2.In)(dto.attachmentFileIds), entityType: uploaded_file_entity_1.FileEntityType.CLARIFICATION_ATTACHMENT }, { entityId: response.id });
+        if (attachmentFileIds?.length) {
+            await this.fileRepo.update({ id: (0, typeorm_2.In)(attachmentFileIds) }, { entityId: response.id });
         }
-        clarification.status = clarification_request_entity_1.ClarificationStatus.RESPONDED;
-        await this.clarificationRepo.save(clarification);
+        thread.status = clarification_request_entity_1.ClarificationStatus.PENDING;
+        await this.clarificationRepo.save(thread);
         await this.notificationsService.create({
-            userId: clarification.managerId,
-            type: notification_entity_1.NotificationType.CLARIFICATION_RESPONDED,
-            title: 'Clarification Responded',
-            message: `Client ${user.fullName} has responded to your clarification request.`,
+            userId: thread.managerId,
+            type: notification_entity_1.NotificationType.CLARIFICATION_REQUEST,
+            title: 'Client replied to a clarification',
+            message: `Client has responded to your clarification on audit "${thread.audit?.name}"`,
             relatedEntityType: 'ClarificationRequest',
-            relatedEntityId: clarification.id,
-            metadata: { auditId: clarification.auditId },
+            relatedEntityId: id,
+            metadata: { auditId: thread.auditId },
         });
         return response;
     }

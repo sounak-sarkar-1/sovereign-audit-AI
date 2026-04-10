@@ -2,10 +2,8 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { 
   Activity, 
-  AlertCircle, 
   CheckCircle2, 
   Clock, 
-  FileText, 
   TrendingUp,
   Search,
   MessageSquare,
@@ -16,16 +14,13 @@ import {
   Zap
 } from 'lucide-react';
 import { 
-  BarChart, 
-  Bar, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
   LineChart,
-  Line,
-  Cell
+  Line
 } from 'recharts';
 import { clientService } from '@/services/clientService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -122,7 +117,7 @@ const ExecutiveCockpit: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-dark">{pendingClarifications.length}</div>
+            <div className="text-3xl font-bold text-dark" data-testid="pending-clarifications-count">{pendingClarifications.length}</div>
             <p className="text-[10px] text-muted-foreground font-medium mt-1">Requires your attention</p>
           </CardContent>
         </Card>
@@ -135,7 +130,7 @@ const ExecutiveCockpit: React.FC = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-dark">{audits.filter((a: any) => a.status === 'pending_client_review').length}</div>
+            <div className="text-3xl font-bold text-dark" data-testid="reports-to-review-count">{audits.filter((a: any) => a.status === 'pending_client_review').length}</div>
             <p className="text-[10px] text-muted-foreground font-medium mt-1">Awaiting final sign-off</p>
           </CardContent>
         </Card>
@@ -146,7 +141,7 @@ const ExecutiveCockpit: React.FC = () => {
             <ShieldCheck className="h-4 w-4 text-white/50" />
           </CardHeader>
           <CardContent title={insights.complianceTrend.length === 0 ? "No completed audits yet" : undefined}>
-            <div className="text-3xl font-bold">
+            <div className="text-3xl font-bold" data-testid="compliance-score">
               {insights.complianceTrend.length > 0 ? `${insights.complianceScore}%` : 'N/A'}
             </div>
             <p className="text-[10px] text-white/60 font-medium mt-1 flex items-center gap-1">
@@ -277,7 +272,7 @@ const ExecutiveCockpit: React.FC = () => {
             </TableHeader>
             <TableBody>
               {audits.map((audit: any) => (
-                <TableRow key={audit.id} className="hover:bg-muted/5 transition-colors">
+                <TableRow key={audit.id} className="hover:bg-muted/5 transition-colors" data-testid="executive-audit-row">
                   <TableCell className="px-6 font-bold text-dark">{audit.name}</TableCell>
                   <TableCell className="text-sm font-medium text-muted-foreground">{audit.manager?.fullName}</TableCell>
                   <TableCell>

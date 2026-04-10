@@ -47,7 +47,7 @@ const ScopeItemsTable: React.FC<ScopeItemsTableProps> = ({ items, onEdit, onDele
           </TableRow>
         ) : (
           items.map((item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.id} data-testid="scope-line-item">
               <TableCell className="font-bold text-dark dark:text-white">{item.name}</TableCell>
               <TableCell className="max-w-md truncate text-dark/70 dark:text-bg-mid" title={item.description}>
                 {item.description}

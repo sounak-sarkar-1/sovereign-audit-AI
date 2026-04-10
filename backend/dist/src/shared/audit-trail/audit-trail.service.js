@@ -24,6 +24,7 @@ var AuditAction;
     AuditAction["USER_UPDATED"] = "USER_UPDATED";
     AuditAction["USER_DELETED"] = "USER_DELETED";
     AuditAction["AUDIT_CREATED"] = "AUDIT_CREATED";
+    AuditAction["AUDIT_UPDATED"] = "AUDIT_UPDATED";
     AuditAction["AUDIT_STARTED"] = "AUDIT_STARTED";
     AuditAction["SCOPE_DEFINED"] = "SCOPE_DEFINED";
     AuditAction["AUDITOR_ASSIGNED"] = "AUDITOR_ASSIGNED";
@@ -47,6 +48,7 @@ var AuditAction;
     AuditAction["TEMPLATE_UPDATED"] = "TEMPLATE_UPDATED";
     AuditAction["TEMPLATE_DELETED"] = "TEMPLATE_DELETED";
     AuditAction["CLARIFICATION_CLOSED"] = "CLARIFICATION_CLOSED";
+    AuditAction["CLARIFICATION_RESPONDED"] = "CLARIFICATION_RESPONDED";
 })(AuditAction || (exports.AuditAction = AuditAction = {}));
 let AuditTrailService = AuditTrailService_1 = class AuditTrailService {
     constructor(repository) {
@@ -92,6 +94,12 @@ let AuditTrailService = AuditTrailService_1 = class AuditTrailService {
             qb.andWhere('(log.entityId ILIKE :search OR CAST(log.payload AS TEXT) ILIKE :search)', {
                 search: `%${query.search}%`
             });
+        }
+        if (query.startDate) {
+            qb.andWhere('log.createdAt >= :startDate', { startDate: query.startDate });
+        }
+        if (query.endDate) {
+            qb.andWhere('log.createdAt <= :endDate', { endDate: query.endDate });
         }
         const [items, total] = await qb.getManyAndCount();
         return {

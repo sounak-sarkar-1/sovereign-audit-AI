@@ -65,6 +65,7 @@ const AuditCard = ({ audit, onRequestAction }: { audit: Audit, onRequestAction: 
         hasPendingRequest && "opacity-80"
       )}
       onClick={() => navigate(`/manager/audits/${audit.id}`)}
+      data-testid="audit-card"
     >
       <div className="flex justify-between items-start mb-2">
         <div className="flex flex-col gap-1.5">
@@ -221,7 +222,7 @@ const KanbanBoard = () => {
               <List size={16} className="mr-2" /> List
             </Button>
           </div>
-          <Button onClick={() => navigate('/manager/audits/new')} className="shadow-card">
+          <Button onClick={() => navigate('/manager/audits/new')} className="shadow-card" data-testid="new-audit-btn">
             <Plus size={18} className="mr-2" /> New Audit
           </Button>
         </div>

@@ -11,6 +11,15 @@ export declare class ClientInsightsService {
     getGlobalInsights(clientId: string): Promise<{
         data: {
             auditsCount: number;
+            complianceTrend: any[];
+            riskByBu: any[];
+            recurringFindings: any[];
+            complianceScore?: undefined;
+            complianceDelta?: undefined;
+        };
+    } | {
+        data: {
+            auditsCount: number;
             complianceTrend: {
                 auditId: string;
                 name: string;
@@ -21,6 +30,8 @@ export declare class ClientInsightsService {
                 buName: any;
                 rate: number;
             }[];
+            complianceScore: number;
+            complianceDelta: number;
             recurringFindings: any[];
         };
     }>;

@@ -26,16 +26,27 @@ let AdminSummaryService = class AdminSummaryService {
         this.requestRepository = requestRepository;
     }
     async getDashboardSummary() {
-        const [totalUsers, activeAudits, pendingRequests] = await Promise.all([
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const [totalUsers, activeAudits, pendingRequests, closedAudits, totalRecentAudits] = await Promise.all([
             this.userRepository.count(),
             this.auditRepository.count({ where: { status: audit_entity_1.AuditStatus.IN_PROGRESS } }),
             this.requestRepository.count({ where: { status: exceptional_action_request_entity_1.ExceptionalRequestStatus.PENDING } }),
+            this.auditRepository.count({
+                where: { status: audit_entity_1.AuditStatus.CLOSED, updatedAt: (0, typeorm_2.MoreThanOrEqual)(thirtyDaysAgo) }
+            }),
+            this.auditRepository.count({
+                where: { updatedAt: (0, typeorm_2.MoreThanOrEqual)(thirtyDaysAgo) }
+            }),
         ]);
+        const systemHealth = totalRecentAudits > 0
+            ? `${Math.round((closedAudits / totalRecentAudits) * 100)}%`
+            : 'N/A';
         return {
             totalUsers,
             activeAudits,
             pendingRequests,
-            systemHealth: '99.9%',
+            systemHealth,
         };
     }
 };

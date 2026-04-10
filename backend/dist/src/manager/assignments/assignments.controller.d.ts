@@ -8,6 +8,8 @@ export declare class ManagerAssignmentsController {
         audit: import("../../database/entities/audit.entity").Audit;
         businessUnits: import("../../database/entities/audit-business-unit.entity").AuditBusinessUnit[];
         buAssignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
+        auditors: import("../../database/entities/user.entity").User[];
+        availableAuditors: import("../../database/entities/user.entity").User[];
         lineItems: {
             assignment: import("../../database/entities/auditor-line-item-assignment.entity").AuditorLineItemAssignment;
             id: string;
@@ -29,6 +31,7 @@ export declare class ManagerAssignmentsController {
             updatedAt: Date;
             deletedAt: Date;
         }[];
+        lineItemAssignments: import("../../database/entities/auditor-line-item-assignment.entity").AuditorLineItemAssignment[];
     }>;
     assignToBU(auditId: string, dto: AssignAuditorDto, managerId: string): Promise<import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment>;
     unassignFromBU(auditId: string, assignmentId: string, managerId: string): Promise<void>;

@@ -202,6 +202,7 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
                           className="rounded-full shadow-elevated"
                           disabled={!canStart || startMutation.isPending}
                           onClick={() => startMutation.mutate(id!)}
+                          data-testid="start-audit-btn"
                         >
                           <Play className="mr-2 h-4 w-4" /> Start Audit
                         </Button>
@@ -222,6 +223,7 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
                     className="rounded-full border-bg-mid hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200"
                     onClick={() => archiveMutation.mutate(id!)}
                     disabled={archiveMutation.isPending}
+                    data-testid="archive-audit-btn"
                 >
                     <Archive className="mr-2 h-4 w-4" /> Archive Engagement
                 </Button>
@@ -233,6 +235,7 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
                     size="sm" 
                     className="rounded-full h-9 px-3 border-bg-mid"
                     onClick={() => setIsEditing(true)}
+                    data-testid="edit-audit-btn"
                 >
                   <Settings className="mr-2 h-4 w-4" /> Edit Audit
                 </Button>

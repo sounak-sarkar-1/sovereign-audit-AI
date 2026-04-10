@@ -18,6 +18,7 @@ const ai_job_entity_1 = require("../../database/entities/ai-job.entity");
 const ai_jobs_module_1 = require("../../shared/ai-jobs/ai-jobs.module");
 const notifications_module_1 = require("../../shared/notifications/notifications.module");
 const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
+const files_module_1 = require("../../shared/files/files.module");
 let ManagerReportsModule = class ManagerReportsModule {
 };
 exports.ManagerReportsModule = ManagerReportsModule;
@@ -28,6 +29,7 @@ exports.ManagerReportsModule = ManagerReportsModule = __decorate([
             ai_jobs_module_1.AiJobsModule,
             notifications_module_1.NotificationsModule,
             audit_trail_module_1.AuditTrailModule,
+            files_module_1.FilesModule,
         ],
         controllers: [reports_controller_1.ManagerReportsController],
         providers: [reports_service_1.ManagerReportsService],

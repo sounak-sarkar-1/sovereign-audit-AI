@@ -18,6 +18,7 @@ const audit_business_unit_entity_1 = require("../../database/entities/audit-busi
 const audit_scope_line_item_entity_1 = require("../../database/entities/audit-scope-line-item.entity");
 const manager_auditor_mapping_entity_1 = require("../../database/entities/manager-auditor-mapping.entity");
 const audit_trail_module_1 = require("../../shared/audit-trail/audit-trail.module");
+const notifications_module_1 = require("../../shared/notifications/notifications.module");
 let ManagerAssignmentsModule = class ManagerAssignmentsModule {
 };
 exports.ManagerAssignmentsModule = ManagerAssignmentsModule;
@@ -33,6 +34,7 @@ exports.ManagerAssignmentsModule = ManagerAssignmentsModule = __decorate([
                 manager_auditor_mapping_entity_1.ManagerAuditorMapping,
             ]),
             audit_trail_module_1.AuditTrailModule,
+            notifications_module_1.NotificationsModule,
         ],
         controllers: [assignments_controller_1.ManagerAssignmentsController],
         providers: [assignments_service_1.ManagerAssignmentsService],

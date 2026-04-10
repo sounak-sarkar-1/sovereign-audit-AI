@@ -31,10 +31,6 @@ __decorate([
     __metadata("design:type", Date)
 ], Tenant.prototype, "createdAt", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)({ name: 'updated_at', type: 'timestamptz' }),
-    __metadata("design:type", Date)
-], Tenant.prototype, "updatedAt", void 0);
-__decorate([
     (0, typeorm_1.DeleteDateColumn)({ name: 'deleted_at', type: 'timestamptz', nullable: true }),
     __metadata("design:type", Date)
 ], Tenant.prototype, "deletedAt", void 0);

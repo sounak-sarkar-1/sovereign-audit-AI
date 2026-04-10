@@ -93,7 +93,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="text-[#2b144d]">Tenant ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. gt-bharat" {...field} />
+                      <Input placeholder="e.g. gt-bharat" {...field} data-testid="login-tenant-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -107,7 +107,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="text-[#2b144d]">Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="admin@example.com" type="email" {...field} />
+                      <Input placeholder="admin@example.com" type="email" {...field} data-testid="login-email-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="text-[#2b144d]">Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="••••••••" type="password" {...field} />
+                      <Input placeholder="••••••••" type="password" {...field} data-testid="login-password-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -132,6 +132,7 @@ export default function LoginPage() {
                 type="submit" 
                 className="w-full bg-[#4f2d7f] hover:bg-[#2b144d] text-white py-6 text-lg"
                 disabled={isLoading}
+                data-testid="login-submit-btn"
               >
                 {isLoading ? (
                   <>

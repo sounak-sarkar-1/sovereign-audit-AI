@@ -289,7 +289,7 @@ const TemplateEditor = () => {
           {isEdit && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" className="text-destructive border-destructive hover:bg-destructive hover:text-white" disabled={deleteMutation.isPending}>
+                <Button variant="outline" className="text-destructive border-destructive hover:bg-destructive hover:text-white" disabled={deleteMutation.isPending} data-testid="template-delete-btn">
                   <Trash2 className="mr-2 h-4 w-4" /> Delete
                 </Button>
               </AlertDialogTrigger>
@@ -313,7 +313,7 @@ const TemplateEditor = () => {
             </AlertDialog>
           )}
           <Button variant="outline" onClick={() => navigate('/admin/templates')}>Cancel</Button>
-          <Button onClick={handleSave} disabled={mutation.isPending}>
+          <Button onClick={handleSave} disabled={mutation.isPending} data-testid="template-save-btn">
             <Save className="mr-2 h-4 w-4" /> {mutation.isPending ? 'Saving...' : 'Save Template'}
           </Button>
         </div>

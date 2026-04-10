@@ -5,6 +5,7 @@ export declare enum AuditAction {
     USER_UPDATED = "USER_UPDATED",
     USER_DELETED = "USER_DELETED",
     AUDIT_CREATED = "AUDIT_CREATED",
+    AUDIT_UPDATED = "AUDIT_UPDATED",
     AUDIT_STARTED = "AUDIT_STARTED",
     SCOPE_DEFINED = "SCOPE_DEFINED",
     AUDITOR_ASSIGNED = "AUDITOR_ASSIGNED",
@@ -27,7 +28,8 @@ export declare enum AuditAction {
     TEMPLATE_CREATED = "TEMPLATE_CREATED",
     TEMPLATE_UPDATED = "TEMPLATE_UPDATED",
     TEMPLATE_DELETED = "TEMPLATE_DELETED",
-    CLARIFICATION_CLOSED = "CLARIFICATION_CLOSED"
+    CLARIFICATION_CLOSED = "CLARIFICATION_CLOSED",
+    CLARIFICATION_RESPONDED = "CLARIFICATION_RESPONDED"
 }
 interface LogEntry {
     actorId?: string;
@@ -50,6 +52,8 @@ export declare class AuditTrailService {
         entityType?: string;
         actorId?: string;
         search?: string;
+        startDate?: string;
+        endDate?: string;
     }): Promise<{
         data: AuditTrailLog[];
         meta: any;

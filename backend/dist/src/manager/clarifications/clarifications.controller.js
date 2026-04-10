@@ -40,6 +40,12 @@ let ManagerClarificationsController = class ManagerClarificationsController {
         dto.auditId = auditId;
         return this.service.create(dto, manager);
     }
+    respond(id, message, manager) {
+        if (!message || message.trim().length < 5) {
+            throw new common_1.BadRequestException('Reply message is too short');
+        }
+        return this.service.respond(id, message, manager);
+    }
 };
 exports.ManagerClarificationsController = ManagerClarificationsController;
 __decorate([
@@ -75,6 +81,15 @@ __decorate([
         user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], ManagerClarificationsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)(':id/respond'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('message')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, user_entity_1.User]),
+    __metadata("design:returntype", void 0)
+], ManagerClarificationsController.prototype, "respond", null);
 exports.ManagerClarificationsController = ManagerClarificationsController = __decorate([
     (0, common_1.Controller)('manager/clarifications'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),

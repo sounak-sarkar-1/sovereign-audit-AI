@@ -7,12 +7,14 @@ import { ClientReportFeedback } from '../../database/entities/client-report-feed
 import { Audit } from '../../database/entities/audit.entity';
 import { NotificationsModule } from '../../shared/notifications/notifications.module';
 import { FilesModule } from '../../shared/files/files.module';
+import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([AuditReport, ClientReportFeedback, Audit]),
     NotificationsModule,
     FilesModule,
+    AuditTrailModule,
   ],
   controllers: [ClientReportsController],
   providers: [ClientReportsService],

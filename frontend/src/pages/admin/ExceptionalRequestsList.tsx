@@ -101,6 +101,7 @@ export default function ExceptionalRequestsList() {
                 key={req.id}
                 className="bg-white/5 border-white/10 hover:border-accent/50 transition-all cursor-pointer overflow-hidden group"
                 onClick={() => setSelectedRequestId(req.id)}
+                data-testid="exceptional-request-row"
               >
                 <div className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-4">

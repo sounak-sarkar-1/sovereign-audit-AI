@@ -21,7 +21,6 @@ const roles_guard_1 = require("../../common/guards/roles.guard");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
 const user_entity_1 = require("../../database/entities/user.entity");
 const clarification_request_entity_1 = require("../../database/entities/clarification-request.entity");
-const respond_clarification_dto_1 = require("./dto/respond-clarification.dto");
 const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
 let ClientClarificationsController = class ClientClarificationsController {
     constructor(service) {
@@ -33,8 +32,11 @@ let ClientClarificationsController = class ClientClarificationsController {
     async findOne(id, clientId) {
         return this.service.findOne(id, clientId);
     }
-    respond(id, dto, user) {
-        return this.service.respond(id, dto, user);
+    respond(id, message, attachmentFileIds, client) {
+        if (!message || message.trim().length < 2) {
+            throw new common_1.BadRequestException('Reply message cannot be empty');
+        }
+        return this.service.respond(id, client.id, message, attachmentFileIds);
     }
 };
 exports.ClientClarificationsController = ClientClarificationsController;
@@ -57,11 +59,11 @@ __decorate([
 __decorate([
     (0, common_1.Post)(':id/respond'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Body)('message')),
+    __param(2, (0, common_1.Body)('attachmentFileIds')),
+    __param(3, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, respond_clarification_dto_1.RespondToClarificationDto,
-        user_entity_1.User]),
+    __metadata("design:paramtypes", [String, String, Array, user_entity_1.User]),
     __metadata("design:returntype", void 0)
 ], ClientClarificationsController.prototype, "respond", null);
 exports.ClientClarificationsController = ClientClarificationsController = __decorate([

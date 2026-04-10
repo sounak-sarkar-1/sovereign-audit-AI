@@ -70,14 +70,17 @@ let AdminUsersService = AdminUsersService_1 = class AdminUsersService {
         const page = query.page || 1;
         const limit = query.limit || 20;
         const skip = (page - 1) * limit;
-        const where = {};
+        const baseWhere = {};
         if (query.role)
-            where.role = query.role;
+            baseWhere.role = query.role;
         if (query.status)
-            where.status = query.status;
-        if (query.search) {
-            where.email = (0, typeorm_2.Like)(`%${query.search}%`);
-        }
+            baseWhere.status = query.status;
+        const where = query.search
+            ? [
+                { ...baseWhere, email: (0, typeorm_2.Like)(`%${query.search}%`) },
+                { ...baseWhere, fullName: (0, typeorm_2.Like)(`%${query.search}%`) },
+            ]
+            : baseWhere;
         const [items, total] = await this.repository.findAndCount({
             where,
             order: { createdAt: 'DESC' },

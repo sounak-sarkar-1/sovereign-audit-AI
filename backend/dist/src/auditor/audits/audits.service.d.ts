@@ -62,4 +62,16 @@ export declare class AuditorAuditsService {
         updatedAt: Date;
         deletedAt: Date;
     }>;
+    getPerformance(user: User): Promise<{
+        totalAudits: number;
+        totalAssigned: number;
+        totalSubmitted: number;
+        totalExceptions: number;
+        submissionRate: number;
+        auditBreakdown: {
+            auditId: string;
+            auditName: string;
+            status: import("../../database/entities/audit.entity").AuditStatus;
+        }[];
+    }>;
 }

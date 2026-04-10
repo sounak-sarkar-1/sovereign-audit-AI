@@ -32,6 +32,18 @@ export declare class AuditorAuditsController {
         updatedAt: Date;
         deletedAt: Date;
     }[]>;
+    getPerformance(user: User): Promise<{
+        totalAudits: number;
+        totalAssigned: number;
+        totalSubmitted: number;
+        totalExceptions: number;
+        submissionRate: number;
+        auditBreakdown: {
+            auditId: string;
+            auditName: string;
+            status: import("../../database/entities/audit.entity").AuditStatus;
+        }[];
+    }>;
     findOne(id: string, user: User): Promise<{
         clientName: string;
         endDate: Date;

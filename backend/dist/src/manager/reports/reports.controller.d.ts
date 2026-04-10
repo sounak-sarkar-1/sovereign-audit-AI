@@ -1,5 +1,6 @@
 import { ManagerReportsService } from './reports.service';
 import { User } from '../../database/entities/user.entity';
+import { Response } from 'express';
 export declare class ManagerReportsController {
     private readonly service;
     constructor(service: ManagerReportsService);
@@ -14,4 +15,6 @@ export declare class ManagerReportsController {
     finalize(auditId: string, reportId: string, manager: User): Promise<{
         message: string;
     }>;
+    download(auditId: string, reportId: string, res: Response): Promise<void>;
+    upload(auditId: string, reportId: string, file: Express.Multer.File, manager: User): Promise<import("../../database/entities/audit-report.entity").AuditReport>;
 }

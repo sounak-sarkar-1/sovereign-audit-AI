@@ -189,6 +189,7 @@ const NewAuditForm = () => {
                   placeholder="e.g., Q1 FY24 Statutory Compliance Audit"
                   value={formData.name}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
+                  data-testid="audit-name-input"
                 />
               </div>
               <div className="space-y-2">
@@ -199,6 +200,7 @@ const NewAuditForm = () => {
                   className="min-h-[120px]"
                   value={formData.description}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, description: e.target.value })}
+                  data-testid="audit-description-input"
                 />
               </div>
             </div>
@@ -243,6 +245,7 @@ const NewAuditForm = () => {
                                 : formData.businessUnitIds.filter(id => id !== bu.id);
                               setFormData({ ...formData, businessUnitIds: ids });
                             }}
+                            data-testid="bu-checkbox"
                           />
                           <Label htmlFor={`bu-${bu.id}`} className="text-sm cursor-pointer font-normal">
                             {bu.name}
@@ -277,7 +280,7 @@ const NewAuditForm = () => {
                       {formData.startDate ? format(formData.startDate, "PPP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0" align="start" data-testid="start-date-input">
                     <Calendar
                       mode="single"
                       selected={formData.startDate}
@@ -304,7 +307,7 @@ const NewAuditForm = () => {
                       {formData.expectedCompletionDate ? format(formData.expectedCompletionDate, "PPP") : "Pick a date"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0" align="start" data-testid="end-date-input">
                     <Calendar
                       mode="single"
                       selected={formData.expectedCompletionDate}
@@ -345,6 +348,7 @@ const NewAuditForm = () => {
             className="bg-accent hover:bg-accent/90" 
             onClick={handleSubmit}
             disabled={createMutation.isPending}
+            data-testid="create-audit-confirm-btn"
           >
             {createMutation.isPending ? "Creating..." : "Confirm & Create Audit"}
             {!createMutation.isPending && <Check className="ml-2 h-4 w-4" />}

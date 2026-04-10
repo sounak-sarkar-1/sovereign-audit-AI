@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { clientService } from '@/services/clientService';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { 
   Table, 
   TableBody, 
@@ -47,7 +47,7 @@ const ClientAuditList: React.FC = () => {
             </TableHeader>
             <TableBody>
               {audits.map((audit: any) => (
-                <TableRow key={audit.id}>
+                <TableRow key={audit.id} data-testid="client-audit-row">
                   <TableCell className="font-semibold">{audit.name}</TableCell>
                   <TableCell>{audit.manager?.fullName}</TableCell>
                   <TableCell>{format(new Date(audit.startDate), 'PPP')}</TableCell>

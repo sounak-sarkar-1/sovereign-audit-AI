@@ -9,6 +9,7 @@ import { AiJob } from '../../database/entities/ai-job.entity';
 import { AiJobsModule } from '../../shared/ai-jobs/ai-jobs.module';
 import { NotificationsModule } from '../../shared/notifications/notifications.module';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
+import { FilesModule } from '../../shared/files/files.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
     AiJobsModule,
     NotificationsModule,
     AuditTrailModule,
+    FilesModule,
   ],
   controllers: [ManagerReportsController],
   providers: [ManagerReportsService],

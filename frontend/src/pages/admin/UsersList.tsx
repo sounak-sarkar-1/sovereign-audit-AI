@@ -134,6 +134,7 @@ const UsersList: React.FC = () => {
         <Button 
           onClick={() => setIsCreateOpen(true)}
           className="bg-primary hover:bg-primary/90 text-white gap-2"
+          data-testid="create-user-btn"
         >
           <UserPlus className="w-4 h-4" />
           Create User
@@ -148,6 +149,7 @@ const UsersList: React.FC = () => {
             className="pl-9"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            data-testid="user-search-input"
           />
         </div>
         <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -199,7 +201,7 @@ const UsersList: React.FC = () => {
               </TableRow>
             ) : (
               users.map((user: User) => (
-                <TableRow key={user.id} className="hover:bg-muted/30">
+                <TableRow key={user.id} className="hover:bg-muted/30" data-testid="user-table-row">
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">

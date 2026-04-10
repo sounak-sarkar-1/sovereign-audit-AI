@@ -36,12 +36,25 @@ let ClientInsightsService = ClientInsightsService_1 = class ClientInsightsServic
         if (audits.length === 0) {
             return { data: { auditsCount: 0, complianceTrend: [], riskByBu: [], recurringFindings: [] } };
         }
-        const complianceTrend = audits.map(audit => ({
-            auditId: audit.id,
-            name: audit.name,
-            date: audit.expectedCompletionDate,
-            score: 100,
+        const complianceTrend = await Promise.all(audits.map(async (audit) => {
+            const totalItems = await this.lineItemRepo.count({ where: { auditId: audit.id } });
+            const exceptions = await this.exceptionRepo.count({
+                where: {
+                    auditScopeLineItem: { auditId: audit.id },
+                    status: exception_request_entity_1.ExceptionStatus.APPROVED
+                }
+            });
+            const score = totalItems > 0 ? Math.round(((totalItems - exceptions) / totalItems) * 100) : 100;
+            return {
+                auditId: audit.id,
+                name: audit.name,
+                date: audit.expectedCompletionDate,
+                score,
+            };
         }));
+        const latestScore = complianceTrend.length > 0 ? complianceTrend[complianceTrend.length - 1].score : 0;
+        const prevScore = complianceTrend.length > 1 ? complianceTrend[complianceTrend.length - 2].score : latestScore;
+        const delta = latestScore - prevScore;
         const riskByBu = await this.lineItemRepo.createQueryBuilder('li')
             .leftJoin('li.audit', 'audit')
             .leftJoin('li.auditBusinessUnit', 'bu')
@@ -61,6 +74,8 @@ let ClientInsightsService = ClientInsightsService_1 = class ClientInsightsServic
                     buName: r.buName,
                     rate: r.totalItems > 0 ? (r.exceptionCount / r.totalItems) * 100 : 0,
                 })),
+                complianceScore: latestScore,
+                complianceDelta: delta,
                 recurringFindings: [],
             }
         };

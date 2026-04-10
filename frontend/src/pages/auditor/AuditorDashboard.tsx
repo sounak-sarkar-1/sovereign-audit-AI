@@ -31,10 +31,12 @@ import AuditorSelfAssessment from './AuditorSelfAssessment';
 
 const AuditorDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { data: audits, isLoading } = useQuery({
+  const { data: auditsData, isLoading } = useQuery({
     queryKey: ['auditor-audits'],
     queryFn: () => auditorService.getAudits(),
   });
+
+  const audits = Array.isArray(auditsData) ? auditsData : (auditsData as any)?.data || [];
 
   if (isLoading) {
     return (
@@ -138,6 +140,7 @@ const AuditorDashboard: React.FC = () => {
               <div 
                 key={audit.id} 
                 className="bg-white dark:bg-[#1a0d35] rounded-xl border border-bg-mid dark:border-[#3d2a5a] shadow-card overflow-hidden hover:shadow-elevated hover:-translate-y-1 transition-all duration-150 flex flex-col"
+                data-testid="auditor-audit-card"
               >
                 <div className="p-5 border-b bg-muted/30">
                   <div className="flex justify-between items-start mb-2">
@@ -189,6 +192,7 @@ const AuditorDashboard: React.FC = () => {
                   <Button 
                     onClick={() => navigate(`/auditor/workspace/${audit.id}`)}
                     className="w-full text-white bg-primary hover:bg-primary/90 gap-2 rounded-full"
+                    data-testid="open-workspace-btn"
                   >
                     Open Workspace
                     <ArrowRight size={16} />

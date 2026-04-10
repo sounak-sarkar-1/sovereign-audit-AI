@@ -1,4 +1,5 @@
 import { Repository } from 'typeorm';
+import { Response } from 'express';
 import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
 export declare class FilesService {
     private readonly fileRepository;
@@ -10,4 +11,5 @@ export declare class FilesService {
     findOne(id: string): Promise<UploadedFile>;
     updateAnnotations(id: string, annotations: any): Promise<UploadedFile>;
     deleteFile(id: string): Promise<void>;
+    streamFile(file: UploadedFile, res: Response): void;
 }

@@ -17,6 +17,7 @@ var ReportStatus;
 (function (ReportStatus) {
     ReportStatus["DRAFT"] = "draft";
     ReportStatus["SENT_FOR_CLIENT_REVIEW"] = "sent_for_client_review";
+    ReportStatus["FEEDBACK_SUBMITTED"] = "feedback_submitted";
     ReportStatus["FINAL"] = "final";
 })(ReportStatus || (exports.ReportStatus = ReportStatus = {}));
 let AuditReport = class AuditReport {

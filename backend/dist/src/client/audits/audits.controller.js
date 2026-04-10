@@ -19,6 +19,7 @@ const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const tenant_guard_1 = require("../../common/guards/tenant.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
+const current_user_decorator_1 = require("../../common/decorators/current-user.decorator");
 const audit_entity_1 = require("../../database/entities/audit.entity");
 const user_entity_1 = require("../../database/entities/user.entity");
 let ClientAuditsController = class ClientAuditsController {
@@ -30,6 +31,9 @@ let ClientAuditsController = class ClientAuditsController {
     }
     async findOne(id, req) {
         return this.service.findOne(id, req.user.id);
+    }
+    getProgress(id, client) {
+        return this.service.getProgress(id, client.id);
     }
 };
 exports.ClientAuditsController = ClientAuditsController;
@@ -51,6 +55,14 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], ClientAuditsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(':id/progress'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, user_entity_1.User]),
+    __metadata("design:returntype", void 0)
+], ClientAuditsController.prototype, "getProgress", null);
 exports.ClientAuditsController = ClientAuditsController = __decorate([
     (0, common_1.Controller)('client/audits'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),

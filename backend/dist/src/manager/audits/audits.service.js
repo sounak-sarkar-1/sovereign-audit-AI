@@ -58,8 +58,19 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
                 .andWhere('assignment.deleted_at IS NULL')
                 .select('COUNT(DISTINCT assignment.auditor_id)', 'count')
                 .getRawOne();
-            const completionPercentage = 0;
-            const openExceptionsCount = 0;
+            const lineItemStats = await this.dataSource.query(`SELECT 
+          COUNT(*) FILTER (WHERE is_optional = false) as total,
+          COUNT(*) FILTER (WHERE is_optional = false AND status IN ('submitted', 'exception_approved')) as completed
+        FROM audit_scope_line_items 
+        WHERE audit_id = $1 AND deleted_at IS NULL`, [audit.id]);
+            const totalItems = parseInt(lineItemStats[0].total);
+            const completedItems = parseInt(lineItemStats[0].completed);
+            const completionPercentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            const openExceptions = await this.dataSource.query(`SELECT COUNT(*) as count 
+        FROM exception_requests er
+        JOIN audit_scope_line_items li ON er.audit_scope_line_item_id = li.id
+        WHERE li.audit_id = $1 AND er.status = 'pending'`, [audit.id]);
+            const openExceptionsCount = parseInt(openExceptions[0].count);
             const pendingRequest = await this.requestRepo.findOne({
                 where: { auditId: audit.id, status: exceptional_action_request_entity_1.ExceptionalRequestStatus.PENDING },
             });
@@ -178,7 +189,7 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
         await this.auditRepo.save(audit);
         await this.auditTrailService.log({
             actorId: managerId,
-            action: audit_trail_service_1.AuditAction.AUDIT_STARTED,
+            action: audit_trail_service_1.AuditAction.AUDIT_UPDATED,
             entityType: 'Audit',
             entityId: id,
             metadata: updateDto,
@@ -222,13 +233,14 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
         });
         if (!audit)
             throw new common_1.NotFoundException('Audit not found');
-        if (audit.status !== audit_entity_1.AuditStatus.CLOSED && audit.status !== audit_entity_1.AuditStatus.DELETED) {
+        if (audit.status !== audit_entity_1.AuditStatus.CLOSED) {
+            throw new common_1.UnprocessableEntityException('Only closed audits can be archived. To delete or cancel an in-progress audit, submit an Exceptional Action Request.');
         }
         audit.status = audit_entity_1.AuditStatus.ARCHIVED;
         await this.auditRepo.save(audit);
         await this.auditTrailService.log({
             actorId: managerId,
-            action: audit_trail_service_1.AuditAction.AUDIT_CLOSED,
+            action: audit_trail_service_1.AuditAction.AUDIT_ARCHIVED,
             entityType: 'Audit',
             entityId: id,
         });

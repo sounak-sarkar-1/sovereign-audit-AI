@@ -11,4 +11,5 @@ export declare class ManagerClarificationsController {
         message: string;
     }>;
     create(auditId: string, dto: CreateClarificationDto, manager: User): Promise<import("../../database/entities/clarification-request.entity").ClarificationRequest>;
+    respond(id: string, message: string, manager: User): Promise<import("../../database/entities/clarification-response.entity").ClarificationResponse>;
 }

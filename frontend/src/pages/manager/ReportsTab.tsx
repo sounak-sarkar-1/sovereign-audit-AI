@@ -150,6 +150,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
                     className="bg-accent hover:bg-accent/90"
                     onClick={() => generateMutation.mutate()}
                     disabled={generateMutation.isPending}
+                    data-testid="generate-report-btn"
                   >
                     {generateMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Play size={14} className="mr-2" />}
                     Generate Report v1
@@ -173,7 +174,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
                   <CardDescription>Latest generated version ready for your review.</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                   <Button variant="outline" size="sm" onClick={() => reportService.download(auditId, latestReport.id)}>
+                   <Button variant="outline" size="sm" onClick={() => reportService.download(auditId, latestReport.id)} data-testid="download-report-btn">
                      <Download size={14} className="mr-2" /> Download DOCX
                    </Button>
                    <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent/5" onClick={() => generateMutation.mutate()}>
@@ -295,7 +296,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
 
              <div className="flex justify-end gap-3 pt-4">
                 <Button variant="outline" onClick={() => generateMutation.mutate()}>Regenerate (v{latestReport.version + 1})</Button>
-                <Button className="bg-accent" onClick={() => finalizeMutation.mutate(latestReport.id)} disabled={finalizeMutation.isPending}>
+                <Button className="bg-accent" onClick={() => finalizeMutation.mutate(latestReport.id)} disabled={finalizeMutation.isPending} data-testid="finalize-audit-btn">
                   {finalizeMutation.isPending ? <Loader2 className="animate-spin mr-2" /> : <BadgeCheck className="mr-2" />}
                   Finalize Audit
                 </Button>

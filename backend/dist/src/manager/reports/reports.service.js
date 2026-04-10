@@ -25,8 +25,10 @@ const ai_jobs_service_1 = require("../../shared/ai-jobs/ai-jobs.service");
 const notifications_service_1 = require("../../shared/notifications/notifications.service");
 const notification_entity_1 = require("../../database/entities/notification.entity");
 const audit_trail_service_1 = require("../../shared/audit-trail/audit-trail.service");
+const files_service_1 = require("../../shared/files/files.service");
+const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
 let ManagerReportsService = ManagerReportsService_1 = class ManagerReportsService {
-    constructor(auditRepo, reportRepo, lineItemRepo, aiJobRepo, aiJobsService, notificationsService, auditTrailService, dataSource) {
+    constructor(auditRepo, reportRepo, lineItemRepo, aiJobRepo, aiJobsService, notificationsService, auditTrailService, filesService, dataSource) {
         this.auditRepo = auditRepo;
         this.reportRepo = reportRepo;
         this.lineItemRepo = lineItemRepo;
@@ -34,6 +36,7 @@ let ManagerReportsService = ManagerReportsService_1 = class ManagerReportsServic
         this.aiJobsService = aiJobsService;
         this.notificationsService = notificationsService;
         this.auditTrailService = auditTrailService;
+        this.filesService = filesService;
         this.dataSource = dataSource;
         this.logger = new common_1.Logger(ManagerReportsService_1.name);
     }
@@ -150,6 +153,36 @@ let ManagerReportsService = ManagerReportsService_1 = class ManagerReportsServic
         });
         return { message: 'Audit finalized and closed' };
     }
+    async download(auditId, reportId, res) {
+        const report = await this.reportRepo.findOne({
+            where: { id: reportId, auditId },
+            relations: ['file'],
+        });
+        if (!report)
+            throw new common_1.NotFoundException('Report not found');
+        if (!report.file)
+            throw new common_1.BadRequestException('Report file has not been generated yet. Please wait for AI generation to complete.');
+        return this.filesService.streamFile(report.file, res);
+    }
+    async uploadVersion(auditId, reportId, file, manager) {
+        const report = await this.reportRepo.findOne({
+            where: { id: reportId, auditId },
+        });
+        if (!report)
+            throw new common_1.NotFoundException('Report not found');
+        const uploadedFile = await this.filesService.uploadFile(file, manager.id, uploaded_file_entity_1.FileEntityType.AUDIT_REPORT, report.id);
+        report.fileId = uploadedFile.id;
+        await this.reportRepo.save(report);
+        await this.auditTrailService.log({
+            actorId: manager.id,
+            actorRole: manager.role,
+            action: audit_trail_service_1.AuditAction.REPORT_GENERATED,
+            entityType: 'AuditReport',
+            entityId: report.id,
+            metadata: { auditId, version: report.version },
+        });
+        return report;
+    }
 };
 exports.ManagerReportsService = ManagerReportsService;
 exports.ManagerReportsService = ManagerReportsService = ManagerReportsService_1 = __decorate([
@@ -165,6 +198,7 @@ exports.ManagerReportsService = ManagerReportsService = ManagerReportsService_1 
         ai_jobs_service_1.AiJobsService,
         notifications_service_1.NotificationsService,
         audit_trail_service_1.AuditTrailService,
+        files_service_1.FilesService,
         typeorm_2.DataSource])
 ], ManagerReportsService);
 //# sourceMappingURL=reports.service.js.map

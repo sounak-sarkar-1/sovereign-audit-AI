@@ -180,6 +180,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
                     id="evidence"
                     className="hidden"
                     onChange={(e) => setEvidenceFile(e.target.files?.[0] || null)}
+                    data-testid="evidence-upload-input"
                   />
                   <label htmlFor="evidence" className="cursor-pointer block">
                     {evidenceFile ? (
@@ -239,6 +240,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
               className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
               onClick={handleReject}
               disabled={rejectMutation.isPending || approveMutation.isPending}
+              data-testid="reject-request-btn"
             >
               {rejectMutation.isPending ? 'Processing...' : 'Reject Request'}
             </Button>
@@ -246,6 +248,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
               className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold"
               onClick={handleApprove}
               disabled={rejectMutation.isPending || approveMutation.isPending}
+              data-testid="approve-request-btn"
             >
               {approveMutation.isPending ? 'Processing...' : 'Approve & Execute'}
             </Button>

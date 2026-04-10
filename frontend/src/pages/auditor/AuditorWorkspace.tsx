@@ -171,6 +171,7 @@ const AuditorWorkspace: React.FC = () => {
                     key={bu.id} 
                     value={bu.id}
                     className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 font-bold text-xs uppercase tracking-widest text-muted-foreground data-[state=active]:text-primary transition-all"
+                    data-testid="bu-tab"
                   >
                     {bu.name}
                   </TabsTrigger>
@@ -188,7 +189,7 @@ const AuditorWorkspace: React.FC = () => {
                       item.status === 'draft_saved' ? "ring-1 ring-primary/20 shadow-elevated" : 
                       item.status === 'exception_pending' ? "ring-1 ring-amber-200" :
                       ""
-                    )}>
+                    )} data-testid="line-item-card">
                       <CardContent className="p-0">
                         <div className="flex items-stretch overflow-hidden">
                            <div className={cn(

@@ -4,20 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 import { 
   ChevronLeft, 
   Download, 
-  FileText, 
   MessageSquare, 
-  CheckCircle2, 
-  AlertCircle,
   FileSearch,
   CheckCircle
 } from 'lucide-react';
 import { clientService } from '@/services/clientService';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { format } from 'date-fns';
-import { toast } from 'sonner';
 
 import ReportFeedbackDialog from './ReportFeedbackDialog';
 
@@ -77,7 +72,7 @@ const ReportReview: React.FC = () => {
               <Download size={16} /> Download PDF
             </Button>
             {currentStatus !== 'final' && (
-              <Button size="sm" className="gap-2 rounded-full bg-primary" onClick={() => setIsFeedbackDialogOpen(true)}>
+              <Button size="sm" className="gap-2 rounded-full bg-primary" onClick={() => setIsFeedbackDialogOpen(true)} data-testid="submit-feedback-btn">
                 <MessageSquare size={16} /> Submit Feedback
               </Button>
             )}

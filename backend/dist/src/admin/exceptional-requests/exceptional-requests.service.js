@@ -56,6 +56,9 @@ let AdminExceptionalRequestsService = AdminExceptionalRequestsService_1 = class 
         if (request.status !== exceptional_action_request_entity_1.ExceptionalRequestStatus.PENDING) {
             throw new common_1.BadRequestException(`Request is already ${request.status}`);
         }
+        if (!file) {
+            throw new common_1.BadRequestException('Evidence file is required to approve an exceptional request');
+        }
         const uploadedFile = await this.filesService.uploadFile(file, adminId, uploaded_file_entity_1.FileEntityType.EXCEPTIONAL_ACTION_EVIDENCE, request.id);
         request.status = exceptional_action_request_entity_1.ExceptionalRequestStatus.APPROVED;
         request.resolvedAt = new Date();
@@ -107,6 +110,9 @@ let AdminExceptionalRequestsService = AdminExceptionalRequestsService_1 = class 
         const request = await this.findOne(id);
         if (request.status !== exceptional_action_request_entity_1.ExceptionalRequestStatus.PENDING) {
             throw new common_1.BadRequestException(`Request is already ${request.status}`);
+        }
+        if (!adminComment || adminComment.trim().length < 10) {
+            throw new common_1.BadRequestException('Admin comment must be at least 10 characters for rejection');
         }
         request.status = exceptional_action_request_entity_1.ExceptionalRequestStatus.REJECTED;
         request.resolvedAt = new Date();

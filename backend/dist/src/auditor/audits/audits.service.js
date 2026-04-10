@@ -137,6 +137,44 @@ let AuditorAuditsService = AuditorAuditsService_1 = class AuditorAuditsService {
             }
         };
     }
+    async getPerformance(user) {
+        const assignments = await this.assignmentRepo.find({
+            where: { auditorId: user.id },
+            relations: ['audit'],
+        });
+        const auditIds = assignments.map(a => a.auditId);
+        if (auditIds.length === 0) {
+            return {
+                totalAudits: 0,
+                totalAssigned: 0,
+                totalSubmitted: 0,
+                totalExceptions: 0,
+                submissionRate: 0,
+                auditBreakdown: []
+            };
+        }
+        const totalAssigned = await this.lineItemRepo.count({
+            where: { auditId: (0, typeorm_2.In)(auditIds), assignments: { auditorId: user.id } }
+        });
+        const totalSubmitted = await this.lineItemRepo.count({
+            where: { auditId: (0, typeorm_2.In)(auditIds), assignments: { auditorId: user.id }, status: audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED }
+        });
+        const totalExceptions = await this.lineItemRepo.count({
+            where: { auditId: (0, typeorm_2.In)(auditIds), assignments: { auditorId: user.id }, status: audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_PENDING }
+        });
+        return {
+            totalAudits: [...new Set(auditIds)].length,
+            totalAssigned,
+            totalSubmitted,
+            totalExceptions,
+            submissionRate: totalAssigned > 0 ? Math.round((totalSubmitted / totalAssigned) * 100) : 0,
+            auditBreakdown: assignments.map(a => ({
+                auditId: a.auditId,
+                auditName: a.audit?.name,
+                status: a.audit?.status,
+            }))
+        };
+    }
 };
 exports.AuditorAuditsService = AuditorAuditsService;
 exports.AuditorAuditsService = AuditorAuditsService = AuditorAuditsService_1 = __decorate([
