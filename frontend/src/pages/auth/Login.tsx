@@ -56,7 +56,11 @@ export default function LoginPage() {
       if (from === '/dashboard') from = '/';
       navigate(from, { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email, password, or tenant ID');
+      if (!err.response) {
+        setError('Server unreachable. Please check if the backend is running.');
+      } else {
+        setError(err.response?.data?.message || 'Invalid email, password, or tenant ID');
+      }
     } finally {
       setIsLoading(false);
     }

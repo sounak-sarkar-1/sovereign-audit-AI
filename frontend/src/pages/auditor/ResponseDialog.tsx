@@ -34,7 +34,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     responseText: '',
-    selectedOptionId: '',
+    selectedOptionId: null as string | null,
     comment: '',
   });
 
@@ -54,7 +54,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
     } else {
       setFormData({
         responseText: '',
-        selectedOptionId: '',
+        selectedOptionId: null,
         comment: '',
       });
       setUploadedFiles([]);

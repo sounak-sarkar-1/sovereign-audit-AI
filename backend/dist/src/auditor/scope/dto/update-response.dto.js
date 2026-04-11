@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateResponseDto = void 0;
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
 class UpdateResponseDto {
 }
 exports.UpdateResponseDto = UpdateResponseDto;
@@ -21,6 +22,8 @@ __decorate([
 ], UpdateResponseDto.prototype, "responseText", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => (value === '' ? null : value)),
+    (0, class_validator_1.ValidateIf)((o) => o.selectedOptionId !== '' && o.selectedOptionId !== null),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], UpdateResponseDto.prototype, "selectedOptionId", void 0);

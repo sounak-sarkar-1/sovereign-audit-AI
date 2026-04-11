@@ -31,6 +31,7 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { toast } from 'sonner';
 import { scopeService } from '@/services/scopeService';
 import { templateService } from '@/services/templateService';
 import ScopeItemsTable from './ScopeItemsTable';
@@ -143,15 +144,23 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
     mutationFn: (file: File) => scopeService.importFromExcel(audit.id, file, activeBuId),
     onSuccess: (data: ImportSession) => {
       setImportSession(data);
+      toast.success('Excel file processed. Please map the columns.');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to analyze Excel file');
     }
   });
 
   const confirmExcelMutation = useMutation({
-    mutationFn: () => scopeService.confirmExcelImport(audit.id, importSession!.importId, { columnMapping: excelMapping }),
+    mutationFn: (mapping: any) => scopeService.confirmExcelImport(audit.id, importSession!.importId, { columnMapping: mapping }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsExcelDialogOpen(false);
       setImportSession(null);
+      toast.success('Scope items imported successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to import scope items');
     }
   });
 
@@ -164,6 +173,10 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsTemplateDialogOpen(false);
       setSelectedTemplateId('');
+      toast.success('Items imported from template');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to import from template');
     }
   });
 
@@ -465,10 +478,21 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
                      </SelectContent>
                    </Select>
                  </div>
+                 <div className="space-y-2">
+                   <Label>Input Method (Optional)</Label>
+                   <Select value={excelMapping.inputMethodColumn} onValueChange={(v: string) => setExcelMapping({...excelMapping, inputMethodColumn: v})}>
+                     <SelectTrigger><SelectValue placeholder="Select Column" /></SelectTrigger>
+                     <SelectContent>
+                       {importSession.detectedColumns.map((col: any) => (
+                         <SelectItem key={col.columnLetter} value={col.columnLetter}>{col.headerText} ({col.columnLetter})</SelectItem>
+                       ))}
+                     </SelectContent>
+                   </Select>
+                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setImportSession(null)}>Back</Button>
-                <Button onClick={() => confirmExcelMutation.mutate()} disabled={!excelMapping.nameColumn || confirmExcelMutation.isPending}>
+                <Button onClick={() => confirmExcelMutation.mutate(excelMapping)} disabled={!excelMapping.nameColumn || confirmExcelMutation.isPending}>
                    {confirmExcelMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                    Confirm Import
                 </Button>
