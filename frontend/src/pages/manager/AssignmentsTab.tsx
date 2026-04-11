@@ -25,6 +25,8 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { auditService } from '@/services/auditService';
 import type { Audit } from '@/types/audit';
+import { toast } from 'sonner';
+import { Info } from 'lucide-react';
 
 interface AssignmentsTabProps {
   audit: Audit;
@@ -46,6 +48,11 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
       auditService.assignToBU(audit.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignments', audit.id] });
+      queryClient.invalidateQueries({ queryKey: ['audit', audit.id] });
+      toast.success('Auditor assigned successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to assign auditor');
     }
   });
 
@@ -54,6 +61,11 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
       auditService.unassignFromBU(audit.id, assignmentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignments', audit.id] });
+      queryClient.invalidateQueries({ queryKey: ['audit', audit.id] });
+      toast.success('Auditor unassigned successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to unassign auditor');
     }
   });
 
@@ -62,6 +74,11 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
       auditService.assignToLineItem(audit.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignments', audit.id] });
+      queryClient.invalidateQueries({ queryKey: ['audit', audit.id] });
+      toast.success('Line item assigned successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to assign line item');
     }
   });
 
@@ -70,6 +87,11 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
       auditService.unassignFromLineItem(audit.id, assignmentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assignments', audit.id] });
+      queryClient.invalidateQueries({ queryKey: ['audit', audit.id] });
+      toast.success('Line item unassigned successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to unassign line item');
     }
   });
 
@@ -97,15 +119,22 @@ const AssignmentsTab: React.FC<AssignmentsTabProps> = ({ audit, isDraft }) => {
   return (
     <div className="pt-2 space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          Auditor Assignments
+        <div className="flex flex-col gap-1">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            Auditor Management Matrix
+          </h3>
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+            <Info size={12} className="text-accent" /> Changes are saved automatically in real-time.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
           <Badge variant="outline" className="font-normal">
             {availableAuditors.length} Auditors available
           </Badge>
-        </h3>
-        <Button size="sm" variant="outline" onClick={() => setIsLineItemModalOpen(true)} className="gap-2" data-testid="auditor-assignment-btn">
-          <UserPlus className="h-4 w-4" /> Granular Assignments
-        </Button>
+          <Button size="sm" variant="outline" onClick={() => setIsLineItemModalOpen(true)} className="gap-2" data-testid="auditor-assignment-btn">
+            <UserPlus className="h-4 w-4" /> Granular Assignments
+          </Button>
+        </div>
       </div>
 
       <Card>

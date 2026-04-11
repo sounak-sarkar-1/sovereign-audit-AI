@@ -101,7 +101,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input placeholder="John Doe" {...field} data-testid="user-fullname-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,7 +115,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="john@example.com" type="email" {...field} />
+                    <Input placeholder="john@example.com" type="email" {...field} data-testid="user-email-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,7 +131,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                     <FormLabel>Role</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger data-testid="user-role-select">
                           <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                       </FormControl>
@@ -153,7 +153,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                   <FormItem>
                     <FormLabel>Phone (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="+91..." {...field} />
+                      <Input placeholder="+91..." {...field} data-testid="user-phone-input" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +168,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                 <FormItem>
                   <FormLabel>Initial Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input type="password" {...field} data-testid="user-password-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -176,7 +176,7 @@ export const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
             />
 
             <DrawerFooter className="px-0 pt-6">
-              <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white">
+              <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white" data-testid="user-submit-btn">
                 {mutation.isPending ? 'Creating...' : 'Create User'}
               </Button>
               <DrawerClose asChild>
@@ -272,7 +272,7 @@ export const EditUserDrawer: React.FC<EditUserDrawerProps> = ({
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input placeholder="John Doe" {...field} data-testid="user-fullname-input" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -316,7 +316,7 @@ export const EditUserDrawer: React.FC<EditUserDrawerProps> = ({
             />
 
             <DrawerFooter className="px-0 pt-6">
-              <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white">
+              <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white" data-testid="user-save-btn">
                 {mutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
               <DrawerClose asChild>

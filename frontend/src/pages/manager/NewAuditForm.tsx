@@ -76,7 +76,7 @@ const NewAuditForm = () => {
       // Assuming there's a way to get BUs for a client
       // I'll call a hypothetical endpoint or use the detail if available
       const response = await api.get(`/admin/clients/${formData.clientId}/business-units`);
-      return response.data.data || response.data;
+      return response.data;
     },
     enabled: !!formData.clientId,
   });
@@ -218,9 +218,9 @@ const NewAuditForm = () => {
                     <SelectValue placeholder={clientsLoading ? "Loading clients..." : "Select a client"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {clients?.map((client) => (
+                    {Array.isArray(clients) && clients.map((client) => client && (
                       <SelectItem key={client.id} value={client.id}>
-                        {client.fullName}
+                        {client.fullName || 'Unnamed Client'}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -49,7 +49,7 @@ export default function LoginPage() {
         }
       });
 
-      const { accessToken, user } = response.data.data;
+      const { accessToken, user } = response.data;
       setAuth(user, accessToken, values.tenantSlug);
 
       let from = (location.state as any)?.from?.pathname || '/';

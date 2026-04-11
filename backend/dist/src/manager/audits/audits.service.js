@@ -165,7 +165,11 @@ let ManagerAuditsService = ManagerAuditsService_1 = class ManagerAuditsService {
         });
         return {
             ...audit,
-            businessUnits: auditBUs.map(abu => abu.businessUnit),
+            businessUnits: auditBUs.map(abu => ({
+                ...abu.businessUnit,
+                id: abu.id,
+                realBusinessUnitId: abu.businessUnitId
+            })),
             assignments,
         };
     }

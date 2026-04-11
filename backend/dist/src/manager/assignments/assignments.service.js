@@ -108,33 +108,48 @@ let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssig
         if (!abu)
             throw new common_1.UnprocessableEntityException('Business Unit does not belong to this audit');
         const existing = await this.buAssignmentRepo.findOne({
-            where: { auditBusinessUnitId: dto.auditBusinessUnitId, auditorId: dto.auditorId, deletedAt: (0, typeorm_2.IsNull)() },
+            where: { auditBusinessUnitId: dto.auditBusinessUnitId, auditorId: dto.auditorId },
+            withDeleted: true,
         });
-        if (existing)
+        if (existing) {
+            if (existing.deletedAt) {
+                existing.deletedAt = null;
+                await this.buAssignmentRepo.save(existing);
+            }
             return existing;
+        }
         const assignment = this.buAssignmentRepo.create({
             auditId,
             auditorId: dto.auditorId,
             auditBusinessUnitId: dto.auditBusinessUnitId,
         });
-        const saved = await this.buAssignmentRepo.save(assignment);
-        await this.auditTrailService.log({
-            actorId: managerId,
-            action: audit_trail_service_1.AuditAction.AUDITOR_ASSIGNED,
-            entityType: 'AuditorAuditAssignment',
-            entityId: saved.id,
-            metadata: { auditId, auditorId: dto.auditorId, abuId: dto.auditBusinessUnitId },
-        });
-        await this.notificationsService.create({
-            userId: dto.auditorId,
-            type: notification_entity_1.NotificationType.AUDIT_ASSIGNED,
-            title: 'You have been assigned to an audit',
-            message: `You have been assigned to audit "${audit.name}" for ${await this.getAuditBuName(dto.auditBusinessUnitId)}`,
-            relatedEntityType: 'AuditorAuditAssignment',
-            relatedEntityId: saved.id,
-            metadata: { auditId },
-        });
-        return saved;
+        try {
+            const saved = await this.buAssignmentRepo.save(assignment);
+            await this.auditTrailService.log({
+                actorId: managerId,
+                action: audit_trail_service_1.AuditAction.AUDITOR_ASSIGNED,
+                entityType: 'AuditorAuditAssignment',
+                entityId: saved.id,
+                metadata: { auditId, auditorId: dto.auditorId, abuId: dto.auditBusinessUnitId },
+            });
+            await this.notificationsService.create({
+                userId: dto.auditorId,
+                type: notification_entity_1.NotificationType.AUDIT_ASSIGNED,
+                title: 'You have been assigned to an audit',
+                message: `You have been assigned to audit "${audit.name}" for ${await this.getAuditBuName(dto.auditBusinessUnitId)}`,
+                relatedEntityType: 'AuditorAuditAssignment',
+                relatedEntityId: saved.id,
+                metadata: { auditId },
+            });
+            return saved;
+        }
+        catch (error) {
+            if (error.code === '23505') {
+                throw new common_1.UnprocessableEntityException('This auditor is already assigned to this business unit');
+            }
+            this.logger.error(`Assignment failed: ${error.message}`, error.stack);
+            throw error;
+        }
     }
     async unassignFromBU(auditId, assignmentId, managerId) {
         const audit = await this.auditRepo.findOne({
@@ -167,16 +182,35 @@ let ManagerAssignmentsService = ManagerAssignmentsService_1 = class ManagerAssig
         if (!li)
             throw new common_1.UnprocessableEntityException('Line item does not belong to this audit');
         const existing = await this.liAssignmentRepo.findOne({
-            where: { auditScopeLineItemId: dto.lineItemId, auditorId: dto.auditorId, deletedAt: (0, typeorm_2.IsNull)() },
+            where: { auditScopeLineItemId: dto.lineItemId, auditorId: dto.auditorId },
+            withDeleted: true,
         });
-        if (existing)
+        if (existing) {
+            if (existing.deletedAt) {
+                existing.deletedAt = null;
+                await this.liAssignmentRepo.save(existing);
+            }
             return existing;
-        await this.liAssignmentRepo.softRemove({ auditScopeLineItemId: dto.lineItemId });
+        }
+        const existingAssignments = await this.liAssignmentRepo.find({
+            where: { auditScopeLineItemId: dto.lineItemId, deletedAt: (0, typeorm_2.IsNull)() },
+        });
+        if (existingAssignments.length > 0) {
+            await this.liAssignmentRepo.softRemove(existingAssignments);
+        }
         const assignment = this.liAssignmentRepo.create({
             auditScopeLineItemId: dto.lineItemId,
             auditorId: dto.auditorId,
         });
-        return await this.liAssignmentRepo.save(assignment);
+        try {
+            return await this.liAssignmentRepo.save(assignment);
+        }
+        catch (error) {
+            if (error.code === '23505') {
+                throw new common_1.UnprocessableEntityException('This auditor is already assigned to this line item');
+            }
+            throw error;
+        }
     }
     async unassignFromLineItem(auditId, assignmentId, managerId) {
         const audit = await this.auditRepo.findOne({

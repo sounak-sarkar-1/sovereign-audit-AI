@@ -26,6 +26,8 @@ export interface BusinessUnit {
   name: string;
   description?: string;
   clientId: string;
+  realBusinessUnitId?: string; // The ID from business_units table
+  auditBusinessUnitId?: string; // The ID from audit_business_units table
 }
 
 export interface Assignment {

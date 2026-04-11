@@ -32,7 +32,7 @@ export const MappingPanel: React.FC<MappingProps> = ({ managerId, type, existing
       const response = await api.get('/admin/users', { 
         params: { role: targetRole, limit: 100 } 
       });
-      return response.data.data;
+      return response.data;
     },
   });
 

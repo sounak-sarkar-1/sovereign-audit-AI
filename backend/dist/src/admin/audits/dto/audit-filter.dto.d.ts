@@ -8,4 +8,6 @@ export declare class AuditFilterDto {
     managerId?: string;
     sortBy?: string;
     sortOrder?: 'ASC' | 'DESC';
+    page?: string;
+    limit?: string;
 }

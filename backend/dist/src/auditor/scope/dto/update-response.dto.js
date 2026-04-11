@@ -17,7 +17,6 @@ exports.UpdateResponseDto = UpdateResponseDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(10),
     __metadata("design:type", String)
 ], UpdateResponseDto.prototype, "responseText", void 0);
 __decorate([

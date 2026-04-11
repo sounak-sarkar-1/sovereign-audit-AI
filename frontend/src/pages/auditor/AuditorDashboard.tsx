@@ -17,7 +17,7 @@ import { auditorService } from '@/services/auditorService';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -31,10 +31,17 @@ import AuditorSelfAssessment from './AuditorSelfAssessment';
 
 const AuditorDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'list';
+
   const { data: auditsData, isLoading } = useQuery({
     queryKey: ['auditor-audits'],
     queryFn: () => auditorService.getAudits(),
   });
+
+  const handleTabChange = (value: string) => {
+    setSearchParams({ tab: value });
+  };
 
   const audits = Array.isArray(auditsData) ? auditsData : (auditsData as any)?.data || [];
 
@@ -106,7 +113,7 @@ const AuditorDashboard: React.FC = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="list" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="mb-6 flex flex-wrap h-auto p-1 bg-muted/20">
           <TabsTrigger value="list" className="gap-2 rounded-full py-2">
             <ClipboardList size={14} /> My Audits

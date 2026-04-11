@@ -9,6 +9,7 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { AuditorLineItemAssignment } from '../../database/entities/auditor-line-item-assignment.entity';
 import { LineItemComment } from '../../database/entities/line-item-comment.entity';
 import { UploadedFile } from '../../database/entities/uploaded-file.entity';
+import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UploadedFile } from '../../database/entities/uploaded-file.entity';
       AuditorLineItemAssignment,
       LineItemComment,
       UploadedFile,
+      AuditorAuditAssignment,
     ]),
   ],
   controllers: [AuditorScopeController],

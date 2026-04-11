@@ -199,7 +199,11 @@ export class ManagerAuditsService {
 
     return {
       ...audit,
-      businessUnits: auditBUs.map(abu => abu.businessUnit),
+      businessUnits: auditBUs.map(abu => ({
+        ...abu.businessUnit,
+        id: abu.id, // This is the audit_business_unit_id needed for assignments and scope
+        realBusinessUnitId: abu.businessUnitId // Keep the actual BU ID if needed
+      })),
       assignments,
     };
   }

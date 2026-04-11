@@ -22,13 +22,17 @@ const line_item_response_entity_1 = require("../../database/entities/line-item-r
 const audit_business_unit_entity_1 = require("../../database/entities/audit-business-unit.entity");
 const uploaded_file_entity_1 = require("../../database/entities/uploaded-file.entity");
 const line_item_comment_entity_1 = require("../../database/entities/line-item-comment.entity");
+const auditor_line_item_assignment_entity_1 = require("../../database/entities/auditor-line-item-assignment.entity");
+const auditor_audit_assignment_entity_1 = require("../../database/entities/auditor-audit-assignment.entity");
 let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
-    constructor(lineItemRepo, responseRepo, auditBURepo, fileRepo, commentRepo) {
+    constructor(lineItemRepo, responseRepo, auditBURepo, fileRepo, commentRepo, buAssignmentRepo, liAssignmentRepo) {
         this.lineItemRepo = lineItemRepo;
         this.responseRepo = responseRepo;
         this.auditBURepo = auditBURepo;
         this.fileRepo = fileRepo;
         this.commentRepo = commentRepo;
+        this.buAssignmentRepo = buAssignmentRepo;
+        this.liAssignmentRepo = liAssignmentRepo;
         this.logger = new common_1.Logger(AuditorScopeService_1.name);
     }
     async getComments(liId) {
@@ -51,16 +55,34 @@ let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
             where: { auditId },
             relations: ['businessUnit'],
         });
+        const buAssignments = await this.buAssignmentRepo.find({
+            where: { auditId, auditorId: user.id },
+        });
+        const assignedBUIds = new Set(buAssignments.map(a => a.auditBusinessUnitId));
         const results = await Promise.all(bus.map(async (bu) => {
-            const items = await this.lineItemRepo.find({
-                where: {
-                    auditId,
-                    auditBusinessUnitId: bu.id,
-                    assignments: { auditorId: user.id }
-                },
-                relations: ['responses', 'options'],
-                order: { displayOrder: 'ASC' },
-            });
+            const isAssignedToBU = assignedBUIds.has(bu.id);
+            let items;
+            if (isAssignedToBU) {
+                items = await this.lineItemRepo.find({
+                    where: {
+                        auditId,
+                        auditBusinessUnitId: bu.id
+                    },
+                    relations: ['responses', 'options'],
+                    order: { displayOrder: 'ASC' },
+                });
+            }
+            else {
+                items = await this.lineItemRepo.find({
+                    where: {
+                        auditId,
+                        auditBusinessUnitId: bu.id,
+                        assignments: { auditorId: user.id }
+                    },
+                    relations: ['responses', 'options'],
+                    order: { displayOrder: 'ASC' },
+                });
+            }
             const itemsWithDrafts = items.map(item => {
                 const ownResponse = item.responses.find(r => r.auditorId === user.id);
                 return {
@@ -74,7 +96,7 @@ let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
                 items: itemsWithDrafts,
             };
         }));
-        return results;
+        return results.filter(r => r.items.length > 0);
     }
     async updateResponse(auditId, liId, user, dto) {
         const lineItem = await this.lineItemRepo.findOne({
@@ -83,9 +105,17 @@ let AuditorScopeService = AuditorScopeService_1 = class AuditorScopeService {
         });
         if (!lineItem)
             throw new common_1.NotFoundException('Line item not found in this audit');
-        const isAssigned = lineItem.assignments.some(a => a.auditorId === user.id);
-        if (!isAssigned)
-            throw new common_1.ForbiddenException('You are not assigned to this line item');
+        const isIndividuallyAssigned = lineItem.assignments.some(a => a.auditorId === user.id);
+        const isBUAssigned = await this.buAssignmentRepo.findOne({
+            where: {
+                auditId,
+                auditBusinessUnitId: lineItem.auditBusinessUnitId,
+                auditorId: user.id
+            },
+        });
+        if (!isIndividuallyAssigned && !isBUAssigned) {
+            throw new common_1.ForbiddenException('You are not assigned to this line item or its business unit');
+        }
         if (lineItem.status === audit_scope_line_item_entity_1.LineItemStatus.SUBMITTED || lineItem.status === audit_scope_line_item_entity_1.LineItemStatus.EXCEPTION_APPROVED) {
             throw new common_1.BadRequestException('Line item is already submitted and locked');
         }
@@ -131,7 +161,11 @@ exports.AuditorScopeService = AuditorScopeService = AuditorScopeService_1 = __de
     __param(2, (0, typeorm_1.InjectRepository)(audit_business_unit_entity_1.AuditBusinessUnit)),
     __param(3, (0, typeorm_1.InjectRepository)(uploaded_file_entity_1.UploadedFile)),
     __param(4, (0, typeorm_1.InjectRepository)(line_item_comment_entity_1.LineItemComment)),
+    __param(5, (0, typeorm_1.InjectRepository)(auditor_audit_assignment_entity_1.AuditorAuditAssignment)),
+    __param(6, (0, typeorm_1.InjectRepository)(auditor_line_item_assignment_entity_1.AuditorLineItemAssignment)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository,

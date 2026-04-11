@@ -31,7 +31,17 @@ export declare class ManagerAuditsController {
         totalPages: number;
     }>;
     create(req: any, createDto: CreateAuditDto): Promise<{
-        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: import("../../database/entities/user.entity").User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -48,7 +58,17 @@ export declare class ManagerAuditsController {
         deletedAt: Date;
     }>;
     findOne(id: string): Promise<{
-        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: import("../../database/entities/user.entity").User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -66,7 +86,17 @@ export declare class ManagerAuditsController {
     }>;
     getTrail(id: string): Promise<import("../../database/entities/audit-trail-log.entity").AuditTrailLog[]>;
     update(id: string, updateDto: UpdateAuditDto, req: any): Promise<{
-        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: import("../../database/entities/user.entity").User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -83,7 +113,17 @@ export declare class ManagerAuditsController {
         deletedAt: Date;
     }>;
     start(id: string, req: any): Promise<{
-        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: import("../../database/entities/user.entity").User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -101,7 +141,17 @@ export declare class ManagerAuditsController {
     }>;
     getClients(req: any): Promise<import("../../database/entities/user.entity").User[]>;
     archive(id: string, req: any): Promise<{
-        businessUnits: import("../../database/entities/business-unit.entity").BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: import("../../database/entities/user.entity").User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: import("../../database/entities/auditor-audit-assignment.entity").AuditorAuditAssignment[];
         id: string;
         name: string;

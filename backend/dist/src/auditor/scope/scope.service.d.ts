@@ -5,6 +5,8 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { User } from '../../database/entities/user.entity';
 import { UploadedFile } from '../../database/entities/uploaded-file.entity';
 import { LineItemComment } from '../../database/entities/line-item-comment.entity';
+import { AuditorLineItemAssignment } from '../../database/entities/auditor-line-item-assignment.entity';
+import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { UpdateResponseDto } from './dto/update-response.dto';
 export declare class AuditorScopeService {
     private readonly lineItemRepo;
@@ -12,8 +14,10 @@ export declare class AuditorScopeService {
     private readonly auditBURepo;
     private readonly fileRepo;
     private readonly commentRepo;
+    private readonly buAssignmentRepo;
+    private readonly liAssignmentRepo;
     private readonly logger;
-    constructor(lineItemRepo: Repository<AuditScopeLineItem>, responseRepo: Repository<LineItemResponse>, auditBURepo: Repository<AuditBusinessUnit>, fileRepo: Repository<UploadedFile>, commentRepo: Repository<LineItemComment>);
+    constructor(lineItemRepo: Repository<AuditScopeLineItem>, responseRepo: Repository<LineItemResponse>, auditBURepo: Repository<AuditBusinessUnit>, fileRepo: Repository<UploadedFile>, commentRepo: Repository<LineItemComment>, buAssignmentRepo: Repository<AuditorAuditAssignment>, liAssignmentRepo: Repository<AuditorLineItemAssignment>);
     getComments(liId: string): Promise<LineItemComment[]>;
     addComment(liId: string, user: User, content: string): Promise<LineItemComment>;
     getScope(auditId: string, user: User): Promise<{
@@ -35,7 +39,7 @@ export declare class AuditorScopeService {
             status: LineItemStatus;
             options: import("../../database/entities/audit-scope-line-item-option.entity").AuditScopeLineItemOption[];
             responses: LineItemResponse[];
-            assignments: import("../../database/entities/auditor-line-item-assignment.entity").AuditorLineItemAssignment[];
+            assignments: AuditorLineItemAssignment[];
             createdAt: Date;
             updatedAt: Date;
             deletedAt: Date;

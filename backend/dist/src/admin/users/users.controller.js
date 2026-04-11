@@ -15,13 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminUsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
+const user_filter_dto_1 = require("./dto/user-filter.dto");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const jwt_auth_guard_1 = require("../../common/guards/jwt-auth.guard");
 const tenant_guard_1 = require("../../common/guards/tenant.guard");
 const roles_guard_1 = require("../../common/guards/roles.guard");
 const roles_decorator_1 = require("../../common/decorators/roles.decorator");
-const user_entity_1 = require("../../database/entities/user.entity");
 let AdminUsersController = class AdminUsersController {
     constructor(service) {
         this.service = service;
@@ -33,8 +33,8 @@ let AdminUsersController = class AdminUsersController {
             ip: req.ip,
         });
     }
-    findAll(page, limit, role, status, search) {
-        return this.service.findAll({ page, limit, role, status, search });
+    findAll(query) {
+        return this.service.findAll(query);
     }
     findOne(id) {
         return this.service.findOne(id);
@@ -65,13 +65,9 @@ __decorate([
 ], AdminUsersController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('page')),
-    __param(1, (0, common_1.Query)('limit')),
-    __param(2, (0, common_1.Query)('role')),
-    __param(3, (0, common_1.Query)('status')),
-    __param(4, (0, common_1.Query)('search')),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, String, String, String]),
+    __metadata("design:paramtypes", [user_filter_dto_1.UserFilterDto]),
     __metadata("design:returntype", void 0)
 ], AdminUsersController.prototype, "findAll", null);
 __decorate([

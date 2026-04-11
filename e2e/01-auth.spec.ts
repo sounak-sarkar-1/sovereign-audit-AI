@@ -33,9 +33,8 @@ test.describe('Authentication & Role Gating', () => {
     await loginAs(page, 'auditor');
     await page.goto('/admin/dashboard');
     
-    // Should be redirected back or show access denied
-    // Based on common Guard behavior, it might redirect to / (home) or /auditor/dashboard
-    await expect(page).not.toHaveURL(/\/admin\/dashboard/);
+    // Should be redirected back to auditor's dashboard by the frontend RoleGuard
+    await expect(page).toHaveURL(/\/auditor\/dashboard/);
   });
 
   test('Logout clears session', async ({ page }) => {

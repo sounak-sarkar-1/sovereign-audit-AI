@@ -77,7 +77,7 @@ const UsersList: React.FC = () => {
     },
   });
 
-  const responseData = rawData?.data || { data: [], meta: null };
+  const responseData = rawData || { data: [], meta: null };
   const users = (responseData as any)?.data || [];
   const meta = (responseData as any)?.meta;
 

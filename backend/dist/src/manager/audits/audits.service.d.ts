@@ -48,7 +48,17 @@ export declare class ManagerAuditsService {
     }>;
     getClients(managerId: string): Promise<User[]>;
     create(createDto: CreateAuditDto, managerId: string): Promise<{
-        businessUnits: BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -65,7 +75,17 @@ export declare class ManagerAuditsService {
         deletedAt: Date;
     }>;
     findOne(id: string): Promise<{
-        businessUnits: BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -82,7 +102,17 @@ export declare class ManagerAuditsService {
         deletedAt: Date;
     }>;
     update(id: string, updateDto: UpdateAuditDto, managerId: string): Promise<{
-        businessUnits: BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -99,7 +129,17 @@ export declare class ManagerAuditsService {
         deletedAt: Date;
     }>;
     start(id: string, managerId: string): Promise<{
-        businessUnits: BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: AuditorAuditAssignment[];
         id: string;
         name: string;
@@ -117,7 +157,17 @@ export declare class ManagerAuditsService {
     }>;
     getTrail(id: string): Promise<import("../../database/entities/audit-trail-log.entity").AuditTrailLog[]>;
     archive(id: string, managerId: string): Promise<{
-        businessUnits: BusinessUnit[];
+        businessUnits: {
+            id: string;
+            realBusinessUnitId: string;
+            clientId: string;
+            client: User;
+            name: string;
+            description: string;
+            createdAt: Date;
+            updatedAt: Date;
+            deletedAt: Date;
+        }[];
         assignments: AuditorAuditAssignment[];
         id: string;
         name: string;

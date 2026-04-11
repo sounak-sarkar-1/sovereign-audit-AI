@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { 
   ArrowLeft, 
   Mail, 
@@ -10,7 +10,8 @@ import {
   CheckCircle,
   XCircle,
   Building,
-  Users
+  Users,
+  UserPlus
 } from 'lucide-react';
 import api from '@/lib/api';
 import { UserRole, UserStatus } from '@/types/user';
@@ -21,10 +22,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { format } from 'date-fns';
 import { MappingPanel } from '@/components/admin/MappingPanel';
 import { BusinessUnitPanel } from '@/components/admin/BusinessUnitPanel';
+import { CreateUserDrawer } from '@/components/admin/UserDrawers';
+import { useAuthStore } from '@/stores/auth';
 
 const UserDetail: React.FC = () => {
   const { id: userId } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user: currentUser } = useAuthStore();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const { data: rawUser, isLoading } = useQuery<any>({
     queryKey: ['user', userId],
@@ -83,14 +89,26 @@ const UserDetail: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <Button 
-        variant="ghost" 
-        onClick={() => navigate('/admin/users')}
-        className="gap-2 -ml-2 text-muted-foreground hover:text-dark"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to User List
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/admin/users')}
+          className="gap-2 -ml-2 text-muted-foreground hover:text-dark"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to User List
+        </Button>
+
+        {currentUser?.role === UserRole.ADMIN && (
+          <Button 
+            onClick={() => setIsCreateOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white gap-2 shadow-card"
+          >
+            <UserPlus className="w-4 h-4" />
+            Create User
+          </Button>
+        )}
+      </div>
 
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-1/3 space-y-6">
@@ -226,6 +244,15 @@ const UserDetail: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      <CreateUserDrawer 
+        open={isCreateOpen} 
+        onOpenChange={setIsCreateOpen} 
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['users'] });
+          setIsCreateOpen(false);
+        }}
+      />
     </div>
   );
 };

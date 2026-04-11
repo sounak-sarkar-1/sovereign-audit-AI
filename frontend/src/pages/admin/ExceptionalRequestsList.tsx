@@ -46,7 +46,7 @@ export default function ExceptionalRequestsList() {
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-dark dark:text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-dark dark:text-white flex items-center gap-2" data-testid="exceptional-requests-title">
             <AlertTriangle className="text-primary dark:text-accent" />
             Exceptional Requests
           </h1>

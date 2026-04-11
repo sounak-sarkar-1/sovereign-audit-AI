@@ -41,6 +41,7 @@ import CorrectiveActionPlans from './pages/client/CorrectiveActionPlans';
 import ClientSettings from './pages/client/ClientSettings';
 
 import { useAuthStore } from './stores/auth';
+import { Toaster } from 'sonner';
 import './App.css';
 
 const queryClient = new QueryClient({
@@ -74,49 +75,74 @@ function App() {
                   <MainLayout>
                     <Routes>
                       {/* Admin Routes */}
-                      <Route path="admin/dashboard" element={<AdminDashboard />} />
-                      <Route path="admin/users" element={<UsersList />} />
-                      <Route path="admin/users/:id" element={<UserDetail />} />
-                      <Route path="admin/business-units" element={<BusinessUnitsList />} />
-                      <Route path="admin/ai-models" element={<AiModelsList />} />
-                      <Route path="admin/templates" element={<TemplateLibraryList />} />
-                      <Route path="admin/templates/new" element={<TemplateEditor />} />
-                      <Route path="admin/templates/:id" element={<TemplateEditor />} />
-                      <Route path="admin/audit-oversight" element={<AuditOversight />} />
-                      <Route path="admin/audits/:id" element={<AdminAuditDetail />} />
-                      <Route path="admin/exceptional-requests" element={<ExceptionalRequestsList />} />
-                      <Route path="admin/access-control" element={<AccessControl />} />
-                      <Route path="admin/mappings" element={<AdminMappings />} />
-                      <Route path="admin/audit-logs" element={<AdminAuditLogs />} />
+                      <Route path="admin/*" element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                          <Routes>
+                            <Route path="dashboard" element={<AdminDashboard />} />
+                            <Route path="users" element={<UsersList />} />
+                            <Route path="users/:id" element={<UserDetail />} />
+                            <Route path="business-units" element={<BusinessUnitsList />} />
+                            <Route path="ai-models" element={<AiModelsList />} />
+                            <Route path="admin/templates" element={<TemplateLibraryList />} />
+                            <Route path="templates" element={<TemplateLibraryList />} />
+                            <Route path="templates/new" element={<TemplateEditor />} />
+                            <Route path="templates/:id" element={<TemplateEditor />} />
+                            <Route path="audit-oversight" element={<AuditOversight />} />
+                            <Route path="audits/:id" element={<AdminAuditDetail />} />
+                            <Route path="exceptional-requests" element={<ExceptionalRequestsList />} />
+                            <Route path="access-control" element={<AccessControl />} />
+                            <Route path="mappings" element={<AdminMappings />} />
+                            <Route path="audit-logs" element={<AdminAuditLogs />} />
+                          </Routes>
+                        </ProtectedRoute>
+                      } />
 
                       {/* Manager Routes */}
-                      <Route path="manager/audits" element={<KanbanBoard />} />
-                      <Route path="manager/dashboard" element={<Navigate to="/manager/audits" replace />} />
-                      <Route path="manager/audits/new" element={<NewAuditForm />} />
-                      <Route path="manager/audits/:id" element={<AuditDetail />} />
-                      <Route path="manager/audits/:id/edit" element={<AuditDetail editMode={true} />} />
-                      <Route path="manager/heatmap" element={<HeatmapPage />} />
-                      <Route path="manager/clarifications" element={<ClarificationsPage />} />
-                      <Route path="manager/chats/:id" element={<EngagementChat />} />
-                      <Route path="manager/settings" element={<ManagerSettings />} />
+                      <Route path="manager/*" element={
+                        <ProtectedRoute allowedRoles={['manager']}>
+                          <Routes>
+                            <Route path="audits" element={<KanbanBoard />} />
+                            <Route path="dashboard" element={<Navigate to="/manager/audits" replace />} />
+                            <Route path="audits/new" element={<NewAuditForm />} />
+                            <Route path="audits/:id" element={<AuditDetail />} />
+                            <Route path="audits/:id/edit" element={<AuditDetail editMode={true} />} />
+                            <Route path="heatmap" element={<HeatmapPage />} />
+                            <Route path="clarifications" element={<ClarificationsPage />} />
+                            <Route path="chats/:id" element={<EngagementChat />} />
+                            <Route path="settings" element={<ManagerSettings />} />
+                          </Routes>
+                        </ProtectedRoute>
+                      } />
 
                       {/* Auditor Routes */}
-                      <Route path="auditor/dashboard" element={<AuditorDashboard />} />
-                      <Route path="auditor/workspace/:id" element={<AuditorWorkspace />} />
-                      <Route path="auditor/chats/:id" element={<EngagementChat />} />
+                      <Route path="auditor/*" element={
+                        <ProtectedRoute allowedRoles={['auditor']}>
+                          <Routes>
+                            <Route path="dashboard" element={<AuditorDashboard />} />
+                            <Route path="workspace/:id" element={<AuditorWorkspace />} />
+                            <Route path="chats/:id" element={<EngagementChat />} />
+                          </Routes>
+                        </ProtectedRoute>
+                      } />
                       
                       {/* Client Routes */}
-                      <Route path="client/dashboard" element={<ExecutiveCockpit />} />
-                      <Route path="client/audits" element={<ClientAuditList />} />
-                      <Route path="client/audits/:id" element={<ClientAuditDetail />} />
-                      <Route path="client/insights" element={<ClientInsights />} />
-                      <Route path="client/search" element={<ClientNlSearch />} />
-                      <Route path="client/clarifications" element={<ClientClarifications />} />
-                      <Route path="client/reports" element={<ClientReportsList />} />
-                      <Route path="client/reports/:id/review" element={<ClientReportReview />} />
-                      <Route path="client/corrective-actions" element={<CorrectiveActionPlans />} />
-                      <Route path="client/chat/:id" element={<EngagementChat />} />
-                      <Route path="client/settings" element={<ClientSettings />} />
+                      <Route path="client/*" element={
+                        <ProtectedRoute allowedRoles={['client']}>
+                          <Routes>
+                            <Route path="dashboard" element={<ExecutiveCockpit />} />
+                            <Route path="audits" element={<ClientAuditList />} />
+                            <Route path="audits/:id" element={<ClientAuditDetail />} />
+                            <Route path="insights" element={<ClientInsights />} />
+                            <Route path="search" element={<ClientNlSearch />} />
+                            <Route path="clarifications" element={<ClientClarifications />} />
+                            <Route path="reports" element={<ClientReportsList />} />
+                            <Route path="reports/:id/review" element={<ClientReportReview />} />
+                            <Route path="corrective-actions" element={<CorrectiveActionPlans />} />
+                            <Route path="chat/:id" element={<EngagementChat />} />
+                            <Route path="settings" element={<ClientSettings />} />
+                          </Routes>
+                        </ProtectedRoute>
+                      } />
 
                       {/* Basic Settings */}
                       <Route path="settings" element={<Settings />} />
@@ -135,6 +161,7 @@ function App() {
           />
         </Routes>
       </Router>
+      <Toaster position="top-right" richColors closeButton />
     </QueryClientProvider>
   );
 }

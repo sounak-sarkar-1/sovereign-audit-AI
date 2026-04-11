@@ -58,6 +58,12 @@ let ManagerScopeService = ManagerScopeService_1 = class ManagerScopeService {
         }, {});
     }
     async createLineItems(auditId, dto) {
+        const abu = await this.abuRepository.findOne({
+            where: { id: dto.auditBusinessUnitId, auditId },
+        });
+        if (!abu) {
+            throw new common_1.NotFoundException(`Business Unit mapping not found for this audit. Received BU ID: ${dto.auditBusinessUnitId}`);
+        }
         return await this.dataSource.transaction(async (manager) => {
             const createdItems = [];
             for (const itemDto of dto.items) {

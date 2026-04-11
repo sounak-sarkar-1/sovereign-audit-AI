@@ -30,10 +30,12 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
   const [adminComment, setAdminComment] = useState('');
   const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
 
-  const { data: request, isLoading } = useQuery({
+  const { data: rawRequest, isLoading } = useQuery({
     queryKey: ['exceptional-request-detail', requestId],
     queryFn: () => exceptionalRequestService.getRequestDetail(requestId),
   });
+
+  const request = (rawRequest as any)?.data || rawRequest;
 
   const approveMutation = useMutation({
     mutationFn: (formData: FormData) => exceptionalRequestService.approveRequest(requestId, formData),
@@ -89,8 +91,8 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
         <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-xl font-bold text-white">Review Request</h2>
-              {request?.status === 'pending' && <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30">Pending</Badge>}
+              <h2 className="text-xl font-bold text-white" data-testid="review-request-title">Review Request</h2>
+              {request?.status === 'pending' && <Badge className="bg-amber-500/20 text-amber-500 border-amber-500/30" data-testid="request-status-pending">Pending</Badge>}
             </div>
             <p className="text-sm text-white/50">ID: {requestId}</p>
           </div>
@@ -112,7 +114,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
               {request?.actionType === 'delete' ? <AlertTriangle size={20} /> : <Clock size={20} />}
             </div>
             <div>
-              <h3 className="font-bold uppercase tracking-wide text-xs mb-1">
+              <h3 className="font-bold uppercase tracking-wide text-xs mb-1" data-testid="requested-action-label">
                 Requested Action: {request?.actionType === 'delete' ? 'Permanently Delete Audit' : 'Reopen Closed Audit'}
               </h3>
               <p className="text-sm opacity-80 leading-relaxed">
@@ -130,7 +132,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
                 <FileText size={14} />
                 <span className="text-xs uppercase tracking-wider font-semibold">Audit</span>
               </div>
-              <p className="text-white font-medium">{request?.audit?.name}</p>
+              <p className="text-white font-medium" data-testid="request-audit-name">{request?.audit?.name}</p>
             </div>
             <div className="p-4 bg-white/5 rounded-xl border border-white/10">
               <div className="flex items-center gap-2 text-white/40 mb-2">
@@ -151,14 +153,16 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
                 <Calendar size={14} />
                 <span className="text-xs uppercase tracking-wider font-semibold">Date</span>
               </div>
-              <p className="text-white font-medium">{format(new Date(request?.createdAt), 'MMM d, yyyy HH:mm')}</p>
+              <p className="text-white font-medium">
+                {request?.createdAt ? format(new Date(request.createdAt), 'MMM d, p') : 'N/A'}
+              </p>
             </div>
           </div>
 
           {/* Justification */}
           <div>
             <h4 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-3">Manager's Justification</h4>
-            <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-white leading-relaxed italic">
+            <div className="p-4 bg-white/5 rounded-xl border border-white/10 text-white leading-relaxed italic" data-testid="request-justification">
               "{request?.justification}"
             </div>
           </div>
@@ -208,6 +212,7 @@ export default function ReviewRequestDrawer({ requestId, onClose, onSuccess }: R
                   className="bg-white/5 border-white/10 text-white h-32"
                   value={adminComment}
                   onChange={(e) => setAdminComment(e.target.value)}
+                  data-testid="admin-comment-input"
                 />
               </div>
             </div>

@@ -21,7 +21,20 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Automatically unwrap success/data wrapper from backend
+    if (response.data && response.data.success === true) {
+      const { success, ...payload } = response.data;
+      // If the payload only has a 'data' property (and potentially others we don't care about), 
+      // but 'data' is the common pattern, we check for its existence.
+      // If we have both 'data' AND 'meta', we return the whole payload.
+      if (Object.keys(payload).length === 1 && 'data' in payload) {
+        return { ...response, data: payload.data };
+      }
+      return { ...response, data: payload };
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     

@@ -9,11 +9,11 @@ import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('admin/clients/:clientId/business-units')
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
-@Roles('admin')
 export class AdminBusinessUnitsController {
   constructor(private readonly service: AdminBusinessUnitsService) {}
 
   @Post()
+  @Roles('admin')
   async create(
     @Param('clientId') clientId: string,
     @Body() dto: CreateBusinessUnitDto,
@@ -27,11 +27,13 @@ export class AdminBusinessUnitsController {
   }
 
   @Get()
+  @Roles('admin', 'manager')
   async findAll(@Param('clientId') clientId: string) {
     return await this.service.findAllByClient(clientId);
   }
 
   @Put(':buId')
+  @Roles('admin')
   async update(
     @Param('clientId') clientId: string,
     @Param('buId') buId: string,
@@ -46,6 +48,7 @@ export class AdminBusinessUnitsController {
   }
 
   @Delete(':buId')
+  @Roles('admin')
   async remove(
     @Param('clientId') clientId: string,
     @Param('buId') buId: string,

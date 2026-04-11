@@ -181,7 +181,7 @@ const KanbanBoard = () => {
 
   const filteredAudits = audits?.items?.filter(a => 
     a.name.toLowerCase().includes(search.toLowerCase()) || 
-    a.client?.fullName?.toLowerCase().includes(search.toLowerCase())
+    (a.client?.fullName?.toLowerCase() || '').includes(search.toLowerCase())
   );
 
   const handleRequestAction = (audit: Audit, type: ExceptionalActionType) => {

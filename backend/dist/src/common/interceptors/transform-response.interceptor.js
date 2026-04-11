@@ -12,12 +12,13 @@ const operators_1 = require("rxjs/operators");
 let TransformResponseInterceptor = class TransformResponseInterceptor {
     intercept(_context, next) {
         return next.handle().pipe((0, operators_1.map)((response) => {
-            if (response &&
-                typeof response === 'object' &&
-                'data' in response) {
+            if (response && typeof response === 'object' && 'success' in response && 'data' in response) {
                 return response;
             }
-            return { data: response };
+            if (response && typeof response === 'object' && 'data' in response) {
+                return { success: true, ...response };
+            }
+            return { success: true, data: response };
         }));
     }
 };

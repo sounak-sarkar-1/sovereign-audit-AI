@@ -21,22 +21,29 @@ let GlobalExceptionFilter = GlobalExceptionFilter_1 = class GlobalExceptionFilte
         let errorCode = 'INTERNAL_ERROR';
         let message = 'An unexpected error occurred';
         let errors;
-        if (exception instanceof common_1.HttpException) {
-            statusCode = exception.getStatus();
-            const exceptionResponse = exception.getResponse();
+        const exceptionMessage = exception?.message || (typeof exception === 'string' ? exception : undefined);
+        if (exception instanceof common_1.HttpException || (exception && typeof exception.getStatus === 'function')) {
+            const httpException = exception;
+            statusCode = httpException.getStatus();
+            const exceptionResponse = httpException.getResponse();
             if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
                 const body = exceptionResponse;
                 errorCode = body.errorCode || this.statusToErrorCode(statusCode);
-                message = body.message || exception.message;
+                message = body.message || exceptionMessage || message;
                 errors = body.errors;
             }
             else {
-                message = exceptionResponse;
+                message = exceptionResponse || exceptionMessage || message;
                 errorCode = this.statusToErrorCode(statusCode);
             }
         }
         else if (exception instanceof Error) {
+            message = exception.message;
             this.logger.error(`Unhandled exception: ${exception.message}`, exception.stack);
+        }
+        else {
+            message = exceptionMessage || message;
+            this.logger.error(`Unknown exception type caught: ${typeof exception}`, exception);
         }
         response.status(statusCode).json({
             statusCode,

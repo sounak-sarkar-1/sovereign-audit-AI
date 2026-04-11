@@ -11,7 +11,7 @@ export interface BusinessUnit {
 export const adminBusinessUnitService = {
   getClients: async () => {
     const response = await api.get('/admin/users', { params: { role: 'client', limit: 100 } });
-    return response.data.data;
+    return response.data;
   },
   
   getBusinessUnits: async (clientId: string) => {

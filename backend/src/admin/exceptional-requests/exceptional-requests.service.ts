@@ -142,12 +142,12 @@ export class AdminExceptionalRequestsService {
       throw new BadRequestException('Admin comment must be at least 10 characters for rejection');
     }
 
-    request.status = ExceptionalRequestStatus.REJECTED;
-    request.resolvedAt = new Date();
-    request.resolvedById = adminId;
-    request.adminComment = adminComment;
-
-    await this.requestRepository.save(request);
+    await this.requestRepository.update(id, {
+      status: ExceptionalRequestStatus.REJECTED,
+      resolvedAt: new Date(),
+      resolvedById: adminId,
+      adminComment: adminComment,
+    });
 
     // Notify manager
     await this.notificationsService.create({

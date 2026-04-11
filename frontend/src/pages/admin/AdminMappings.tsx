@@ -60,6 +60,7 @@ export default function AdminMappings() {
       queryClient.invalidateQueries({ queryKey: ['admin-mappings'] });
     },
     onError: (err: any) => {
+      console.error('Mapping error response:', err.response?.data);
       toast.error(err.response?.data?.message || 'Failed to create mapping');
     }
   });
@@ -83,13 +84,14 @@ export default function AdminMappings() {
     createMutation.mutate({ managerId: selectedManager, targetId: selectedTarget });
   };
 
-  const managerList = managers?.data || managers || [];
-  const targetList = targets?.data || targets || [];
+  const managerList = (managers as any)?.items || (managers as any)?.data || (Array.isArray(managers) ? managers : []);
+  const targetList = (targets as any)?.items || (targets as any)?.data || (Array.isArray(targets) ? targets : []);
+  const mappingList = (mappings as any)?.data || (Array.isArray(mappings) ? mappings : []);
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-dark dark:text-white flex items-center gap-3">
+        <h1 className="text-3xl font-bold text-dark dark:text-white flex items-center gap-3" data-testid="mappings-page-title">
           <Shield className="text-primary dark:text-accent" />
           Manager Mappings
         </h1>
@@ -105,6 +107,7 @@ export default function AdminMappings() {
               ? "bg-white text-dark shadow-elevated" 
               : "text-bg-muted hover:text-dark dark:text-white/60 dark:hover:text-white"
           )}
+          data-testid="tab-auditors"
         >
           <UserCheck size={16} />
           MANAGER-AUDITOR
@@ -117,6 +120,7 @@ export default function AdminMappings() {
               ? "bg-white text-dark shadow-elevated" 
               : "text-bg-muted hover:text-dark dark:text-white/60 dark:hover:text-white"
           )}
+          data-testid="tab-clients"
         >
           <Building size={16} />
           MANAGER-CLIENT
@@ -133,7 +137,7 @@ export default function AdminMappings() {
             <div className="space-y-2">
               <label className="text-xs font-black uppercase tracking-widest text-bg-muted">Manager</label>
               <Select value={selectedManager} onValueChange={setSelectedManager}>
-                <SelectTrigger className="rounded-md h-10 border-bg-mid">
+                <SelectTrigger className="rounded-md h-10 border-bg-mid" data-testid="manager-select">
                   <SelectValue placeholder="Select Manager" />
                 </SelectTrigger>
                 <SelectContent>
@@ -155,7 +159,7 @@ export default function AdminMappings() {
                 {activeTab === 'auditors' ? 'Auditor' : 'Client'}
               </label>
               <Select value={selectedTarget} onValueChange={setSelectedTarget}>
-                <SelectTrigger className="rounded-md h-10 border-bg-mid">
+                <SelectTrigger className="rounded-md h-10 border-bg-mid" data-testid="target-select">
                   <SelectValue placeholder={`Select ${activeTab === 'auditors' ? 'Auditor' : 'Client'}`} />
                 </SelectTrigger>
                 <SelectContent>
@@ -170,6 +174,7 @@ export default function AdminMappings() {
               className="w-full h-10 rounded-full font-semibold bg-dark hover:bg-primary transition-colors" 
               onClick={handleAddMapping}
               disabled={createMutation.isPending}
+              data-testid="create-mapping-btn"
             >
               {createMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <UserPlus className="mr-2 h-4 w-4" />} 
               {createMutation.isPending ? 'Linking...' : 'CREATE LINK'}
@@ -179,56 +184,57 @@ export default function AdminMappings() {
 
         <Card className="md:col-span-2 border-none shadow-card overflow-hidden bg-white dark:bg-[#2d1f45] rounded-xl">
            <CardHeader className="border-b border-bg-mid">
-            <CardTitle className="text-lg font-semibold text-dark flex items-center gap-2">
+            <CardTitle className="text-lg font-semibold text-dark flex items-center gap-2" data-testid="active-mappings-section-title">
               <Users className="text-primary h-5 w-5" />
               Active Mappings
             </CardTitle>
             <CardDescription className="text-xs">Currently established relationships in the system.</CardDescription>
           </CardHeader>
           <CardContent className="p-0">
-             {isLoadingMappings ? (
-               <div className="p-12 text-center text-bg-muted italic">Loading mappings...</div>
-             ) : !mappings || mappings.length === 0 ? (
-               <div className="p-12 text-center text-bg-muted italic">No active mappings found.</div>
-             ) : (
-               <div className="divide-y divide-bg-mid dark:divide-white/5">
-                 {mappings.map((m: any) => (
-                   <div key={m.id} className="p-4 flex items-center justify-between hover:bg-bg-warm/50 dark:hover:bg-white/5 transition-colors">
-                     <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                         {m.manager?.fullName?.[0]}
-                       </div>
-                       <div>
-                         <div className="text-sm font-bold text-dark dark:text-white uppercase tracking-tight">{m.manager?.fullName}</div>
-                         <div className="text-[10px] text-bg-muted uppercase font-black tracking-widest leading-none">Manager</div>
-                       </div>
-                       <ArrowRight size={14} className="text-bg-mid" />
-                       <div className="flex items-center gap-3">
-                         <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
-                           {(m.auditor?.fullName || m.client?.fullName)?.[0]}
-                         </div>
-                         <div>
-                            <div className="text-sm font-bold text-dark dark:text-white uppercase tracking-tight">
-                              {m.auditor?.fullName || m.client?.fullName}
-                            </div>
-                            <div className="text-[10px] text-bg-muted uppercase font-black tracking-widest leading-none">
-                              {activeTab === 'auditors' ? 'Auditor' : 'Client'}
-                            </div>
-                         </div>
-                       </div>
-                     </div>
-                     <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                      onClick={() => handleRemoveMapping(m.managerId, m.auditorId || m.clientId)}
-                     >
-                       <UserMinus size={18} />
-                     </Button>
-                   </div>
-                 ))}
-               </div>
-             )}
+              {isLoadingMappings ? (
+                <div className="p-12 text-center text-bg-muted italic">Loading mappings...</div>
+              ) : mappingList.length === 0 ? (
+                <div className="p-12 text-center text-bg-muted italic">No active mappings found.</div>
+              ) : (
+                <div className="divide-y divide-bg-mid dark:divide-white/5">
+                  {mappingList.map((m: any) => (
+                    <div key={m.id} className="p-4 flex items-center justify-between hover:bg-bg-warm/50 dark:hover:bg-white/5 transition-colors" data-testid="mapping-row">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                          {m.manager?.fullName?.[0]}
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-dark dark:text-white uppercase tracking-tight">{m.manager?.fullName}</div>
+                          <div className="text-[10px] text-bg-muted uppercase font-black tracking-widest leading-none">Manager</div>
+                        </div>
+                        <ArrowRight size={14} className="text-bg-mid" />
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
+                            {(m.auditor?.fullName || m.client?.fullName)?.[0]}
+                          </div>
+                          <div>
+                             <div className="text-sm font-bold text-dark dark:text-white uppercase tracking-tight">
+                               {m.auditor?.fullName || m.client?.fullName}
+                             </div>
+                             <div className="text-[10px] text-bg-muted uppercase font-black tracking-widest leading-none">
+                               {activeTab === 'auditors' ? 'Auditor' : 'Client'}
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                      <Button 
+                       variant="ghost" 
+                       size="icon" 
+                       className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                       onClick={() => handleRemoveMapping(m.managerId, m.auditorId || m.clientId)}
+                       data-testid="remove-mapping-btn"
+                      >
+                        <UserMinus size={18} />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
           </CardContent>
         </Card>
       </div>

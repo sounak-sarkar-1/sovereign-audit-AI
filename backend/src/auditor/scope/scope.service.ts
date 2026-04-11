@@ -7,6 +7,8 @@ import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.e
 import { User } from '../../database/entities/user.entity';
 import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
 import { LineItemComment } from '../../database/entities/line-item-comment.entity';
+import { AuditorLineItemAssignment } from '../../database/entities/auditor-line-item-assignment.entity';
+import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { UpdateResponseDto } from './dto/update-response.dto';
 
 @Injectable()
@@ -24,6 +26,10 @@ export class AuditorScopeService {
     private readonly fileRepo: Repository<UploadedFile>,
     @InjectRepository(LineItemComment)
     private readonly commentRepo: Repository<LineItemComment>,
+    @InjectRepository(AuditorAuditAssignment)
+    private readonly buAssignmentRepo: Repository<AuditorAuditAssignment>,
+    @InjectRepository(AuditorLineItemAssignment)
+    private readonly liAssignmentRepo: Repository<AuditorLineItemAssignment>,
   ) {}
 
   async getComments(liId: string) {
@@ -49,16 +55,39 @@ export class AuditorScopeService {
       relations: ['businessUnit'],
     });
 
+    // Get all BU assignments for this auditor in this audit
+    const buAssignments = await this.buAssignmentRepo.find({
+      where: { auditId, auditorId: user.id },
+    });
+    const assignedBUIds = new Set(buAssignments.map(a => a.auditBusinessUnitId));
+
     const results = await Promise.all(bus.map(async (bu) => {
-      const items = await this.lineItemRepo.find({
-        where: { 
-          auditId, 
-          auditBusinessUnitId: bu.id,
-          assignments: { auditorId: user.id }
-        },
-        relations: ['responses', 'options'],
-        order: { displayOrder: 'ASC' },
-      });
+      const isAssignedToBU = assignedBUIds.has(bu.id);
+      
+      let items: AuditScopeLineItem[];
+
+      if (isAssignedToBU) {
+        // Auditor is assigned to the whole BU - show all items
+        items = await this.lineItemRepo.find({
+          where: { 
+            auditId, 
+            auditBusinessUnitId: bu.id
+          },
+          relations: ['responses', 'options'],
+          order: { displayOrder: 'ASC' },
+        });
+      } else {
+        // Auditor only sees specifically assigned items
+        items = await this.lineItemRepo.find({
+          where: { 
+            auditId, 
+            auditBusinessUnitId: bu.id,
+            assignments: { auditorId: user.id }
+          },
+          relations: ['responses', 'options'],
+          order: { displayOrder: 'ASC' },
+        });
+      }
 
       // Filter responses to only show this auditor's responses
       const itemsWithDrafts = items.map(item => {
@@ -76,7 +105,8 @@ export class AuditorScopeService {
       };
     }));
 
-    return results;
+    // Only return BUs that have at least one accessible item
+    return results.filter(r => r.items.length > 0);
   }
 
   async updateResponse(auditId: string, liId: string, user: User, dto: UpdateResponseDto) {
@@ -87,8 +117,21 @@ export class AuditorScopeService {
 
     if (!lineItem) throw new NotFoundException('Line item not found in this audit');
 
-    const isAssigned = lineItem.assignments.some(a => a.auditorId === user.id);
-    if (!isAssigned) throw new ForbiddenException('You are not assigned to this line item');
+    // Check individual assignment
+    const isIndividuallyAssigned = lineItem.assignments.some(a => a.auditorId === user.id);
+    
+    // Check BU-level assignment
+    const isBUAssigned = await this.buAssignmentRepo.findOne({
+      where: { 
+        auditId, 
+        auditBusinessUnitId: lineItem.auditBusinessUnitId, 
+        auditorId: user.id 
+      },
+    });
+
+    if (!isIndividuallyAssigned && !isBUAssigned) {
+      throw new ForbiddenException('You are not assigned to this line item or its business unit');
+    }
 
     if (lineItem.status === LineItemStatus.SUBMITTED || lineItem.status === LineItemStatus.EXCEPTION_APPROVED) {
       throw new BadRequestException('Line item is already submitted and locked');

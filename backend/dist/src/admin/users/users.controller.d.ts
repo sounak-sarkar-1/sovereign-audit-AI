@@ -1,12 +1,12 @@
 import { AdminUsersService } from './users.service';
+import { UserFilterDto } from './dto/user-filter.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRole, UserStatus } from '../../database/entities/user.entity';
 export declare class AdminUsersController {
     private readonly service;
     constructor(service: AdminUsersService);
     create(createDto: CreateUserDto, req: any): Promise<import("../../database/entities/user.entity").User>;
-    findAll(page?: number, limit?: number, role?: UserRole, status?: UserStatus, search?: string): Promise<{
+    findAll(query: UserFilterDto): Promise<{
         data: import("../../database/entities/user.entity").User[];
         meta: any;
     }>;

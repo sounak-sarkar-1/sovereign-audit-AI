@@ -114,11 +114,12 @@ let AdminExceptionalRequestsService = AdminExceptionalRequestsService_1 = class 
         if (!adminComment || adminComment.trim().length < 10) {
             throw new common_1.BadRequestException('Admin comment must be at least 10 characters for rejection');
         }
-        request.status = exceptional_action_request_entity_1.ExceptionalRequestStatus.REJECTED;
-        request.resolvedAt = new Date();
-        request.resolvedById = adminId;
-        request.adminComment = adminComment;
-        await this.requestRepository.save(request);
+        await this.requestRepository.update(id, {
+            status: exceptional_action_request_entity_1.ExceptionalRequestStatus.REJECTED,
+            resolvedAt: new Date(),
+            resolvedById: adminId,
+            adminComment: adminComment,
+        });
         await this.notificationsService.create({
             userId: request.requestedById,
             type: notification_entity_1.NotificationType.EXCEPTIONAL_REQUEST_RESOLVED,

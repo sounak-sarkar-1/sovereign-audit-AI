@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Users, 
   Map, 
@@ -30,7 +30,9 @@ import {
   Search,
   Play,
   ShieldCheck,
-  ClipboardList
+  ClipboardList,
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuthStore } from '../../stores/auth';
@@ -71,7 +73,9 @@ const managerNavItems = [
 
 const auditorNavItems = [
   { icon: LayoutDashboard, label: 'Task Dashboard', path: '/auditor/dashboard' },
-  { icon: Briefcase, label: 'Audit Assignments', path: '/auditor/dashboard' },
+  { icon: AlertCircle, label: 'Finding Discussions', path: '/auditor/dashboard?tab=discussions' },
+  { icon: Sparkles, label: 'Knowledge Research', path: '/auditor/dashboard?tab=research' },
+  { icon: BarChart3, label: 'My Performance', path: '/auditor/dashboard?tab=performance' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
@@ -86,6 +90,8 @@ const clientNavItems = [
 ];
 
 export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () => void }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user, clearAuth } = useAuthStore();
   
   const { data: exceptions } = useQuery({
@@ -147,36 +153,40 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
       </div>
 
       <nav className="flex-1 py-5 overflow-y-auto hide-scrollbar space-y-1">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.label}
-            to={item.path}
-            className={({ isActive }) => cn(
-              "flex items-center h-10 px-4 mx-2 transition-all duration-150 relative group rounded-full",
-              isActive 
-                ? "bg-bg-warm dark:bg-[#261840] text-dark dark:text-accent font-medium shadow-sm" 
-                : "text-bg-muted hover:text-dark dark:hover:text-white hover:bg-bg-warm/50 dark:hover:bg-[#261840]/50",
-              !isOpen && "justify-center"
-            )}
-          >
-            {({ isActive }) => (
-              <>
-                <item.icon 
-                  size={20} 
-                  className={cn(
-                    "transition-colors",
-                    isActive ? "text-primary dark:text-accent" : "text-bg-muted"
-                  )} 
-                />
-                
-                {isOpen && (
-                  <div className="ml-3 flex items-center relative flex-1 truncate">
-                    {isActive && (
-                      <div className="absolute left-[-12px] w-1.5 h-1.5 rounded-full bg-accent" />
-                    )}
-                    <span className="truncate">{item.label}</span>
-                  </div>
-                )}
+        {navItems.map((item) => {
+          const isItemActive = location.pathname + location.search === item.path || 
+                             (item.path === '/auditor/dashboard' && location.pathname === '/auditor/dashboard' && !location.search);
+
+          return (
+            <NavLink
+              key={item.label}
+              to={item.path}
+              end={item.path.includes('?') ? false : true}
+              data-testid={`sidebar-link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              className={cn(
+                "flex items-center h-10 px-4 mx-2 transition-all duration-150 relative group rounded-full",
+                isItemActive 
+                  ? "bg-bg-warm dark:bg-[#261840] text-dark dark:text-accent font-medium shadow-sm" 
+                  : "text-bg-muted hover:text-dark dark:hover:text-white hover:bg-bg-warm/50 dark:hover:bg-[#261840]/50",
+                !isOpen && "justify-center"
+              )}
+            >
+              <item.icon 
+                size={20} 
+                className={cn(
+                  "transition-colors",
+                  isItemActive ? "text-primary dark:text-accent" : "text-bg-muted"
+                )} 
+              />
+              
+              {isOpen && (
+                <div className="ml-3 flex items-center relative flex-1 truncate">
+                  {isItemActive && (
+                    <div className="absolute left-[-12px] w-1.5 h-1.5 rounded-full bg-accent" />
+                  )}
+                  <span className="truncate">{item.label}</span>
+                </div>
+              )}
 
                 {/* Status Badges */}
                 {item.label === 'Audit Portfolio' && pendingExceptionCount > 0 && (
@@ -210,10 +220,9 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
                     {item.label}
                   </div>
                 )}
-              </>
-            )}
-          </NavLink>
-        ))}
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* User Card */}
@@ -241,10 +250,18 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
               </PopoverTrigger>
               <PopoverContent side="right" align="end" sideOffset={12} className="w-48 p-1 rounded-2xl shadow-dropdown border border-bg-mid">
                 <div className="flex flex-col gap-1">
-                  <Button variant="ghost" className="w-full justify-start rounded-full text-sm font-normal">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-full text-sm font-normal"
+                    onClick={() => user && navigate(user.role === 'admin' ? `/admin/users/${user.id}` : `/${user.role}/settings`)}
+                  >
                     <User size={16} className="mr-2" /> Profile
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start rounded-full text-sm font-normal">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-full text-sm font-normal"
+                    onClick={() => navigate('/settings')}
+                  >
                     <Key size={16} className="mr-2" /> Password
                   </Button>
                   <div className="h-px bg-bg-mid my-1" />
@@ -252,6 +269,7 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
                     variant="ghost" 
                     className="w-full justify-start rounded-full text-sm font-normal text-red-500 hover:text-red-600 hover:bg-red-50"
                     onClick={clearAuth}
+                    data-testid="logout-btn"
                   >
                     <LogOut size={16} className="mr-2" /> Logout
                   </Button>
@@ -261,7 +279,10 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <div className="w-10 h-10 mx-auto rounded-full bg-bg-warm dark:bg-[#2d1f45] border border-bg-mid dark:border-[#3d2a5a] cursor-pointer flex items-center justify-center overflow-hidden shadow-sm hover:shadow-elevated transition-all">
+                <div 
+                  className="w-10 h-10 mx-auto rounded-full bg-bg-warm dark:bg-[#2d1f45] border border-bg-mid dark:border-[#3d2a5a] cursor-pointer flex items-center justify-center overflow-hidden shadow-sm hover:shadow-elevated transition-all"
+                  data-testid="user-profile-card"
+                >
                   <User className="text-bg-muted" size={18} />
                 </div>
               </PopoverTrigger>
@@ -271,13 +292,18 @@ export const Sidebar = ({ isOpen, onToggle }: { isOpen: boolean, onToggle: () =>
                   <div className="text-[10px] text-bg-muted truncate">{user.email}</div>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Button variant="ghost" className="w-full justify-start rounded-full text-sm font-normal">
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start rounded-full text-sm font-normal"
+                    onClick={() => user && navigate(user.role === 'admin' ? `/admin/users/${user.id}` : `/${user.role}/settings`)}
+                  >
                     <User size={16} className="mr-2" /> Profile
                   </Button>
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start rounded-full text-sm font-normal text-red-500 hover:text-red-600 hover:bg-red-50"
                     onClick={clearAuth}
+                    data-testid="logout-btn"
                   >
                     <LogOut size={16} className="mr-2" /> Logout
                   </Button>

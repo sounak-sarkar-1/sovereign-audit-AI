@@ -37,7 +37,7 @@ export const useNotifications = (params?: GetNotificationsParams, isHeader: bool
 
   return {
     ...query,
-    notifications: query.data?.data || [],
+    notifications: query.data?.notifications || [],
     meta: query.data?.meta || { unreadCount: 0, total: 0 },
     markAsRead: markAsReadMutation.mutateAsync,
     markAllAsRead: markAllAsReadMutation.mutateAsync,

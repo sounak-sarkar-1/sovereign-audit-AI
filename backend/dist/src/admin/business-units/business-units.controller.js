@@ -53,6 +53,7 @@ let AdminBusinessUnitsController = class AdminBusinessUnitsController {
 exports.AdminBusinessUnitsController = AdminBusinessUnitsController;
 __decorate([
     (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('clientId')),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.Req)()),
@@ -62,6 +63,7 @@ __decorate([
 ], AdminBusinessUnitsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, roles_decorator_1.Roles)('admin', 'manager'),
     __param(0, (0, common_1.Param)('clientId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -69,6 +71,7 @@ __decorate([
 ], AdminBusinessUnitsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Put)(':buId'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('clientId')),
     __param(1, (0, common_1.Param)('buId')),
     __param(2, (0, common_1.Body)()),
@@ -79,6 +82,7 @@ __decorate([
 ], AdminBusinessUnitsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':buId'),
+    (0, roles_decorator_1.Roles)('admin'),
     __param(0, (0, common_1.Param)('clientId')),
     __param(1, (0, common_1.Param)('buId')),
     __param(2, (0, common_1.Req)()),
@@ -89,7 +93,6 @@ __decorate([
 exports.AdminBusinessUnitsController = AdminBusinessUnitsController = __decorate([
     (0, common_1.Controller)('admin/clients/:clientId/business-units'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('admin'),
     __metadata("design:paramtypes", [business_units_service_1.AdminBusinessUnitsService])
 ], AdminBusinessUnitsController);
 //# sourceMappingURL=business-units.controller.js.map

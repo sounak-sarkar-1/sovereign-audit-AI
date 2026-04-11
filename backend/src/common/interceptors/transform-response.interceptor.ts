@@ -16,15 +16,18 @@ export class TransformResponseInterceptor implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map((response) => {
-        // If the response already has the envelope shape (e.g. paginated list), pass through
-        if (
-          response &&
-          typeof response === 'object' &&
-          'data' in response
-        ) {
+        // If it's already a success/data envelope, leave as is
+        if (response && typeof response === 'object' && 'success' in response && 'data' in response) {
           return response;
         }
-        return { data: response };
+
+        // Handle case where we only have { data, meta }
+        if (response && typeof response === 'object' && 'data' in response) {
+          return { success: true, ...response };
+        }
+
+        // Standard wrapping
+        return { success: true, data: response };
       }),
     );
   }

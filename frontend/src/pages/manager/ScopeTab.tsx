@@ -100,6 +100,10 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsManualDialogOpen(false);
       resetManualForm();
+      toast.success('Scope item saved successfully');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to save scope item');
     }
   });
 

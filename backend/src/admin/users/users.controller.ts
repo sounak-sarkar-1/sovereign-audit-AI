@@ -12,13 +12,13 @@ import {
   Req,
 } from '@nestjs/common';
 import { AdminUsersService } from './users.service';
+import { UserFilterDto } from './dto/user-filter.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole, UserStatus } from '../../database/entities/user.entity';
 
 @Controller('admin/users')
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
@@ -36,14 +36,8 @@ export class AdminUsersController {
   }
 
   @Get()
-  findAll(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('role') role?: UserRole,
-    @Query('status') status?: UserStatus,
-    @Query('search') search?: string,
-  ) {
-    return this.service.findAll({ page, limit, role, status, search });
+  findAll(@Query() query: UserFilterDto) {
+    return this.service.findAll(query);
   }
 
   @Get(':id')
