@@ -1,9 +1,9 @@
-import { 
-  Injectable, 
-  Logger, 
-  NotFoundException, 
-  UnprocessableEntityException, 
-  InternalServerErrorException 
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -13,7 +13,10 @@ import { AiModel, AiModelType } from '../../database/entities/ai-model.entity';
 import { CreateAiModelDto } from './dto/create-ai-model.dto';
 import { UpdateAiModelDto } from './dto/update-ai-model.dto';
 import { EncryptionUtils } from '../../common/utils/encryption.util';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class AdminAiModelsService {
@@ -27,15 +30,23 @@ export class AdminAiModelsService {
     private readonly auditTrailService: AuditTrailService,
     private readonly dataSource: DataSource,
   ) {
-    this.encryptionKey = this.configService.get<string>('encryption.aesKey') || '';
+    this.encryptionKey =
+      this.configService.get<string>('encryption.aesKey') || '';
     if (!this.encryptionKey) {
       this.logger.warn('AES_ENCRYPTION_KEY not found in configuration');
     }
   }
 
-  async create(createDto: CreateAiModelDto, creatorId: string, actor: { id: string, role: string, ip: string }): Promise<AiModel> {
-    const apiKeyEnc = EncryptionUtils.encrypt(createDto.apiKey, this.encryptionKey);
-    
+  async create(
+    createDto: CreateAiModelDto,
+    creatorId: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<AiModel> {
+    const apiKeyEnc = EncryptionUtils.encrypt(
+      createDto.apiKey,
+      this.encryptionKey,
+    );
+
     const { apiKey, ...rest } = createDto;
     const model = this.repository.create({
       ...rest,
@@ -73,15 +84,19 @@ export class AdminAiModelsService {
     return model;
   }
 
-  async update(id: string, updateDto: UpdateAiModelDto, actor: { id: string, role: string, ip: string }): Promise<AiModel> {
+  async update(
+    id: string,
+    updateDto: UpdateAiModelDto,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<AiModel> {
     const model = await this.findOne(id);
-    
+
     const { apiKey, ...rest } = updateDto;
-    
+
     if (apiKey) {
       model.apiKeyEnc = EncryptionUtils.encrypt(apiKey, this.encryptionKey);
     }
-    
+
     Object.assign(model, rest);
     const updatedModel = await this.repository.save(model);
 
@@ -98,7 +113,10 @@ export class AdminAiModelsService {
     return updatedModel;
   }
 
-  async activate(id: string, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async activate(
+    id: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const model = await this.findOne(id);
 
     // Atomic transaction to set target as active and all others as inactive
@@ -118,11 +136,16 @@ export class AdminAiModelsService {
     });
   }
 
-  async remove(id: string, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async remove(
+    id: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const model = await this.findOne(id);
 
     if (model.isActive) {
-      throw new UnprocessableEntityException('Cannot delete an active AI Model');
+      throw new UnprocessableEntityException(
+        'Cannot delete an active AI Model',
+      );
     }
 
     await this.repository.softRemove(model);
@@ -137,7 +160,9 @@ export class AdminAiModelsService {
     });
   }
 
-  async testConnection(id: string): Promise<{ success: boolean; message: string }> {
+  async testConnection(
+    id: string,
+  ): Promise<{ success: boolean; message: string }> {
     const model = await this.findOne(id);
     const apiKey = EncryptionUtils.decrypt(model.apiKeyEnc, this.encryptionKey);
 
@@ -146,10 +171,10 @@ export class AdminAiModelsService {
       // For this implementation, we'll try a generic keep-alive or a simple request
       // per model type if endpoints vary significantly.
       // Here we perform a simple HEAD or GET (depending on expectations)
-      
+
       const response = await axios.get(model.endpointUrl, {
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           'X-API-Key': apiKey, // For some providers
         },
         timeout: 5000,
@@ -157,12 +182,20 @@ export class AdminAiModelsService {
       });
 
       if (response.status >= 200 && response.status < 500) {
-        return { success: true, message: `Connected successfully (Status: ${response.status})` };
+        return {
+          success: true,
+          message: `Connected successfully (Status: ${response.status})`,
+        };
       } else {
-        return { success: false, message: `Connection failed with status ${response.status}` };
+        return {
+          success: false,
+          message: `Connection failed with status ${response.status}`,
+        };
       }
     } catch (error) {
-      this.logger.error(`Test connection failed for model ${id}: ${error.message}`);
+      this.logger.error(
+        `Test connection failed for model ${id}: ${error.message}`,
+      );
       return { success: false, message: `Connection error: ${error.message}` };
     }
   }

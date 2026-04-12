@@ -30,7 +30,7 @@ export class AiModel {
   @Column({
     type: 'enum',
     enum: AiModelType,
-    name: 'model_type'
+    name: 'model_type',
   })
   modelType: AiModelType;
 

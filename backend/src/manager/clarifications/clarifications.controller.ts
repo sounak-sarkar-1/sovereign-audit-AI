@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { ManagerClarificationsService } from './clarifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -29,10 +38,7 @@ export class ManagerClarificationsController {
   }
 
   @Post(':id/close')
-  close(
-    @Param('id') id: string,
-    @CurrentUser() manager: User,
-  ) {
+  close(@Param('id') id: string, @CurrentUser() manager: User) {
     return this.service.close(id, manager);
   }
 

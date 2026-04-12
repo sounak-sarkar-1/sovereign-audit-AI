@@ -6,10 +6,7 @@ import { AiJob } from '../../database/entities/ai-job.entity';
 import { AiJobsModule } from '../../shared/ai-jobs/ai-jobs.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AiJob]),
-    AiJobsModule,
-  ],
+  imports: [TypeOrmModule.forFeature([AiJob]), AiJobsModule],
   controllers: [AuditorSearchController],
   providers: [AuditorSearchService],
   exports: [AuditorSearchService],

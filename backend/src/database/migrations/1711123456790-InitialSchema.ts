@@ -5,23 +5,57 @@ export class InitialTenantSchema1711123456790 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     // 1. Create Enums
-    await queryRunner.query(`CREATE TYPE "user_role" AS ENUM ('admin','manager','auditor','client')`);
-    await queryRunner.query(`CREATE TYPE "user_status" AS ENUM ('active','inactive')`);
-    await queryRunner.query(`CREATE TYPE "ai_model_type" AS ENUM ('openai','anthropic','google','slm','open_source','other')`);
-    await queryRunner.query(`CREATE TYPE "input_method" AS ENUM ('free_text','multiple_choice')`);
-    await queryRunner.query(`CREATE TYPE "audit_status" AS ENUM ('draft','in_progress','under_manager_review','pending_client_review','closed','reopened','deleted')`);
-    await queryRunner.query(`CREATE TYPE "line_item_status" AS ENUM ('not_started','draft_saved','submitted','exception_pending','exception_approved','exception_rejected','returned')`);
-    await queryRunner.query(`CREATE TYPE "line_item_source" AS ENUM ('manual','ai_extracted','excel_imported','template')`);
-    await queryRunner.query(`CREATE TYPE "exception_status" AS ENUM ('pending','approved','rejected')`);
-    await queryRunner.query(`CREATE TYPE "file_entity_type" AS ENUM ('line_item_evidence','exception_evidence','sop_document','audit_report','exceptional_action_evidence','clarification_attachment')`);
-    await queryRunner.query(`CREATE TYPE "report_status" AS ENUM ('draft','sent_for_client_review','final')`);
-    await queryRunner.query(`CREATE TYPE "feedback_status" AS ENUM ('pending','accepted','requires_revision')`);
-    await queryRunner.query(`CREATE TYPE "clarification_status" AS ENUM ('pending','responded','closed')`);
-    await queryRunner.query(`CREATE TYPE "exceptional_action_type" AS ENUM ('reopen','delete')`);
-    await queryRunner.query(`CREATE TYPE "exceptional_request_status" AS ENUM ('pending','approved','rejected')`);
-    await queryRunner.query(`CREATE TYPE "job_type" AS ENUM ('scope_extraction','report_generation','nl_search')`);
-    await queryRunner.query(`CREATE TYPE "job_status" AS ENUM ('queued','processing','completed','failed')`);
-    await queryRunner.query(`CREATE TYPE "notification_type" AS ENUM ('user_created','audit_assigned','exception_raised','exception_approved','exception_rejected','report_ready_to_generate','report_sent_to_client','client_feedback_received','clarification_request','clarification_responded','exceptional_request_raised','exceptional_request_resolved','audit_closed')`);
+    await queryRunner.query(
+      `CREATE TYPE "user_role" AS ENUM ('admin','manager','auditor','client')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "user_status" AS ENUM ('active','inactive')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "ai_model_type" AS ENUM ('openai','anthropic','google','slm','open_source','other')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "input_method" AS ENUM ('free_text','multiple_choice')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "audit_status" AS ENUM ('draft','in_progress','under_manager_review','pending_client_review','closed','reopened','deleted')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "line_item_status" AS ENUM ('not_started','draft_saved','submitted','exception_pending','exception_approved','exception_rejected','returned')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "line_item_source" AS ENUM ('manual','ai_extracted','excel_imported','template')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "exception_status" AS ENUM ('pending','approved','rejected')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "file_entity_type" AS ENUM ('line_item_evidence','exception_evidence','sop_document','audit_report','exceptional_action_evidence','clarification_attachment')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "report_status" AS ENUM ('draft','sent_for_client_review','final')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "feedback_status" AS ENUM ('pending','accepted','requires_revision')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "clarification_status" AS ENUM ('pending','responded','closed')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "exceptional_action_type" AS ENUM ('reopen','delete')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "exceptional_request_status" AS ENUM ('pending','approved','rejected')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "job_type" AS ENUM ('scope_extraction','report_generation','nl_search')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "job_status" AS ENUM ('queued','processing','completed','failed')`,
+    );
+    await queryRunner.query(
+      `CREATE TYPE "notification_type" AS ENUM ('user_created','audit_assigned','exception_raised','exception_approved','exception_rejected','report_ready_to_generate','report_sent_to_client','client_feedback_received','clarification_request','clarification_responded','exceptional_request_raised','exceptional_request_resolved','audit_closed')`,
+    );
 
     // 2. Authentication & Users
     await queryRunner.query(`
@@ -372,8 +406,12 @@ export class InitialTenantSchema1711123456790 implements MigrationInterface {
       )
     `);
 
-    await queryRunner.query(`CREATE RULE no_update_audit_trail AS ON UPDATE TO audit_trail_logs DO INSTEAD NOTHING`);
-    await queryRunner.query(`CREATE RULE no_delete_audit_trail AS ON DELETE TO audit_trail_logs DO INSTEAD NOTHING`);
+    await queryRunner.query(
+      `CREATE RULE no_update_audit_trail AS ON UPDATE TO audit_trail_logs DO INSTEAD NOTHING`,
+    );
+    await queryRunner.query(
+      `CREATE RULE no_delete_audit_trail AS ON DELETE TO audit_trail_logs DO INSTEAD NOTHING`,
+    );
 
     // 15. AI Jobs
     await queryRunner.query(`
@@ -393,56 +431,152 @@ export class InitialTenantSchema1711123456790 implements MigrationInterface {
     `);
 
     // 16. Indexes
-    await queryRunner.query(`CREATE INDEX idx_users_email ON users(email) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_users_role ON users(role) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_rt_user ON refresh_tokens(user_id)`);
-    await queryRunner.query(`CREATE INDEX idx_rt_hash ON refresh_tokens(token_hash)`);
-    await queryRunner.query(`CREATE INDEX idx_mam_mgr ON manager_auditor_mappings(manager_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_mam_aud ON manager_auditor_mappings(auditor_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_mcm_mgr ON manager_client_mappings(manager_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_mcm_cli ON manager_client_mappings(client_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_cbu_client ON client_business_units(client_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_ai_active ON ai_models(is_active) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_atli_tpl ON audit_template_line_items(template_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_atlio_li ON audit_template_line_item_options(line_item_id)`);
-    await queryRunner.query(`CREATE INDEX idx_audits_mgr ON audits(manager_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_audits_cli ON audits(client_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_audits_status ON audits(status) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_abu_audit ON audit_business_units(audit_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_asli_audit ON audit_scope_line_items(audit_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_asli_abu ON audit_scope_line_items(audit_business_unit_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_asli_status ON audit_scope_line_items(status) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_aslio_li ON audit_scope_line_item_options(line_item_id)`);
-    await queryRunner.query(`CREATE INDEX idx_aaa_audit ON auditor_audit_assignments(audit_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_aaa_auditor ON auditor_audit_assignments(auditor_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_alia_li ON auditor_line_item_assignments(audit_scope_line_item_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_alia_aud ON auditor_line_item_assignments(auditor_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_lir_li ON line_item_responses(audit_scope_line_item_id)`);
-    await queryRunner.query(`CREATE INDEX idx_lir_aud ON line_item_responses(auditor_id)`);
-    await queryRunner.query(`CREATE INDEX idx_uf_entity ON uploaded_files(entity_type, entity_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_uf_uploader ON uploaded_files(uploaded_by) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_er_li ON exception_requests(audit_scope_line_item_id)`);
-    await queryRunner.query(`CREATE INDEX idx_er_aud ON exception_requests(auditor_id)`);
-    await queryRunner.query(`CREATE INDEX idx_er_mgr ON exception_requests(manager_id)`);
-    await queryRunner.query(`CREATE INDEX idx_er_status ON exception_requests(status)`);
-    await queryRunner.query(`CREATE INDEX idx_ar_audit ON audit_reports(audit_id)`);
-    await queryRunner.query(`CREATE INDEX idx_ar_status ON audit_reports(status)`);
-    await queryRunner.query(`CREATE INDEX idx_crf_report ON client_report_feedback(audit_report_id)`);
-    await queryRunner.query(`CREATE INDEX idx_crf_client ON client_report_feedback(client_id)`);
-    await queryRunner.query(`CREATE INDEX idx_cr_audit ON clarification_requests(audit_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_cr_client ON clarification_requests(client_id) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_cr_status ON clarification_requests(status) WHERE deleted_at IS NULL`);
-    await queryRunner.query(`CREATE INDEX idx_cres_req ON clarification_responses(clarification_request_id)`);
-    await queryRunner.query(`CREATE INDEX idx_ear_audit ON exceptional_action_requests(audit_id)`);
-    await queryRunner.query(`CREATE INDEX idx_ear_status ON exceptional_action_requests(status)`);
-    await queryRunner.query(`CREATE INDEX idx_notif_user ON notifications(user_id)`);
-    await queryRunner.query(`CREATE INDEX idx_notif_unread ON notifications(user_id, is_read) WHERE is_read = FALSE`);
-    await queryRunner.query(`CREATE INDEX idx_atl_actor ON audit_trail_logs(actor_user_id)`);
-    await queryRunner.query(`CREATE INDEX idx_atl_entity ON audit_trail_logs(entity_type, entity_id)`);
-    await queryRunner.query(`CREATE INDEX idx_atl_created ON audit_trail_logs(created_at)`);
+    await queryRunner.query(
+      `CREATE INDEX idx_users_email ON users(email) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_users_role ON users(role) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_rt_user ON refresh_tokens(user_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_rt_hash ON refresh_tokens(token_hash)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_mam_mgr ON manager_auditor_mappings(manager_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_mam_aud ON manager_auditor_mappings(auditor_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_mcm_mgr ON manager_client_mappings(manager_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_mcm_cli ON manager_client_mappings(client_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_cbu_client ON client_business_units(client_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_ai_active ON ai_models(is_active) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_atli_tpl ON audit_template_line_items(template_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_atlio_li ON audit_template_line_item_options(line_item_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_audits_mgr ON audits(manager_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_audits_cli ON audits(client_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_audits_status ON audits(status) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_abu_audit ON audit_business_units(audit_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_asli_audit ON audit_scope_line_items(audit_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_asli_abu ON audit_scope_line_items(audit_business_unit_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_asli_status ON audit_scope_line_items(status) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_aslio_li ON audit_scope_line_item_options(line_item_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_aaa_audit ON auditor_audit_assignments(audit_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_aaa_auditor ON auditor_audit_assignments(auditor_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_alia_li ON auditor_line_item_assignments(audit_scope_line_item_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_alia_aud ON auditor_line_item_assignments(auditor_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_lir_li ON line_item_responses(audit_scope_line_item_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_lir_aud ON line_item_responses(auditor_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_uf_entity ON uploaded_files(entity_type, entity_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_uf_uploader ON uploaded_files(uploaded_by) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_er_li ON exception_requests(audit_scope_line_item_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_er_aud ON exception_requests(auditor_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_er_mgr ON exception_requests(manager_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_er_status ON exception_requests(status)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_ar_audit ON audit_reports(audit_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_ar_status ON audit_reports(status)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_crf_report ON client_report_feedback(audit_report_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_crf_client ON client_report_feedback(client_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_cr_audit ON clarification_requests(audit_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_cr_client ON clarification_requests(client_id) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_cr_status ON clarification_requests(status) WHERE deleted_at IS NULL`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_cres_req ON clarification_responses(clarification_request_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_ear_audit ON exceptional_action_requests(audit_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_ear_status ON exceptional_action_requests(status)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_notif_user ON notifications(user_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_notif_unread ON notifications(user_id, is_read) WHERE is_read = FALSE`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_atl_actor ON audit_trail_logs(actor_user_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_atl_entity ON audit_trail_logs(entity_type, entity_id)`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_atl_created ON audit_trail_logs(created_at)`,
+    );
     await queryRunner.query(`CREATE INDEX idx_aj_audit ON ai_jobs(audit_id)`);
     await queryRunner.query(`CREATE INDEX idx_aj_status ON ai_jobs(status)`);
-    await queryRunner.query(`CREATE INDEX idx_aj_created_by ON ai_jobs(created_by)`);
+    await queryRunner.query(
+      `CREATE INDEX idx_aj_created_by ON ai_jobs(created_by)`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -450,27 +584,59 @@ export class InitialTenantSchema1711123456790 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE IF EXISTS "ai_jobs" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "audit_trail_logs" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "notifications" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "exceptional_action_requests" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "clarification_responses" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "clarification_requests" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "client_report_feedback" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "exceptional_action_requests" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "clarification_responses" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "clarification_requests" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "client_report_feedback" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "audit_reports" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "exception_requests" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "exception_requests" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "uploaded_files" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "line_item_responses" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "auditor_line_item_assignments" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "auditor_audit_assignments" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "audit_scope_line_item_options" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "audit_scope_line_items" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "audit_business_units" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "line_item_responses" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "auditor_line_item_assignments" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "auditor_audit_assignments" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "audit_scope_line_item_options" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "audit_scope_line_items" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "audit_business_units" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "audits" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "audit_template_line_item_options" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "audit_template_line_items" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "audit_template_line_item_options" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "audit_template_line_items" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "audit_templates" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "ai_models" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "client_business_units" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "manager_client_mappings" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "manager_auditor_mappings" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "client_business_units" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "manager_client_mappings" CASCADE`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "manager_auditor_mappings" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "refresh_tokens" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "users" CASCADE`);
 

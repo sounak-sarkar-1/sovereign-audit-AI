@@ -7,9 +7,11 @@ import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-ite
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Audit, AuditScopeLineItem, AuditBusinessUnit])],
+  imports: [
+    TypeOrmModule.forFeature([Audit, AuditScopeLineItem, AuditBusinessUnit]),
+  ],
   controllers: [ClientAuditsController],
   providers: [ClientAuditsService],
-  exports: [ClientAuditsService]
+  exports: [ClientAuditsService],
 })
 export class ClientAuditsModule {}

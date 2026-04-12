@@ -1,13 +1,13 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Put, 
-  Body, 
-  Param, 
-  Query, 
-  UseGuards, 
-  Request 
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { ManagerAuditsService } from './audits.service';
 import { AuditStatus } from '../../database/entities/audit.entity';
@@ -53,7 +53,7 @@ export class ManagerAuditsController {
   async update(
     @Param('id') id: string,
     @Body() updateDto: UpdateAuditDto,
-    @Request() req: any
+    @Request() req: any,
   ) {
     return this.auditsService.update(id, updateDto, req.user.id);
   }

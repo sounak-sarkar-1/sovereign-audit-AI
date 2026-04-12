@@ -14,11 +14,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      AiJob, 
-      AuditReport, 
-      Audit, 
-      AuditScopeLineItem, 
-      ExceptionRequest
+      AiJob,
+      AuditReport,
+      Audit,
+      AuditScopeLineItem,
+      ExceptionRequest,
     ]),
     FilesModule,
     NotificationsModule,

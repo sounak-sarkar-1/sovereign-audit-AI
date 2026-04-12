@@ -21,7 +21,6 @@ export class Tenant {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 
-
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date;
 }

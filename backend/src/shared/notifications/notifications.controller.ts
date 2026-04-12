@@ -1,4 +1,11 @@
-import { Controller, Get, Patch, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -15,7 +22,10 @@ export class NotificationsController {
   constructor(private readonly service: NotificationsService) {}
 
   @Get()
-  async findAll(@CurrentUser() user: User, @Query() query: GetNotificationsDto) {
+  async findAll(
+    @CurrentUser() user: User,
+    @Query() query: GetNotificationsDto,
+  ) {
     return await this.service.findAllForUser(user.id, query);
   }
 

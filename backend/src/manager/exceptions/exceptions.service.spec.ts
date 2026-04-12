@@ -2,12 +2,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ManagerExceptionsService } from './exceptions.service';
-import { ExceptionRequest, ExceptionStatus } from '../../database/entities/exception-request.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
+import {
+  ExceptionRequest,
+  ExceptionStatus,
+} from '../../database/entities/exception-request.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
 import { User } from '../../database/entities/user.entity';
-import { NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 
 describe('ManagerExceptionsService', () => {
   let service: ManagerExceptionsService;
@@ -43,8 +52,14 @@ describe('ManagerExceptionsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ManagerExceptionsService,
-        { provide: getRepositoryToken(ExceptionRequest), useValue: exceptionRepo },
-        { provide: getRepositoryToken(AuditScopeLineItem), useValue: lineItemRepo },
+        {
+          provide: getRepositoryToken(ExceptionRequest),
+          useValue: exceptionRepo,
+        },
+        {
+          provide: getRepositoryToken(AuditScopeLineItem),
+          useValue: lineItemRepo,
+        },
         { provide: NotificationsService, useValue: notificationsService },
         { provide: AuditTrailService, useValue: auditTrailService },
         { provide: DataSource, useValue: dataSource },
@@ -64,17 +79,25 @@ describe('ManagerExceptionsService', () => {
         id: 'ex-1',
         status: ExceptionStatus.PENDING,
         auditorId: mockAuditorId,
-        auditScopeLineItem: { id: 'li-1', name: 'Line Item 1', auditId: mockAuditId },
+        auditScopeLineItem: {
+          id: 'li-1',
+          name: 'Line Item 1',
+          auditId: mockAuditId,
+        },
       };
 
       exceptionRepo.findOne.mockResolvedValue(mockException);
-      
+
       const saveFn = jest.fn();
       dataSource.transaction.mockImplementation(async (cb) => {
         await cb({ save: saveFn });
       });
 
-      await service.approve('ex-1', { managerComment: 'Looks good' }, mockManager);
+      await service.approve(
+        'ex-1',
+        { managerComment: 'Looks good' },
+        mockManager,
+      );
 
       expect(mockException.status).toBe(ExceptionStatus.APPROVED);
       expect(mockException.managerComment).toBe('Looks good');
@@ -85,12 +108,18 @@ describe('ManagerExceptionsService', () => {
 
     it('should throw NotFoundException if exception does not exist', async () => {
       exceptionRepo.findOne.mockResolvedValue(null);
-      await expect(service.approve('ex-1', {}, mockManager)).rejects.toThrow(NotFoundException);
+      await expect(service.approve('ex-1', {}, mockManager)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw UnprocessableEntityException if exception is not pending', async () => {
-      exceptionRepo.findOne.mockResolvedValue({ status: ExceptionStatus.APPROVED });
-      await expect(service.approve('ex-1', {}, mockManager)).rejects.toThrow(UnprocessableEntityException);
+      exceptionRepo.findOne.mockResolvedValue({
+        status: ExceptionStatus.APPROVED,
+      });
+      await expect(service.approve('ex-1', {}, mockManager)).rejects.toThrow(
+        UnprocessableEntityException,
+      );
     });
   });
 
@@ -100,17 +129,25 @@ describe('ManagerExceptionsService', () => {
         id: 'ex-1',
         status: ExceptionStatus.PENDING,
         auditorId: mockAuditorId,
-        auditScopeLineItem: { id: 'li-1', name: 'Line Item 1', auditId: mockAuditId },
+        auditScopeLineItem: {
+          id: 'li-1',
+          name: 'Line Item 1',
+          auditId: mockAuditId,
+        },
       };
 
       exceptionRepo.findOne.mockResolvedValue(mockException);
-      
+
       const saveFn = jest.fn();
       dataSource.transaction.mockImplementation(async (cb) => {
         await cb({ save: saveFn });
       });
 
-      await service.reject('ex-1', { managerComment: 'Not enough evidence' }, mockManager);
+      await service.reject(
+        'ex-1',
+        { managerComment: 'Not enough evidence' },
+        mockManager,
+      );
 
       expect(mockException.status).toBe(ExceptionStatus.REJECTED);
       expect(saveFn).toHaveBeenCalled();

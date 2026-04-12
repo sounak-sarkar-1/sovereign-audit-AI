@@ -14,7 +14,10 @@ import { AuditScopeLineItem } from './audit-scope-line-item.entity';
 import { AuditScopeLineItemOption } from './audit-scope-line-item-option.entity';
 
 @Entity('line_item_responses')
-@Index(['auditScopeLineItemId', 'auditorId'], { unique: true, where: '"deleted_at" IS NULL' })
+@Index(['auditScopeLineItemId', 'auditorId'], {
+  unique: true,
+  where: '"deleted_at" IS NULL',
+})
 export class LineItemResponse {
   @PrimaryGeneratedColumn('uuid')
   id: string;

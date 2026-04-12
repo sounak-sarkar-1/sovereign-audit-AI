@@ -1,12 +1,24 @@
-import { Injectable, Logger, UnprocessableEntityException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  UnprocessableEntityException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
-import { ExceptionalActionRequest, ExceptionalActionType, ExceptionalRequestStatus } from '../../database/entities/exceptional-action-request.entity';
+import {
+  ExceptionalActionRequest,
+  ExceptionalActionType,
+  ExceptionalRequestStatus,
+} from '../../database/entities/exceptional-action-request.entity';
 import { User, UserRole } from '../../database/entities/user.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class ManagerExceptionalRequestsService {
@@ -29,12 +41,18 @@ export class ManagerExceptionalRequestsService {
 
     // 1. Validate actionType vs status
     if (dto.actionType === ExceptionalActionType.DELETE) {
-      if (![AuditStatus.DRAFT, AuditStatus.IN_PROGRESS].includes(audit.status)) {
-        throw new UnprocessableEntityException('Deletion can only be requested for draft or in-progress audits');
+      if (
+        ![AuditStatus.DRAFT, AuditStatus.IN_PROGRESS].includes(audit.status)
+      ) {
+        throw new UnprocessableEntityException(
+          'Deletion can only be requested for draft or in-progress audits',
+        );
       }
     } else if (dto.actionType === ExceptionalActionType.REOPEN) {
       if (audit.status !== AuditStatus.CLOSED) {
-        throw new UnprocessableEntityException('Reopening can only be requested for closed audits');
+        throw new UnprocessableEntityException(
+          'Reopening can only be requested for closed audits',
+        );
       }
     }
 
@@ -45,7 +63,8 @@ export class ManagerExceptionalRequestsService {
     if (existing) {
       throw new UnprocessableEntityException({
         code: 'BUSINESS_RULE_ERROR',
-        message: 'A pending exceptional action request already exists for this audit',
+        message:
+          'A pending exceptional action request already exists for this audit',
       });
     }
 

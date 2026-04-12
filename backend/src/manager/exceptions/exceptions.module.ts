@@ -10,7 +10,11 @@ import { ExceptionComment } from '../../database/entities/exception-comment.enti
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ExceptionRequest, AuditScopeLineItem, ExceptionComment]),
+    TypeOrmModule.forFeature([
+      ExceptionRequest,
+      AuditScopeLineItem,
+      ExceptionComment,
+    ]),
     NotificationsModule,
     AuditTrailModule,
   ],

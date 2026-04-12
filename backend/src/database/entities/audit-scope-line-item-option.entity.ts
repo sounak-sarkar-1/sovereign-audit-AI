@@ -16,7 +16,9 @@ export class AuditScopeLineItemOption {
   @Column({ name: 'line_item_id', type: 'uuid' })
   lineItemId: string;
 
-  @ManyToOne(() => AuditScopeLineItem, (lineItem) => lineItem.options, { onDelete: 'CASCADE' })
+  @ManyToOne(() => AuditScopeLineItem, (lineItem) => lineItem.options, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'line_item_id' })
   lineItem: AuditScopeLineItem;
 

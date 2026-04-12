@@ -16,7 +16,9 @@ export class AuditTemplateOption {
   @Column({ name: 'line_item_id', type: 'uuid' })
   lineItemId: string;
 
-  @ManyToOne(() => AuditTemplateLineItem, (item) => item.options, { onDelete: 'CASCADE' })
+  @ManyToOne(() => AuditTemplateLineItem, (item) => item.options, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'line_item_id' })
   lineItem: AuditTemplateLineItem;
 

@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsUUID, IsBoolean, ValidateIf } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsUUID,
+  IsBoolean,
+  ValidateIf,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class UpdateResponseDto {

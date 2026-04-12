@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AdminAuditsService } from './audits.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -27,9 +21,12 @@ export class AdminAuditsController {
   @Get('export')
   async exportCsv(@Query() filters: AuditFilterDto, @Res() res: Response) {
     const csvContent = await this.service.exportCsv(filters);
-    
+
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename=audits-export.csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=audits-export.csv',
+    );
     res.status(200).send(csvContent);
   }
 }

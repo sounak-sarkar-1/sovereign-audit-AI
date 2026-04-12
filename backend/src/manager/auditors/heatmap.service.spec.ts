@@ -25,7 +25,13 @@ describe('HeatmapService', () => {
           provide: getRepositoryToken(ManagerAuditorMapping),
           useValue: {
             find: jest.fn().mockResolvedValue([
-              { auditor: { id: 'aud-1', fullName: 'Auditor 1', email: 'aud1@test.com' } }
+              {
+                auditor: {
+                  id: 'aud-1',
+                  fullName: 'Auditor 1',
+                  email: 'aud1@test.com',
+                },
+              },
             ]),
           },
         },
@@ -33,15 +39,15 @@ describe('HeatmapService', () => {
           provide: getRepositoryToken(AuditorAuditAssignment),
           useValue: {
             find: jest.fn().mockResolvedValue([
-              { 
-                auditorId: 'aud-1', 
+              {
+                auditorId: 'aud-1',
                 auditId: 'audit-1',
                 audit: { id: 'audit-1', name: 'Audit 1' },
                 auditBusinessUnitId: 'abu-1',
-                auditBusinessUnit: { 
-                  businessUnit: { name: 'BU 1' } 
-                }
-              }
+                auditBusinessUnit: {
+                  businessUnit: { name: 'BU 1' },
+                },
+              },
             ]),
           },
         },

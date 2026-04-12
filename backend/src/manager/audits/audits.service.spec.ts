@@ -9,8 +9,15 @@ import { ManagerClientMapping } from '../../database/entities/manager-client-map
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { BusinessUnit } from '../../database/entities/business-unit.entity';
 import { ExceptionalActionRequest } from '../../database/entities/exceptional-action-request.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
-import { BadRequestException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 
 describe('ManagerAuditsService', () => {
   let service: ManagerAuditsService;
@@ -149,21 +156,25 @@ describe('ManagerAuditsService', () => {
 
   describe('update', () => {
     const updateDto = { name: 'Updated name' };
-    
+
     it('should update audit and log action', async () => {
       auditRepo.findOne.mockResolvedValue(mockAudit);
       auditRepo.save.mockResolvedValue({ ...mockAudit, ...updateDto });
       // mock findOne which is called at the end of update()
-      jest.spyOn(service, 'findOne').mockResolvedValue({ ...mockAudit, ...updateDto } as any);
+      jest
+        .spyOn(service, 'findOne')
+        .mockResolvedValue({ ...mockAudit, ...updateDto } as any);
 
       const auditTrailService = module.get(AuditTrailService);
       const logSpy = jest.spyOn(auditTrailService, 'log');
 
       await service.update('audit-1', updateDto, 'mgr-1');
 
-      expect(logSpy).toHaveBeenCalledWith(expect.objectContaining({
-        action: AuditAction.AUDIT_UPDATED,
-      }));
+      expect(logSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: AuditAction.AUDIT_UPDATED,
+        }),
+      );
     });
   });
 
@@ -178,15 +189,17 @@ describe('ManagerAuditsService', () => {
 
     it('should throw BadRequestException if client not mapped', async () => {
       managerClientRepo.findOne.mockResolvedValue(null);
-      await expect(service.create(createDto, 'mgr-1')).rejects.toThrow(BadRequestException);
+      await expect(service.create(createDto, 'mgr-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should create audit and link BUs', async () => {
       managerClientRepo.findOne.mockResolvedValue({ id: 'mapping-1' });
       auditRepo.findOne.mockResolvedValue(mockAudit); // for the final findOne call
-      
+
       const result = await service.create(createDto, 'mgr-1');
-      
+
       expect(queryRunner.startTransaction).toHaveBeenCalled();
       expect(queryRunner.commitTransaction).toHaveBeenCalled();
       expect(result).toBeDefined();
@@ -197,23 +210,27 @@ describe('ManagerAuditsService', () => {
     it('should throw BadRequestException if no scope items', async () => {
       auditRepo.findOne.mockResolvedValue(mockAudit);
       dataSource.query.mockResolvedValue([{ count: '0' }]);
-      
-      await expect(service.start('audit-1', 'mgr-1')).rejects.toThrow(BadRequestException);
+
+      await expect(service.start('audit-1', 'mgr-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException if no auditors assigned', async () => {
       auditRepo.findOne.mockResolvedValue(mockAudit);
       dataSource.query.mockResolvedValue([{ count: '5' }]);
       assignmentRepo.count.mockResolvedValue(0);
-      
-      await expect(service.start('audit-1', 'mgr-1')).rejects.toThrow(BadRequestException);
+
+      await expect(service.start('audit-1', 'mgr-1')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should transition to in_progress', async () => {
       auditRepo.findOne.mockResolvedValue(mockAudit);
       dataSource.query.mockResolvedValue([{ count: '5' }]);
       assignmentRepo.count.mockResolvedValue(1);
-      
+
       const result = await service.start('audit-1', 'mgr-1');
       expect(mockAudit.status).toBe(AuditStatus.IN_PROGRESS);
     });
@@ -223,23 +240,30 @@ describe('ManagerAuditsService', () => {
     it('should throw UnprocessableEntityException if audit is not closed', async () => {
       const draftAudit = { ...mockAudit, status: AuditStatus.DRAFT };
       auditRepo.findOne.mockResolvedValue(draftAudit);
-      
-      await expect(service.archive('audit-1', 'mgr-1')).rejects.toThrow(UnprocessableEntityException);
+
+      await expect(service.archive('audit-1', 'mgr-1')).rejects.toThrow(
+        UnprocessableEntityException,
+      );
     });
 
     it('should transition to archived if audit is closed', async () => {
       const closedAudit = { ...mockAudit, status: AuditStatus.CLOSED };
       auditRepo.findOne.mockResolvedValue(closedAudit);
       auditRepo.save.mockImplementation((val) => Promise.resolve(val));
-      jest.spyOn(service, 'findOne').mockResolvedValue({ ...closedAudit, status: AuditStatus.ARCHIVED } as any);
-      
+      jest.spyOn(service, 'findOne').mockResolvedValue({
+        ...closedAudit,
+        status: AuditStatus.ARCHIVED,
+      } as any);
+
       const result = await service.archive('audit-1', 'mgr-1');
       expect(result.status).toBe(AuditStatus.ARCHIVED);
-      
+
       const auditTrailService = module.get(AuditTrailService);
-      expect(auditTrailService.log).toHaveBeenCalledWith(expect.objectContaining({
-        action: AuditAction.AUDIT_ARCHIVED,
-      }));
+      expect(auditTrailService.log).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: AuditAction.AUDIT_ARCHIVED,
+        }),
+      );
     });
   });
 });

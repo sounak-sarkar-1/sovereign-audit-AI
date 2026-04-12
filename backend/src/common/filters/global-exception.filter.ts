@@ -35,16 +35,22 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let errors: unknown[] | undefined;
 
     // Priority: Body message > Exception message > Default
-    const exceptionMessage = (exception as any)?.message || (typeof exception === 'string' ? exception : undefined);
+    const exceptionMessage =
+      (exception as any)?.message ||
+      (typeof exception === 'string' ? exception : undefined);
 
-    if (exception instanceof HttpException || (exception && typeof (exception as any).getStatus === 'function')) {
+    if (
+      exception instanceof HttpException ||
+      (exception && typeof (exception as any).getStatus === 'function')
+    ) {
       const httpException = exception as HttpException;
       statusCode = httpException.getStatus();
       const exceptionResponse = httpException.getResponse();
 
       if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
         const body = exceptionResponse as Record<string, unknown>;
-        errorCode = (body.errorCode as string) || this.statusToErrorCode(statusCode);
+        errorCode =
+          (body.errorCode as string) || this.statusToErrorCode(statusCode);
         message = (body.message as string) || exceptionMessage || message;
         errors = body.errors as unknown[] | undefined;
       } else {
@@ -53,10 +59,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     } else if (exception instanceof Error) {
       message = exception.message;
-      this.logger.error(`Unhandled exception: ${exception.message}`, exception.stack);
+      this.logger.error(
+        `Unhandled exception: ${exception.message}`,
+        exception.stack,
+      );
     } else {
       message = exceptionMessage || message;
-      this.logger.error(`Unknown exception type caught: ${typeof exception}`, exception);
+      this.logger.error(
+        `Unknown exception type caught: ${typeof exception}`,
+        exception,
+      );
     }
 
     response.status(statusCode).json({

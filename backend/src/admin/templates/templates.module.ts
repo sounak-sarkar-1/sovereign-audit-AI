@@ -9,7 +9,11 @@ import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuditTemplate, AuditTemplateLineItem, AuditTemplateOption]),
+    TypeOrmModule.forFeature([
+      AuditTemplate,
+      AuditTemplateLineItem,
+      AuditTemplateOption,
+    ]),
     AuditTrailModule,
   ],
   controllers: [TemplatesController],

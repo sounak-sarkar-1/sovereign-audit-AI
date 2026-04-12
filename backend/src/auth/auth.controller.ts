@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Res, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Req,
+  UseGuards,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { LoginDto } from './dto/login.dto';
@@ -6,13 +15,19 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @Post('login')
-  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const { accessToken, refreshToken, user } = await this.authService.login(loginDto);
-    
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken, refreshToken, user } =
+      await this.authService.login(loginDto);
+
     this.setRefreshTokenCookie(res, refreshToken);
 
     return {
@@ -25,14 +40,18 @@ export class AuthController {
   }
 
   @Post('refresh')
-  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const refreshToken = req.cookies['refresh_token'];
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token missing');
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = await this.authService.refresh(refreshToken);
-    
+    const { accessToken, refreshToken: newRefreshToken } =
+      await this.authService.refresh(refreshToken);
+
     this.setRefreshTokenCookie(res, newRefreshToken);
 
     return {
@@ -50,7 +69,7 @@ export class AuthController {
     if (refreshToken) {
       await this.authService.logout(refreshToken);
     }
-    
+
     res.clearCookie('refresh_token');
 
     return {
@@ -61,9 +80,12 @@ export class AuthController {
 
   @Post('change-password')
   @UseGuards(JwtAuthGuard)
-  async changePassword(@Req() req: any, @Body() changePasswordDto: ChangePasswordDto) {
+  async changePassword(
+    @Req() req: any,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
     await this.authService.changePassword(req.user.id, changePasswordDto);
-    
+
     return {
       success: true,
       message: 'Password changed successfully',

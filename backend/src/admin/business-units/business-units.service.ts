@@ -1,11 +1,19 @@
-import { Injectable, Logger, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not, In } from 'typeorm';
 import { BusinessUnit } from '../../database/entities/business-unit.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { CreateBusinessUnitDto } from './dto/create-business-unit.dto';
 import { UpdateBusinessUnitDto } from './dto/update-business-unit.dto';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class AdminBusinessUnitsService {
@@ -19,7 +27,11 @@ export class AdminBusinessUnitsService {
     private readonly auditTrailService: AuditTrailService,
   ) {}
 
-  async create(clientId: string, createDto: CreateBusinessUnitDto, actor: { id: string, role: string, ip: string }): Promise<BusinessUnit> {
+  async create(
+    clientId: string,
+    createDto: CreateBusinessUnitDto,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<BusinessUnit> {
     const unit = this.repository.create({
       ...createDto,
       clientId,
@@ -49,12 +61,19 @@ export class AdminBusinessUnitsService {
   async findOne(clientId: string, id: string): Promise<BusinessUnit> {
     const unit = await this.repository.findOne({ where: { id, clientId } });
     if (!unit) {
-      throw new NotFoundException(`Business Unit with ID "${id}" not found for this client`);
+      throw new NotFoundException(
+        `Business Unit with ID "${id}" not found for this client`,
+      );
     }
     return unit;
   }
 
-  async update(clientId: string, id: string, updateDto: UpdateBusinessUnitDto, actor: { id: string, role: string, ip: string }): Promise<BusinessUnit> {
+  async update(
+    clientId: string,
+    id: string,
+    updateDto: UpdateBusinessUnitDto,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<BusinessUnit> {
     const unit = await this.findOne(clientId, id);
     Object.assign(unit, updateDto);
     const updatedUnit = await this.repository.save(unit);
@@ -72,16 +91,23 @@ export class AdminBusinessUnitsService {
     return updatedUnit;
   }
 
-  async remove(clientId: string, id: string, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async remove(
+    clientId: string,
+    id: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const unit = await this.findOne(clientId, id);
 
     // Check for active audits
     // Business rule: block if BU is part of an active audit (status not closed/deleted)
     // We need to check AuditBusinessUnit relation
-    const activeAuditsCount = await this.auditRepository.createQueryBuilder('audit')
+    const activeAuditsCount = await this.auditRepository
+      .createQueryBuilder('audit')
       .innerJoin('audit_business_units', 'abu', 'abu.audit_id = audit.id')
       .where('abu.business_unit_id = :buId', { buId: id })
-      .andWhere('audit.status NOT IN (:...statuses)', { statuses: [AuditStatus.CLOSED, AuditStatus.DELETED] })
+      .andWhere('audit.status NOT IN (:...statuses)', {
+        statuses: [AuditStatus.CLOSED, AuditStatus.DELETED],
+      })
       .getCount();
 
     if (activeAuditsCount > 0) {

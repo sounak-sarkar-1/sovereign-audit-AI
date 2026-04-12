@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Notification, NotificationType } from '../../database/entities/notification.entity';
+import {
+  Notification,
+  NotificationType,
+} from '../../database/entities/notification.entity';
 import { GetNotificationsDto } from './dto/get-notifications.dto';
 
 interface CreateNotificationDto {
@@ -28,11 +31,21 @@ export class NotificationsService {
     return await this.repository.save(notification);
   }
 
-  async findAllForUser(userId: string, query: GetNotificationsDto): Promise<{ data: Notification[], meta: any }> {
-    const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'DESC', isRead } = query;
+  async findAllForUser(
+    userId: string,
+    query: GetNotificationsDto,
+  ): Promise<{ data: Notification[]; meta: any }> {
+    const {
+      page = 1,
+      limit = 20,
+      sortBy = 'createdAt',
+      sortOrder = 'DESC',
+      isRead,
+    } = query;
     const skip = (page - 1) * limit;
 
-    const targetUserId = typeof userId === 'object' ? (userId as any).id : userId;
+    const targetUserId =
+      typeof userId === 'object' ? (userId as any).id : userId;
     const where: any = { userId: targetUserId };
     if (isRead !== undefined) {
       where.isRead = isRead;
@@ -67,7 +80,10 @@ export class NotificationsService {
   }
 
   async markAllAsRead(userId: string): Promise<number> {
-    const result = await this.repository.update({ userId, isRead: false }, { isRead: true });
+    const result = await this.repository.update(
+      { userId, isRead: false },
+      { isRead: true },
+    );
     return result.affected || 0;
   }
 }

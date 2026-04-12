@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Put, Param, Query, UseGuards, Res, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Param,
+  Query,
+  UseGuards,
+  Res,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ManagerReportsService } from './reports.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -16,10 +27,7 @@ export class ManagerReportsController {
   constructor(private readonly service: ManagerReportsService) {}
 
   @Post('generate')
-  generate(
-    @Param('id') auditId: string,
-    @CurrentUser() manager: User,
-  ) {
+  generate(@Param('id') auditId: string, @CurrentUser() manager: User) {
     return this.service.generate(auditId, manager);
   }
 

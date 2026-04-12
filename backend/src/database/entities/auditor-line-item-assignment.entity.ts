@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { AuditScopeLineItem } from './audit-scope-line-item.entity';
 

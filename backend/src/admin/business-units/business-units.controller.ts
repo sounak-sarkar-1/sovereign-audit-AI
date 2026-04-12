@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AdminBusinessUnitsService } from './business-units.service';
 import { CreateBusinessUnitDto } from './dto/create-business-unit.dto';
 import { UpdateBusinessUnitDto } from './dto/update-business-unit.dto';
@@ -17,7 +27,7 @@ export class AdminBusinessUnitsController {
   async create(
     @Param('clientId') clientId: string,
     @Body() dto: CreateBusinessUnitDto,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return await this.service.create(clientId, dto, {
       id: req.user.id,
@@ -38,7 +48,7 @@ export class AdminBusinessUnitsController {
     @Param('clientId') clientId: string,
     @Param('buId') buId: string,
     @Body() dto: UpdateBusinessUnitDto,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return await this.service.update(clientId, buId, dto, {
       id: req.user.id,
@@ -52,7 +62,7 @@ export class AdminBusinessUnitsController {
   async remove(
     @Param('clientId') clientId: string,
     @Param('buId') buId: string,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return await this.service.remove(clientId, buId, {
       id: req.user.id,

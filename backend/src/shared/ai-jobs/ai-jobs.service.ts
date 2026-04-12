@@ -34,10 +34,13 @@ export class AiJobsService implements OnModuleInit, OnModuleDestroy {
     try {
       this.logger.log(`Initializing PgBoss...`);
       this.boss = new PgBoss(dbUrl);
-      this.boss.on('error', (error) => this.logger.error(`PgBoss Error: ${error.message}`, error.stack));
-      
+      this.boss.on('error', (error) =>
+        this.logger.error(`PgBoss Error: ${error.message}`, error.stack),
+      );
+
       this.logger.log('Starting PgBoss in background...');
-      this.boss.start()
+      this.boss
+        .start()
         .then(async () => {
           this.logger.log('PgBoss started successfully, creating queues...');
           await this.boss.createQueue('scope-extraction');
@@ -46,11 +49,16 @@ export class AiJobsService implements OnModuleInit, OnModuleDestroy {
           this.resolveReady();
         })
         .catch((err) => {
-          this.logger.error(`Failed to start PgBoss: ${err.message}`, err.stack);
+          this.logger.error(
+            `Failed to start PgBoss: ${err.message}`,
+            err.stack,
+          );
         });
-        
     } catch (error) {
-      this.logger.error(`Critical PgBoss Initialization Failure: ${error.message}`, error.stack);
+      this.logger.error(
+        `Critical PgBoss Initialization Failure: ${error.message}`,
+        error.stack,
+      );
     }
   }
 

@@ -8,6 +8,8 @@ export class ApproveExceptionDto {
 
 export class RejectExceptionDto {
   @IsString()
-  @MinLength(10, { message: 'Manager comment must be at least 10 characters long' })
+  @MinLength(10, {
+    message: 'Manager comment must be at least 10 characters long',
+  })
   managerComment: string;
 }

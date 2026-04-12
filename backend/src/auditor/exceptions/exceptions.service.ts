@@ -1,16 +1,31 @@
-import { Injectable, Logger, NotFoundException, BadRequestException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
 import { Audit } from '../../database/entities/audit.entity';
 import { User } from '../../database/entities/user.entity';
-import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
+import {
+  UploadedFile,
+  FileEntityType,
+} from '../../database/entities/uploaded-file.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { ExceptionComment } from '../../database/entities/exception-comment.entity';
 import { CreateExceptionDto } from './dto/create-exception.dto';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 import { NotificationType } from '../../database/entities/notification.entity';
 
 @Injectable()
@@ -59,17 +74,25 @@ export class AuditorExceptionsService {
     const lineItem = await this.lineItemRepo.findOne({
       where: { id: dto.lineItemId, auditId },
     });
-    if (!lineItem) throw new NotFoundException('Line item not found in this audit');
+    if (!lineItem)
+      throw new NotFoundException('Line item not found in this audit');
 
-    if (lineItem.status === LineItemStatus.SUBMITTED || lineItem.status === LineItemStatus.EXCEPTION_APPROVED) {
-      throw new UnprocessableEntityException('Line item is already submitted or approved');
+    if (
+      lineItem.status === LineItemStatus.SUBMITTED ||
+      lineItem.status === LineItemStatus.EXCEPTION_APPROVED
+    ) {
+      throw new UnprocessableEntityException(
+        'Line item is already submitted or approved',
+      );
     }
 
     const existingRequest = await this.exceptionRepo.findOne({
       where: { auditScopeLineItemId: dto.lineItemId, status: In(['pending']) },
     });
     if (existingRequest) {
-      throw new UnprocessableEntityException('A pending exception request already exists for this line item');
+      throw new UnprocessableEntityException(
+        'A pending exception request already exists for this line item',
+      );
     }
 
     const exception = this.exceptionRepo.create({
@@ -83,10 +106,15 @@ export class AuditorExceptionsService {
 
     // Link evidence files if provided
     if (dto.evidenceFileIds && dto.evidenceFileIds.length > 0) {
-      this.logger.log(`Linking ${dto.evidenceFileIds.length} files to exception ${exception.id}`);
+      this.logger.log(
+        `Linking ${dto.evidenceFileIds.length} files to exception ${exception.id}`,
+      );
       await this.fileRepo.update(
-        { id: In(dto.evidenceFileIds), entityType: FileEntityType.EXCEPTION_EVIDENCE },
-        { entityId: exception.id }
+        {
+          id: In(dto.evidenceFileIds),
+          entityType: FileEntityType.EXCEPTION_EVIDENCE,
+        },
+        { entityId: exception.id },
       );
     }
 
@@ -135,4 +163,3 @@ export class AuditorExceptionsService {
     return this.commentRepo.save(comment);
   }
 }
-

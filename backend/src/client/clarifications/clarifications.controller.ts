@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request, Query, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { ClientClarificationsService } from './clarifications.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -16,7 +26,10 @@ export class ClientClarificationsController {
   constructor(private readonly service: ClientClarificationsService) {}
 
   @Get()
-  async findAll(@CurrentUser('id') clientId: string, @Query('status') status?: ClarificationStatus) {
+  async findAll(
+    @CurrentUser('id') clientId: string,
+    @Query('status') status?: ClarificationStatus,
+  ) {
     return this.service.findAll(clientId, status);
   }
 

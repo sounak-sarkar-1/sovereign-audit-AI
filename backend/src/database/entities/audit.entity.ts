@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 
 export enum AuditStatus {
@@ -47,7 +56,11 @@ export class Audit {
   @Column({ name: 'start_date', type: 'timestamptz', nullable: true })
   startDate: Date;
 
-  @Column({ name: 'expected_completion_date', type: 'timestamptz', nullable: true })
+  @Column({
+    name: 'expected_completion_date',
+    type: 'timestamptz',
+    nullable: true,
+  })
   expectedCompletionDate: Date;
 
   @CreateDateColumn({ name: 'created_at' })

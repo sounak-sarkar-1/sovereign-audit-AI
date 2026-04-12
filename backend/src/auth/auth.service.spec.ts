@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UnauthorizedException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AdminUsersService } from '../admin/users/users.service';
 import { User, UserStatus, UserRole } from '../database/entities/user.entity';
@@ -81,9 +85,14 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should return tokens and user info on valid credentials', async () => {
       jest.spyOn(usersService, 'findByEmail').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
 
-      const result = await service.login({ email: 'test@example.com', password: 'password123' });
+      const result = await service.login({
+        email: 'test@example.com',
+        password: 'password123',
+      });
 
       expect(result).toHaveProperty('accessToken');
       expect(result).toHaveProperty('refreshToken');
@@ -93,43 +102,59 @@ describe('AuthService', () => {
     it('should throw UnauthorizedException on invalid email', async () => {
       jest.spyOn(usersService, 'findByEmail').mockResolvedValue(null);
 
-      await expect(service.login({ email: 'wrong@example.com', password: 'password' }))
-        .rejects.toThrow(UnauthorizedException);
+      await expect(
+        service.login({ email: 'wrong@example.com', password: 'password' }),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw ForbiddenException for inactive users', async () => {
-      jest.spyOn(usersService, 'findByEmail').mockResolvedValue({ ...mockUser, status: UserStatus.INACTIVE });
+      jest
+        .spyOn(usersService, 'findByEmail')
+        .mockResolvedValue({ ...mockUser, status: UserStatus.INACTIVE });
 
-      await expect(service.login({ email: 'test@example.com', password: 'password' }))
-        .rejects.toThrow(ForbiddenException);
+      await expect(
+        service.login({ email: 'test@example.com', password: 'password' }),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
   describe('changePassword', () => {
     it('should successfully change password and clear isFirstLogin', async () => {
-      jest.spyOn(userRepository, 'findOne').mockResolvedValue({ ...mockUser, isFirstLogin: true });
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
-      jest.spyOn(bcrypt, 'hash').mockImplementation(() => Promise.resolve('newHashedPassword'));
+      jest
+        .spyOn(userRepository, 'findOne')
+        .mockResolvedValue({ ...mockUser, isFirstLogin: true });
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockImplementation(() => Promise.resolve('newHashedPassword'));
 
       await service.changePassword('user-uuid', {
         currentPassword: 'oldPassword',
         newPassword: 'NewPassword123!',
       });
 
-      expect(userRepository.save).toHaveBeenCalledWith(expect.objectContaining({
-        isFirstLogin: false,
-        passwordHash: 'newHashedPassword',
-      }));
+      expect(userRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isFirstLogin: false,
+          passwordHash: 'newHashedPassword',
+        }),
+      );
     });
 
     it('should throw BadRequestException on weak password', async () => {
       jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
 
-      await expect(service.changePassword('user-uuid', {
-        currentPassword: 'oldPassword',
-        newPassword: 'weak',
-      })).rejects.toThrow(BadRequestException);
+      await expect(
+        service.changePassword('user-uuid', {
+          currentPassword: 'oldPassword',
+          newPassword: 'weak',
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });

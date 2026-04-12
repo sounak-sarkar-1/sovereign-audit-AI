@@ -1,14 +1,25 @@
-import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ClarificationRequest, ClarificationStatus } from '../../database/entities/clarification-request.entity';
+import {
+  ClarificationRequest,
+  ClarificationStatus,
+} from '../../database/entities/clarification-request.entity';
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { ClarificationResponse } from '../../database/entities/clarification-response.entity';
 import { NotificationType } from '../../database/entities/notification.entity';
 import { CreateClarificationDto } from './dto/create-clarification.dto';
 import { User } from '../../database/entities/user.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class ManagerClarificationsService {
@@ -28,7 +39,7 @@ export class ManagerClarificationsService {
   async respond(id: string, message: string, manager: User) {
     const clarification = await this.clarificationRepo.findOne({
       where: { id },
-      relations: ['audit']
+      relations: ['audit'],
     });
     if (!clarification) throw new NotFoundException('Thread not found');
     if (clarification.status === ClarificationStatus.CLOSED) {
@@ -71,7 +82,8 @@ export class ManagerClarificationsService {
   }
 
   async findAll(status?: ClarificationStatus, manager?: User) {
-    const query = this.clarificationRepo.createQueryBuilder('cr')
+    const query = this.clarificationRepo
+      .createQueryBuilder('cr')
       .leftJoinAndSelect('cr.audit', 'audit')
       .leftJoinAndSelect('cr.client', 'client')
       .leftJoinAndSelect('cr.responses', 'responses')
@@ -91,7 +103,13 @@ export class ManagerClarificationsService {
   async findOne(id: string) {
     const clarification = await this.clarificationRepo.findOne({
       where: { id },
-      relations: ['audit', 'client', 'responses', 'responses.user', 'relatedException'],
+      relations: [
+        'audit',
+        'client',
+        'responses',
+        'responses.user',
+        'relatedException',
+      ],
       order: { responses: { createdAt: 'ASC' } },
     });
 
@@ -103,7 +121,9 @@ export class ManagerClarificationsService {
   }
 
   async close(id: string, manager: User) {
-    const clarification = await this.clarificationRepo.findOne({ where: { id } });
+    const clarification = await this.clarificationRepo.findOne({
+      where: { id },
+    });
     if (!clarification) {
       throw new NotFoundException('Clarification thread not found');
     }
@@ -125,7 +145,9 @@ export class ManagerClarificationsService {
 
   async create(dto: CreateClarificationDto, manager: User) {
     if (dto.relatedExceptionId) {
-      const exception = await this.exceptionRepo.findOne({ where: { id: dto.relatedExceptionId } });
+      const exception = await this.exceptionRepo.findOne({
+        where: { id: dto.relatedExceptionId },
+      });
       if (!exception) {
         throw new BadRequestException('Related exception not found');
       }

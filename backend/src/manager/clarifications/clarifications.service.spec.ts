@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ManagerClarificationsService } from './clarifications.service';
-import { ClarificationRequest, ClarificationStatus } from '../../database/entities/clarification-request.entity';
+import {
+  ClarificationRequest,
+  ClarificationStatus,
+} from '../../database/entities/clarification-request.entity';
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
@@ -46,14 +49,22 @@ describe('ManagerClarificationsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ManagerClarificationsService,
-        { provide: getRepositoryToken(ClarificationRequest), useValue: clarificationRepo },
-        { provide: getRepositoryToken(ExceptionRequest), useValue: exceptionRepo },
+        {
+          provide: getRepositoryToken(ClarificationRequest),
+          useValue: clarificationRepo,
+        },
+        {
+          provide: getRepositoryToken(ExceptionRequest),
+          useValue: exceptionRepo,
+        },
         { provide: NotificationsService, useValue: notificationsService },
         { provide: AuditTrailService, useValue: auditTrailService },
       ],
     }).compile();
 
-    service = module.get<ManagerClarificationsService>(ManagerClarificationsService);
+    service = module.get<ManagerClarificationsService>(
+      ManagerClarificationsService,
+    );
   });
 
   it('should be defined', () => {
@@ -63,9 +74,14 @@ describe('ManagerClarificationsService', () => {
   describe('findAll', () => {
     it('should fetch all clarifications with filters', async () => {
       const mockResult = [{ id: '1' }] as any;
-      clarificationRepo.createQueryBuilder().getMany.mockResolvedValue(mockResult);
+      clarificationRepo
+        .createQueryBuilder()
+        .getMany.mockResolvedValue(mockResult);
 
-      const result = await service.findAll(ClarificationStatus.PENDING, mockUser);
+      const result = await service.findAll(
+        ClarificationStatus.PENDING,
+        mockUser,
+      );
 
       expect(result).toEqual(mockResult);
       expect(clarificationRepo.createQueryBuilder).toHaveBeenCalled();
@@ -80,7 +96,9 @@ describe('ManagerClarificationsService', () => {
       const result = await service.findOne('1');
 
       expect(result).toEqual(mockResult);
-      expect(clarificationRepo.findOne).toHaveBeenCalledWith(expect.objectContaining({ where: { id: '1' } }));
+      expect(clarificationRepo.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { id: '1' } }),
+      );
     });
 
     it('should throw NotFoundException if not found', async () => {
@@ -91,7 +109,11 @@ describe('ManagerClarificationsService', () => {
 
   describe('close', () => {
     it('should mark status as closed and log audit trail', async () => {
-      const mockThread = { id: '1', status: ClarificationStatus.RESPONDED, auditId: 'audit-1' } as any;
+      const mockThread = {
+        id: '1',
+        status: ClarificationStatus.RESPONDED,
+        auditId: 'audit-1',
+      } as any;
       clarificationRepo.findOne.mockResolvedValue(mockThread);
       clarificationRepo.save.mockResolvedValue(mockThread);
 

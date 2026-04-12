@@ -1,9 +1,20 @@
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { ClarificationRequest, ClarificationStatus } from '../../database/entities/clarification-request.entity';
+import {
+  ClarificationRequest,
+  ClarificationStatus,
+} from '../../database/entities/clarification-request.entity';
 import { ClarificationResponse } from '../../database/entities/clarification-response.entity';
-import { UploadedFile, FileEntityType } from '../../database/entities/uploaded-file.entity';
+import {
+  UploadedFile,
+  FileEntityType,
+} from '../../database/entities/uploaded-file.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
 import { RespondToClarificationDto } from './dto/respond-clarification.dto';
@@ -24,7 +35,8 @@ export class ClientClarificationsService {
   ) {}
 
   async findAll(clientId: string, status?: ClarificationStatus) {
-    const query = this.clarificationRepo.createQueryBuilder('c')
+    const query = this.clarificationRepo
+      .createQueryBuilder('c')
       .leftJoinAndSelect('c.audit', 'audit')
       .leftJoinAndSelect('c.manager', 'manager')
       .where('c.clientId = :clientId', { clientId });
@@ -49,7 +61,12 @@ export class ClientClarificationsService {
     return thread;
   }
 
-  async respond(id: string, clientId: string, message: string, attachmentFileIds?: string[]) {
+  async respond(
+    id: string,
+    clientId: string,
+    message: string,
+    attachmentFileIds?: string[],
+  ) {
     const thread = await this.clarificationRepo.findOne({
       where: { id, clientId },
       relations: ['audit'],
@@ -73,7 +90,7 @@ export class ClientClarificationsService {
     if (attachmentFileIds?.length) {
       await this.fileRepo.update(
         { id: In(attachmentFileIds) },
-        { entityId: response.id }
+        { entityId: response.id },
       );
     }
 

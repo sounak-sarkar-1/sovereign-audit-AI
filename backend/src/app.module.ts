@@ -48,6 +48,7 @@ import { ManagerSettingsModule } from './manager/settings/settings.module';
 import { AiJobsModule } from './shared/ai-jobs/ai-jobs.module';
 import { FilesModule } from './shared/files/files.module';
 import { NotificationsModule } from './shared/notifications/notifications.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -58,14 +59,21 @@ import { AppService } from './app.service';
       isGlobal: true,
       load: [configuration],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 20,
+      },
+    ]),
     DatabaseModule,
     AuthModule,
+
     TenantModule,
     AuditTrailModule,
     NotificationsModule,
     FilesModule,
     AiJobsModule,
-    
+
     // Admin
     AdminAiModelsModule,
     AdminAuditsModule,
@@ -75,7 +83,7 @@ import { AppService } from './app.service';
     AdminTemplatesModule,
     AdminUsersModule,
     AdminSummaryModule,
-    
+
     // Auditor
     AuditorAuditsModule,
     AuditorExceptionsModule,
@@ -83,7 +91,7 @@ import { AppService } from './app.service';
     AuditorSearchModule,
     AuditorChatModule,
     ChatModule,
-    
+
     // Client
     ClientAuditsModule,
     ClientClarificationsModule,
@@ -91,7 +99,7 @@ import { AppService } from './app.service';
     ClientReportsModule,
     ClientSearchModule,
     ClientCorrectiveActionsModule,
-    
+
     // Manager
     ManagerAssignmentsModule,
     ManagerAuditorsModule,

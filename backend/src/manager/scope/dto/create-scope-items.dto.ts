@@ -1,4 +1,14 @@
-import { IsUUID, IsArray, ValidateNested, IsString, IsEnum, IsBoolean, IsOptional, IsInt, Min } from 'class-validator';
+import {
+  IsUUID,
+  IsArray,
+  ValidateNested,
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { InputMethod } from '../../../database/entities/audit-scope-line-item.entity';
 

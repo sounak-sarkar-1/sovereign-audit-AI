@@ -20,7 +20,7 @@ import { ExceptionalActionRequest } from '../../database/entities/exceptional-ac
       ManagerClientMapping,
       AuditorAuditAssignment,
       BusinessUnit,
-      ExceptionalActionRequest
+      ExceptionalActionRequest,
     ]),
     AuditTrailModule,
   ],

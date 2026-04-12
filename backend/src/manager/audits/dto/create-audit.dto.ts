@@ -1,4 +1,12 @@
-import { IsString, IsNotEmpty, IsUUID, IsOptional, IsArray, ArrayMinSize, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUUID,
+  IsOptional,
+  IsArray,
+  ArrayMinSize,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateAuditDto {
   @IsString()

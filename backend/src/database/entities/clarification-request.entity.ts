@@ -63,7 +63,10 @@ export class ClarificationRequest {
   @JoinColumn({ name: 'related_exception_id' })
   relatedException: ExceptionRequest;
 
-  @OneToMany(() => ClarificationResponse, (response) => response.clarificationRequest)
+  @OneToMany(
+    () => ClarificationResponse,
+    (response) => response.clarificationRequest,
+  )
   responses: ClarificationResponse[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

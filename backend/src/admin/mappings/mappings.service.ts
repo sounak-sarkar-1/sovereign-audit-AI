@@ -1,10 +1,18 @@
-import { Injectable, Logger, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ManagerAuditorMapping } from '../../database/entities/manager-auditor-mapping.entity';
 import { ManagerClientMapping } from '../../database/entities/manager-client-mapping.entity';
 import { CreateMappingDto } from './dto/create-mapping.dto';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class AdminMappingsService {
@@ -21,20 +29,23 @@ export class AdminMappingsService {
   async getManagerAuditorMappings(): Promise<ManagerAuditorMapping[]> {
     return await this.managerAuditorRepo.find({
       relations: ['manager', 'auditor'],
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
   async getManagerClientMappings(): Promise<ManagerClientMapping[]> {
     return await this.managerClientRepo.find({
       relations: ['manager', 'client'],
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
   }
 
-  async addManagerAuditorMapping(dto: CreateMappingDto, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async addManagerAuditorMapping(
+    dto: CreateMappingDto,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const existing = await this.managerAuditorRepo.findOne({
-      where: { managerId: dto.managerId, auditorId: dto.targetId }
+      where: { managerId: dto.managerId, auditorId: dto.targetId },
     });
 
     if (existing) {
@@ -43,7 +54,7 @@ export class AdminMappingsService {
 
     const mapping = this.managerAuditorRepo.create({
       managerId: dto.managerId,
-      auditorId: dto.targetId
+      auditorId: dto.targetId,
     });
 
     await this.managerAuditorRepo.save(mapping);
@@ -59,9 +70,13 @@ export class AdminMappingsService {
     });
   }
 
-  async removeManagerAuditorMapping(managerId: string, auditorId: string, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async removeManagerAuditorMapping(
+    managerId: string,
+    auditorId: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const mapping = await this.managerAuditorRepo.findOne({
-      where: { managerId, auditorId }
+      where: { managerId, auditorId },
     });
 
     if (!mapping) {
@@ -81,9 +96,12 @@ export class AdminMappingsService {
     });
   }
 
-  async addManagerClientMapping(dto: CreateMappingDto, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async addManagerClientMapping(
+    dto: CreateMappingDto,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const existing = await this.managerClientRepo.findOne({
-      where: { managerId: dto.managerId, clientId: dto.targetId }
+      where: { managerId: dto.managerId, clientId: dto.targetId },
     });
 
     if (existing) {
@@ -92,7 +110,7 @@ export class AdminMappingsService {
 
     const mapping = this.managerClientRepo.create({
       managerId: dto.managerId,
-      clientId: dto.targetId
+      clientId: dto.targetId,
     });
 
     await this.managerClientRepo.save(mapping);
@@ -108,9 +126,13 @@ export class AdminMappingsService {
     });
   }
 
-  async removeManagerClientMapping(managerId: string, clientId: string, actor: { id: string, role: string, ip: string }): Promise<void> {
+  async removeManagerClientMapping(
+    managerId: string,
+    clientId: string,
+    actor: { id: string; role: string; ip: string },
+  ): Promise<void> {
     const mapping = await this.managerClientRepo.findOne({
-      where: { managerId, clientId }
+      where: { managerId, clientId },
     });
 
     if (!mapping) {

@@ -1,13 +1,25 @@
-import { Injectable, Logger, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
-import { AuditReport, ReportStatus } from '../../database/entities/audit-report.entity';
+import {
+  AuditReport,
+  ReportStatus,
+} from '../../database/entities/audit-report.entity';
 import { ClientReportFeedback } from '../../database/entities/client-report-feedback.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { SubmitReportFeedbackDto } from './dto/submit-feedback.dto';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 import { FilesService } from '../../shared/files/files.service';
 import { Response } from 'express';
 
@@ -28,9 +40,13 @@ export class ClientReportsService {
 
   async findAll(clientId: string) {
     return this.reportRepo.find({
-      where: { 
-        audit: { clientId }, 
-        status: In([ReportStatus.SENT_FOR_CLIENT_REVIEW, ReportStatus.FEEDBACK_SUBMITTED, ReportStatus.FINAL]) 
+      where: {
+        audit: { clientId },
+        status: In([
+          ReportStatus.SENT_FOR_CLIENT_REVIEW,
+          ReportStatus.FEEDBACK_SUBMITTED,
+          ReportStatus.FINAL,
+        ]),
       },
       relations: ['audit', 'file'],
       order: { createdAt: 'DESC' },
@@ -58,18 +74,22 @@ export class ClientReportsService {
 
     if (!report) throw new NotFoundException('Report not found');
     if (report.status !== ReportStatus.SENT_FOR_CLIENT_REVIEW) {
-      throw new BadRequestException('Feedback can only be submitted for reports pending review');
+      throw new BadRequestException(
+        'Feedback can only be submitted for reports pending review',
+      );
     }
 
     return await this.dataSource.transaction(async (manager) => {
       // 1. Create feedback records
-      const feedbackEntities = feedback.map(f => manager.create(ClientReportFeedback, {
-        reportId: id,
-        sectionName: f.sectionName,
-        status: f.status,
-        comment: f.comment,
-        createdBy: clientId,
-      }));
+      const feedbackEntities = feedback.map((f) =>
+        manager.create(ClientReportFeedback, {
+          reportId: id,
+          sectionName: f.sectionName,
+          status: f.status,
+          comment: f.comment,
+          createdBy: clientId,
+        }),
+      );
       await manager.save(feedbackEntities);
 
       // 2. Update report status
@@ -111,7 +131,8 @@ export class ClientReportsService {
     });
     if (!report) throw new NotFoundException('Report not found');
     if (report.audit.clientId !== clientId) throw new ForbiddenException();
-    if (!report.file) throw new BadRequestException('Report file not yet generated');
+    if (!report.file)
+      throw new BadRequestException('Report file not yet generated');
     return this.filesService.streamFile(report.file, res);
   }
 }

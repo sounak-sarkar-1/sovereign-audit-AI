@@ -7,9 +7,11 @@ import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-ite
 import { ExceptionRequest } from '../../database/entities/exception-request.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Audit, AuditScopeLineItem, ExceptionRequest])],
+  imports: [
+    TypeOrmModule.forFeature([Audit, AuditScopeLineItem, ExceptionRequest]),
+  ],
   controllers: [ClientInsightsController],
   providers: [ClientInsightsService],
-  exports: [ClientInsightsService]
+  exports: [ClientInsightsService],
 })
 export class ClientInsightsModule {}

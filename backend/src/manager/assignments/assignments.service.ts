@@ -1,7 +1,7 @@
-import { 
-  Injectable, 
-  Logger, 
-  NotFoundException, 
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,7 +12,10 @@ import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 import { ManagerAuditorMapping } from '../../database/entities/manager-auditor-mapping.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
 import { AssignAuditorDto } from './dto/assign-auditor.dto';
@@ -79,11 +82,13 @@ export class ManagerAssignmentsService {
     });
 
     // Filter liAssignments for this audit
-    const filteredLiAssignments = liAssignments.filter(la => la.auditScopeLineItem?.auditId === auditId);
+    const filteredLiAssignments = liAssignments.filter(
+      (la) => la.auditScopeLineItem?.auditId === auditId,
+    );
 
     // Derive unique auditors from buAssignments
     const auditors = Array.from(
-      new Map(buAssignments.map(a => [a.auditorId, a.auditor])).values()
+      new Map(buAssignments.map((a) => [a.auditorId, a.auditor])).values(),
     );
 
     // Get all auditors mapped to this manager
@@ -97,10 +102,12 @@ export class ManagerAssignmentsService {
       businessUnits: bus,
       buAssignments,
       auditors,
-      availableAuditors: availableAuditors.map(m => m.auditor),
-      lineItems: lineItems.map(li => ({
+      availableAuditors: availableAuditors.map((m) => m.auditor),
+      lineItems: lineItems.map((li) => ({
         ...li,
-        assignment: filteredLiAssignments.find(la => la.auditScopeLineItemId === li.id),
+        assignment: filteredLiAssignments.find(
+          (la) => la.auditScopeLineItemId === li.id,
+        ),
       })),
       lineItemAssignments: filteredLiAssignments,
     };
@@ -112,25 +119,39 @@ export class ManagerAssignmentsService {
     });
     if (!audit) throw new NotFoundException('Audit not found');
 
-    if (audit.status !== AuditStatus.DRAFT && audit.status !== AuditStatus.REOPENED) {
-      throw new UnprocessableEntityException('Auditor assignments blocked: audit is in progress or completed');
+    if (
+      audit.status !== AuditStatus.DRAFT &&
+      audit.status !== AuditStatus.REOPENED
+    ) {
+      throw new UnprocessableEntityException(
+        'Auditor assignments blocked: audit is in progress or completed',
+      );
     }
 
     // Validate auditor belongs to this manager
     const mapping = await this.mappingRepo.findOne({
       where: { managerId, auditorId: dto.auditorId, deletedAt: IsNull() },
     });
-    if (!mapping) throw new UnprocessableEntityException('Auditor is not mapped to this manager');
+    if (!mapping)
+      throw new UnprocessableEntityException(
+        'Auditor is not mapped to this manager',
+      );
 
     // Validate BU belongs to this audit
     const abu = await this.abuRepo.findOne({
       where: { id: dto.auditBusinessUnitId, auditId, deletedAt: IsNull() },
     });
-    if (!abu) throw new UnprocessableEntityException('Business Unit does not belong to this audit');
+    if (!abu)
+      throw new UnprocessableEntityException(
+        'Business Unit does not belong to this audit',
+      );
 
     // Check for existing assignment (including soft-deleted)
     const existing = await this.buAssignmentRepo.findOne({
-      where: { auditBusinessUnitId: dto.auditBusinessUnitId, auditorId: dto.auditorId },
+      where: {
+        auditBusinessUnitId: dto.auditBusinessUnitId,
+        auditorId: dto.auditorId,
+      },
       withDeleted: true,
     });
 
@@ -157,7 +178,11 @@ export class ManagerAssignmentsService {
         action: AuditAction.AUDITOR_ASSIGNED,
         entityType: 'AuditorAuditAssignment',
         entityId: saved.id,
-        metadata: { auditId, auditorId: dto.auditorId, abuId: dto.auditBusinessUnitId },
+        metadata: {
+          auditId,
+          auditorId: dto.auditorId,
+          abuId: dto.auditBusinessUnitId,
+        },
       });
 
       await this.notificationsService.create({
@@ -172,22 +197,34 @@ export class ManagerAssignmentsService {
 
       return saved;
     } catch (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        throw new UnprocessableEntityException('This auditor is already assigned to this business unit');
+      if (error.code === '23505') {
+        // Unique constraint violation
+        throw new UnprocessableEntityException(
+          'This auditor is already assigned to this business unit',
+        );
       }
       this.logger.error(`Assignment failed: ${error.message}`, error.stack);
       throw error;
     }
   }
 
-  async unassignFromBU(auditId: string, assignmentId: string, managerId: string) {
+  async unassignFromBU(
+    auditId: string,
+    assignmentId: string,
+    managerId: string,
+  ) {
     const audit = await this.auditRepo.findOne({
       where: { id: auditId, managerId, deletedAt: IsNull() },
     });
     if (!audit) throw new NotFoundException('Audit not found');
 
-    if (audit.status !== AuditStatus.DRAFT && audit.status !== AuditStatus.REOPENED) {
-      throw new UnprocessableEntityException('Auditor assignments blocked: audit is in progress or completed');
+    if (
+      audit.status !== AuditStatus.DRAFT &&
+      audit.status !== AuditStatus.REOPENED
+    ) {
+      throw new UnprocessableEntityException(
+        'Auditor assignments blocked: audit is in progress or completed',
+      );
     }
 
     const assignment = await this.buAssignmentRepo.findOne({
@@ -198,21 +235,33 @@ export class ManagerAssignmentsService {
     await this.buAssignmentRepo.softRemove(assignment);
   }
 
-  async assignToLineItem(auditId: string, dto: AssignLineItemDto, managerId: string) {
+  async assignToLineItem(
+    auditId: string,
+    dto: AssignLineItemDto,
+    managerId: string,
+  ) {
     const audit = await this.auditRepo.findOne({
       where: { id: auditId, managerId, deletedAt: IsNull() },
     });
     if (!audit) throw new NotFoundException('Audit not found');
 
-    if (audit.status !== AuditStatus.DRAFT && audit.status !== AuditStatus.REOPENED) {
-      throw new UnprocessableEntityException('Auditor assignments blocked: audit is in progress or completed');
+    if (
+      audit.status !== AuditStatus.DRAFT &&
+      audit.status !== AuditStatus.REOPENED
+    ) {
+      throw new UnprocessableEntityException(
+        'Auditor assignments blocked: audit is in progress or completed',
+      );
     }
 
     // Validate line item belongs to this audit
     const li = await this.scopeRepo.findOne({
       where: { id: dto.lineItemId, auditId, deletedAt: IsNull() },
     });
-    if (!li) throw new UnprocessableEntityException('Line item does not belong to this audit');
+    if (!li)
+      throw new UnprocessableEntityException(
+        'Line item does not belong to this audit',
+      );
 
     // Check existing (including soft-deleted)
     const existing = await this.liAssignmentRepo.findOne({
@@ -232,7 +281,7 @@ export class ManagerAssignmentsService {
     const existingAssignments = await this.liAssignmentRepo.find({
       where: { auditScopeLineItemId: dto.lineItemId, deletedAt: IsNull() },
     });
-    
+
     if (existingAssignments.length > 0) {
       await this.liAssignmentRepo.softRemove(existingAssignments);
     }
@@ -246,29 +295,43 @@ export class ManagerAssignmentsService {
       return await this.liAssignmentRepo.save(assignment);
     } catch (error) {
       if (error.code === '23505') {
-        throw new UnprocessableEntityException('This auditor is already assigned to this line item');
+        throw new UnprocessableEntityException(
+          'This auditor is already assigned to this line item',
+        );
       }
       throw error;
     }
   }
 
-  async unassignFromLineItem(auditId: string, assignmentId: string, managerId: string) {
+  async unassignFromLineItem(
+    auditId: string,
+    assignmentId: string,
+    managerId: string,
+  ) {
     const audit = await this.auditRepo.findOne({
       where: { id: auditId, managerId, deletedAt: IsNull() },
     });
     if (!audit) throw new NotFoundException('Audit not found');
 
-    if (audit.status !== AuditStatus.DRAFT && audit.status !== AuditStatus.REOPENED) {
-      throw new UnprocessableEntityException('Auditor assignments blocked: audit is in progress or completed');
+    if (
+      audit.status !== AuditStatus.DRAFT &&
+      audit.status !== AuditStatus.REOPENED
+    ) {
+      throw new UnprocessableEntityException(
+        'Auditor assignments blocked: audit is in progress or completed',
+      );
     }
 
     const assignment = await this.liAssignmentRepo.findOne({
       where: { id: assignmentId, deletedAt: IsNull() },
       relations: ['auditScopeLineItem'],
     });
-    
+
     if (!assignment) throw new NotFoundException('Assignment not found');
-    if (assignment.auditScopeLineItem?.auditId !== auditId) throw new UnprocessableEntityException('Assignment does not belong to this audit');
+    if (assignment.auditScopeLineItem?.auditId !== auditId)
+      throw new UnprocessableEntityException(
+        'Assignment does not belong to this audit',
+      );
 
     await this.liAssignmentRepo.softRemove(assignment);
   }

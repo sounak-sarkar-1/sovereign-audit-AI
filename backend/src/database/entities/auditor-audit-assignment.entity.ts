@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, DeleteDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  DeleteDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Audit } from './audit.entity';
 import { AuditBusinessUnit } from './audit-business-unit.entity';
@@ -28,7 +36,6 @@ export class AuditorAuditAssignment {
   @ManyToOne(() => AuditBusinessUnit)
   @JoinColumn({ name: 'audit_business_unit_id' })
   auditBusinessUnit: AuditBusinessUnit;
-
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

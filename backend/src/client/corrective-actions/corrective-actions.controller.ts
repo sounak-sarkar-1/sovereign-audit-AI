@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientCorrectiveActionsService } from './corrective-actions.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -14,7 +24,10 @@ export class ClientCorrectiveActionsController {
   constructor(private readonly service: ClientCorrectiveActionsService) {}
 
   @Get()
-  findAll(@CurrentUser('id') clientId: string, @Query('auditId') auditId?: string) {
+  findAll(
+    @CurrentUser('id') clientId: string,
+    @Query('auditId') auditId?: string,
+  ) {
     return this.service.findAll(clientId, auditId);
   }
 
@@ -29,7 +42,11 @@ export class ClientCorrectiveActionsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @CurrentUser('id') clientId: string, @Body() data: any) {
+  update(
+    @Param('id') id: string,
+    @CurrentUser('id') clientId: string,
+    @Body() data: any,
+  ) {
     return this.service.update(id, clientId, data);
   }
 

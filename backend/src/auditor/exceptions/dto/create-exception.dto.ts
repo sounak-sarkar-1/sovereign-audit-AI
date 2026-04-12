@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsUUID, IsOptional, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsUUID,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
 
 export class CreateExceptionDto {
   @IsUUID()

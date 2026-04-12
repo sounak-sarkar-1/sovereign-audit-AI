@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AdminAiModelsService } from './ai-models.service';
 import { CreateAiModelDto } from './dto/create-ai-model.dto';
 import { UpdateAiModelDto } from './dto/update-ai-model.dto';
@@ -36,7 +46,7 @@ export class AdminAiModelsController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateAiModelDto,
-    @Req() req: any
+    @Req() req: any,
   ) {
     return await this.service.update(id, dto, {
       id: req.user.id,

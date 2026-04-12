@@ -17,9 +17,7 @@ import { DataSource } from 'typeorm';
  */
 @Injectable()
 export class TenantGuard implements CanActivate {
-  constructor(
-    @InjectDataSource() private readonly dataSource: DataSource,
-  ) {}
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

@@ -68,7 +68,10 @@ export class AuditTrailService {
 
       await this.repository.insert(logRecord);
     } catch (error) {
-      this.logger.error(`Failed to create audit trail log: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to create audit trail log: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -86,7 +89,8 @@ export class AuditTrailService {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const qb = this.repository.createQueryBuilder('log')
+    const qb = this.repository
+      .createQueryBuilder('log')
       .leftJoinAndSelect('log.actorUser', 'actor')
       .orderBy('log.createdAt', 'DESC')
       .take(limit)
@@ -97,7 +101,9 @@ export class AuditTrailService {
     }
 
     if (query.entityType) {
-      qb.andWhere('log.entityType = :entityType', { entityType: query.entityType });
+      qb.andWhere('log.entityType = :entityType', {
+        entityType: query.entityType,
+      });
     }
 
     if (query.actorId) {
@@ -105,13 +111,18 @@ export class AuditTrailService {
     }
 
     if (query.search) {
-      qb.andWhere('(log.entityId ILIKE :search OR CAST(log.payload AS TEXT) ILIKE :search)', { 
-        search: `%${query.search}%` 
-      });
+      qb.andWhere(
+        '(log.entityId ILIKE :search OR CAST(log.payload AS TEXT) ILIKE :search)',
+        {
+          search: `%${query.search}%`,
+        },
+      );
     }
 
     if (query.startDate) {
-      qb.andWhere('log.createdAt >= :startDate', { startDate: query.startDate });
+      qb.andWhere('log.createdAt >= :startDate', {
+        startDate: query.startDate,
+      });
     }
 
     if (query.endDate) {
@@ -132,7 +143,8 @@ export class AuditTrailService {
   }
 
   async findForAudit(auditId: string): Promise<AuditTrailLog[]> {
-    return this.repository.createQueryBuilder('log')
+    return this.repository
+      .createQueryBuilder('log')
       .leftJoinAndSelect('log.actorUser', 'actor')
       .where('log.entityId = :auditId', { auditId })
       .orWhere("log.payload->>'auditId' = :auditId", { auditId })

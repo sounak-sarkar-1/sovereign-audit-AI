@@ -10,7 +10,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 @Roles('auditor')
 export class AuditorScopeController {
   constructor(private readonly service: AuditorScopeService) {}
-  
+
   // Scope routes are handled by AuditorAuditsController for nested access
   // under /auditor/audits/:id/scope/*
   // This controller is intentionally left empty.

@@ -2,7 +2,10 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 
 @Injectable()
@@ -33,21 +36,33 @@ export class ClientAuditsService {
     });
 
     const totalItems = scopeItems.length;
-    const submittedItems = scopeItems.filter(i => i.status === LineItemStatus.SUBMITTED || i.status === LineItemStatus.EXCEPTION_APPROVED).length;
-    const draftItems = scopeItems.filter(i => i.status === LineItemStatus.DRAFT_SAVED).length;
-    const pendingExceptions = scopeItems.filter(i => i.status === LineItemStatus.EXCEPTION_PENDING).length;
-    const completionPercent = totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0;
+    const submittedItems = scopeItems.filter(
+      (i) =>
+        i.status === LineItemStatus.SUBMITTED ||
+        i.status === LineItemStatus.EXCEPTION_APPROVED,
+    ).length;
+    const draftItems = scopeItems.filter(
+      (i) => i.status === LineItemStatus.DRAFT_SAVED,
+    ).length;
+    const pendingExceptions = scopeItems.filter(
+      (i) => i.status === LineItemStatus.EXCEPTION_PENDING,
+    ).length;
+    const completionPercent =
+      totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0;
 
     // Group by Business Unit
-    const buMap = new Map<string, { name: string; total: number; submitted: number }>();
-    
+    const buMap = new Map<
+      string,
+      { name: string; total: number; submitted: number }
+    >();
+
     // Initialize with all BUs assigned to the audit
     const abus = await this.abuRepo.find({
       where: { auditId: id },
       relations: ['businessUnit'],
     });
 
-    abus.forEach(abu => {
+    abus.forEach((abu) => {
       buMap.set(abu.id, {
         name: abu.businessUnit?.name || 'Unknown',
         total: 0,
@@ -55,19 +70,23 @@ export class ClientAuditsService {
       });
     });
 
-    scopeItems.forEach(item => {
+    scopeItems.forEach((item) => {
       const buStats = buMap.get(item.auditBusinessUnitId);
       if (buStats) {
         buStats.total++;
-        if (item.status === LineItemStatus.SUBMITTED || item.status === LineItemStatus.EXCEPTION_APPROVED) {
+        if (
+          item.status === LineItemStatus.SUBMITTED ||
+          item.status === LineItemStatus.EXCEPTION_APPROVED
+        ) {
           buStats.submitted++;
         }
       }
     });
 
-    const businessUnits = Array.from(buMap.values()).map(bu => ({
+    const businessUnits = Array.from(buMap.values()).map((bu) => ({
       name: bu.name,
-      completionPercent: bu.total > 0 ? Math.round((bu.submitted / bu.total) * 100) : 0,
+      completionPercent:
+        bu.total > 0 ? Math.round((bu.submitted / bu.total) * 100) : 0,
     }));
 
     return {
@@ -80,8 +99,14 @@ export class ClientAuditsService {
     };
   }
 
-  async findAll(clientId: string, page: number = 1, limit: number = 10, status?: AuditStatus) {
-    const query = this.auditRepo.createQueryBuilder('audit')
+  async findAll(
+    clientId: string,
+    page: number = 1,
+    limit: number = 10,
+    status?: AuditStatus,
+  ) {
+    const query = this.auditRepo
+      .createQueryBuilder('audit')
       .leftJoinAndSelect('audit.manager', 'manager')
       .where('audit.clientId = :clientId', { clientId })
       .andWhere('audit.status != :status', { status: AuditStatus.DRAFT }); // Clients don't see drafts

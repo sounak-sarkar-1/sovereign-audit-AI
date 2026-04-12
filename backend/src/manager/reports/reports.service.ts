@@ -1,14 +1,33 @@
-import { Injectable, Logger, UnprocessableEntityException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  UnprocessableEntityException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
-import { AuditReport, ReportStatus } from '../../database/entities/audit-report.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
-import { AiJob, JobType, JobStatus } from '../../database/entities/ai-job.entity';
+import {
+  AuditReport,
+  ReportStatus,
+} from '../../database/entities/audit-report.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
+import {
+  AiJob,
+  JobType,
+  JobStatus,
+} from '../../database/entities/ai-job.entity';
 import { AiJobsService } from '../../shared/ai-jobs/ai-jobs.service';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 import { User } from '../../database/entities/user.entity';
 import { FilesService } from '../../shared/files/files.service';
 import { Response } from 'express';
@@ -36,21 +55,28 @@ export class ManagerReportsService {
 
   async generate(auditId: string, manager: User) {
     // 1. Validate readiness
-    const audit = await this.auditRepo.findOne({ where: { id: auditId }, relations: ['client'] });
+    const audit = await this.auditRepo.findOne({
+      where: { id: auditId },
+      relations: ['client'],
+    });
     if (!audit) throw new NotFoundException('Audit not found');
 
-    const incompleteItems = await this.lineItemRepo.createQueryBuilder('li')
+    const incompleteItems = await this.lineItemRepo
+      .createQueryBuilder('li')
       .where('li.auditId = :auditId', { auditId })
       .andWhere('li.isOptional = false')
-      .andWhere('li.status NOT IN (:...validStatuses)', { 
-        validStatuses: [LineItemStatus.SUBMITTED, LineItemStatus.EXCEPTION_APPROVED] 
+      .andWhere('li.status NOT IN (:...validStatuses)', {
+        validStatuses: [
+          LineItemStatus.SUBMITTED,
+          LineItemStatus.EXCEPTION_APPROVED,
+        ],
       })
       .getMany();
 
     if (incompleteItems.length > 0) {
       throw new UnprocessableEntityException({
         message: 'Audit contains incomplete mandatory items',
-        items: incompleteItems.map(i => ({ id: i.id, name: i.name })),
+        items: incompleteItems.map((i) => ({ id: i.id, name: i.name })),
       });
     }
 
@@ -85,10 +111,10 @@ export class ManagerReportsService {
       const savedJob = await managerEm.save(aiJob);
 
       // Publish to pg-boss
-      await this.aiJobsService.send('report-generation', { 
-        jobId: savedJob.id, 
-        reportId: savedReport.id, 
-        auditId 
+      await this.aiJobsService.send('report-generation', {
+        jobId: savedJob.id,
+        reportId: savedReport.id,
+        auditId,
       });
 
       return { reportId: savedReport.id, jobId: savedJob.id };
@@ -104,9 +130,13 @@ export class ManagerReportsService {
   }
 
   async sendToClient(auditId: string, reportId: string, manager: User) {
-    const report = await this.reportRepo.findOne({ where: { id: reportId }, relations: ['audit', 'audit.client'] });
+    const report = await this.reportRepo.findOne({
+      where: { id: reportId },
+      relations: ['audit', 'audit.client'],
+    });
     if (!report) throw new NotFoundException('Report not found');
-    if (report.status !== ReportStatus.DRAFT) throw new BadRequestException('Only draft reports can be sent to client');
+    if (report.status !== ReportStatus.DRAFT)
+      throw new BadRequestException('Only draft reports can be sent to client');
 
     report.status = ReportStatus.SENT_FOR_CLIENT_REVIEW;
     await this.reportRepo.save(report);
@@ -137,7 +167,10 @@ export class ManagerReportsService {
   }
 
   async finalize(auditId: string, reportId: string, manager: User) {
-    const report = await this.reportRepo.findOne({ where: { id: reportId }, relations: ['audit'] });
+    const report = await this.reportRepo.findOne({
+      where: { id: reportId },
+      relations: ['audit'],
+    });
     if (!report) throw new NotFoundException('Report not found');
 
     report.status = ReportStatus.FINAL;

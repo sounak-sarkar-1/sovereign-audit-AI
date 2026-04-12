@@ -1,13 +1,25 @@
-import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User, UserRole, UserStatus } from '../../database/entities/user.entity';
+import {
+  User,
+  UserRole,
+  UserStatus,
+} from '../../database/entities/user.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
 
@@ -26,14 +38,24 @@ export class AdminUsersService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async create(createDto: CreateUserDto, actor?: { id: string; role: string; ip?: string }): Promise<User> {
-    const existingUser = await this.repository.findOne({ where: { email: createDto.email } });
+  async create(
+    createDto: CreateUserDto,
+    actor?: { id: string; role: string; ip?: string },
+  ): Promise<User> {
+    const existingUser = await this.repository.findOne({
+      where: { email: createDto.email },
+    });
     if (existingUser) {
-      throw new ConflictException(`User with email "${createDto.email}" already exists`);
+      throw new ConflictException(
+        `User with email "${createDto.email}" already exists`,
+      );
     }
 
-    const passwordHash = await bcrypt.hash(createDto.defaultPassword || 'TemporaryPassword123!', 12);
-    
+    const passwordHash = await bcrypt.hash(
+      createDto.defaultPassword || 'TemporaryPassword123!',
+      12,
+    );
+
     const user = this.repository.create({
       ...createDto,
       passwordHash,
@@ -57,7 +79,8 @@ export class AdminUsersService {
       userId: savedUser.id,
       type: NotificationType.USER_CREATED,
       title: 'Welcome to Sovereign Audit AI',
-      message: 'Your account has been created. Please log in and change your password.',
+      message:
+        'Your account has been created. Please log in and change your password.',
     });
 
     return savedUser;
@@ -81,7 +104,7 @@ export class AdminUsersService {
     const baseWhere: FindOptionsWhere<User> = {};
     if (query.role) baseWhere.role = query.role;
     if (query.status) baseWhere.status = query.status;
-    
+
     const where = query.search
       ? [
           { ...baseWhere, email: Like(`%${query.search}%`) },
@@ -108,9 +131,14 @@ export class AdminUsersService {
   }
 
   async findOne(id: string): Promise<User> {
-    const user = await this.repository.findOne({ 
+    const user = await this.repository.findOne({
       where: { id },
-      relations: ['auditorMappings', 'managedByMappings', 'clientMappings', 'managedClientsByMappings'],
+      relations: [
+        'auditorMappings',
+        'managedByMappings',
+        'clientMappings',
+        'managedClientsByMappings',
+      ],
     });
     if (!user) {
       throw new NotFoundException(`User with ID "${id}" not found`);
@@ -118,9 +146,13 @@ export class AdminUsersService {
     return user;
   }
 
-  async update(id: string, updateDto: UpdateUserDto, actor?: { id: string; role: string; ip?: string }): Promise<User> {
+  async update(
+    id: string,
+    updateDto: UpdateUserDto,
+    actor?: { id: string; role: string; ip?: string },
+  ): Promise<User> {
     const user = await this.findOne(id);
-    
+
     const oldStatus = user.status;
     Object.assign(user, updateDto);
     const updatedUser = await this.repository.save(user);
@@ -131,9 +163,9 @@ export class AdminUsersService {
       action: AuditAction.USER_UPDATED,
       entityType: 'users',
       entityId: updatedUser.id,
-      metadata: { 
+      metadata: {
         updates: updateDto,
-        statusChanged: oldStatus !== updatedUser.status 
+        statusChanged: oldStatus !== updatedUser.status,
       },
       ipAddress: actor?.ip,
     });
@@ -141,15 +173,19 @@ export class AdminUsersService {
     return updatedUser;
   }
 
-  async remove(id: string, forceDelete: boolean = false, actor?: { id: string; role: string; ip?: string }): Promise<void> {
+  async remove(
+    id: string,
+    forceDelete: boolean = false,
+    actor?: { id: string; role: string; ip?: string },
+  ): Promise<void> {
     const user = await this.findOne(id);
-    
+
     if (!forceDelete) {
       const assignmentsCount = await this.checkActiveAssignments(user);
       if (assignmentsCount > 0) {
         throw new ConflictException({
           message: 'User has active audit assignments',
-          assignmentCount: assignmentsCount
+          assignmentCount: assignmentsCount,
         });
       }
     }
@@ -169,21 +205,24 @@ export class AdminUsersService {
 
   private async checkActiveAssignments(user: User): Promise<number> {
     let count = 0;
-    
+
     if (user.role === UserRole.AUDITOR) {
       count = await this.assignmentRepository.count({
-        where: { auditorId: user.id, audit: { status: AuditStatus.IN_PROGRESS } }
+        where: {
+          auditorId: user.id,
+          audit: { status: AuditStatus.IN_PROGRESS },
+        },
       });
     } else if (user.role === UserRole.MANAGER) {
       count = await this.auditRepository.count({
-        where: { managerId: user.id, status: AuditStatus.IN_PROGRESS }
+        where: { managerId: user.id, status: AuditStatus.IN_PROGRESS },
       });
     } else if (user.role === UserRole.CLIENT) {
       count = await this.auditRepository.count({
-        where: { clientId: user.id, status: AuditStatus.IN_PROGRESS }
+        where: { clientId: user.id, status: AuditStatus.IN_PROGRESS },
       });
     }
-    
+
     return count;
   }
 }

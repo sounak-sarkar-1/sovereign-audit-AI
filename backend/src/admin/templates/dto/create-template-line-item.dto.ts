@@ -1,4 +1,14 @@
-import { IsString, IsEnum, IsBoolean, IsOptional, IsInt, Min, IsArray, ValidateNested, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsInt,
+  Min,
+  IsArray,
+  ValidateNested,
+  MaxLength,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { InputMethod } from '../../../database/entities/audit-template-line-item.entity';
 import { CreateTemplateOptionDto } from './create-template-option.dto';

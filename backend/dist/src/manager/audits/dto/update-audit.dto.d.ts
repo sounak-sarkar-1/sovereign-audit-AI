@@ -1,8 +1,0 @@
-import { CreateAuditDto } from './create-audit.dto';
-declare const UpdateAuditDto_base: import("@nestjs/mapped-types").MappedType<Partial<CreateAuditDto>>;
-export declare class UpdateAuditDto extends UpdateAuditDto_base {
-    name?: string;
-    expectedCompletionDate?: string;
-    description?: string;
-}
-export {};

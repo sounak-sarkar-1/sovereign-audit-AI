@@ -1,4 +1,10 @@
-import { Injectable, Logger, UnauthorizedException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  UnauthorizedException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,22 +32,24 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    console.log(`Login attempt for email: ${loginDto.email}`);
+    this.logger.log('Login attempt received');
     const user = await this.usersService.findByEmail(loginDto.email);
     if (!user) {
-      console.log(`User not found: ${loginDto.email}`);
+      this.logger.warn(`Failed login attempt for email: [REDACTED]`);
       throw new UnauthorizedException('Invalid credentials');
     }
-    console.log(`User found: ${user.email}, Role: ${user.role}, Status: ${user.status}`);
 
     if (user.status === 'inactive') {
-      console.log(`User account is inactive: ${user.email}`);
+      this.logger.warn(`Failed login attempt for email: [REDACTED]`);
       throw new ForbiddenException('Account is inactive');
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
-    console.log(`Password valid: ${isPasswordValid}`);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
+      this.logger.warn(`Failed login attempt for email: [REDACTED]`);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -103,13 +111,17 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    const isCurrentValid = await bcrypt.compare(changePasswordDto.currentPassword, user.passwordHash);
+    const isCurrentValid = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      user.passwordHash,
+    );
     if (!isCurrentValid) {
       throw new UnauthorizedException('Current password incorrect');
     }
 
     // Policy validation (at least 8 chars, 1 upper, 1 number, 1 special)
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(changePasswordDto.newPassword)) {
       throw new BadRequestException('New password fails policy validation');
     }
@@ -127,8 +139,11 @@ export class AuthService {
   private async generateRefreshToken(userId: string): Promise<string> {
     const token = crypto.randomBytes(40).toString('hex');
     const tokenHash = this.hashToken(token);
-    
-    const expiresInDays = parseInt(this.configService.get('refreshToken.expiresIn') || '7', 10);
+
+    const expiresInDays = parseInt(
+      this.configService.get('refreshToken.expiresIn') || '7',
+      10,
+    );
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + expiresInDays);
 

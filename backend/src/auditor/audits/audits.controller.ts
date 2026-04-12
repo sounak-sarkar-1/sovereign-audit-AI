@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Put, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Put,
+  Post,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { AuditorAuditsService } from './audits.service';
 import { AuditorScopeService } from '../scope/scope.service';
 import { AuditorExceptionsService } from '../exceptions/exceptions.service';

@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { Audit } from '../../database/entities/audit.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
 import { User } from '../../database/entities/user.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 
@@ -28,7 +31,7 @@ export class AuditorAuditsService {
       relations: ['audit', 'audit.client'],
     });
 
-    const auditIds = [...new Set(assignments.map(a => a.auditId))];
+    const auditIds = [...new Set(assignments.map((a) => a.auditId))];
     if (auditIds.length === 0) return [];
 
     const audits = await this.auditRepo.find({
@@ -36,47 +39,52 @@ export class AuditorAuditsService {
       relations: ['client'],
     });
 
-    const results = await Promise.all(audits.map(async (audit) => {
-      const totalItems = await this.lineItemRepo.count({
-        where: { auditId: audit.id, assignments: { auditorId: user.id } },
-      });
-      
-      const submittedItems = await this.lineItemRepo.count({
-        where: { 
-          auditId: audit.id, 
-          assignments: { auditorId: user.id },
-          status: LineItemStatus.SUBMITTED
-        },
-      });
+    const results = await Promise.all(
+      audits.map(async (audit) => {
+        const totalItems = await this.lineItemRepo.count({
+          where: { auditId: audit.id, assignments: { auditorId: user.id } },
+        });
 
-      const draftItems = await this.lineItemRepo.count({
-        where: { 
-          auditId: audit.id, 
-          assignments: { auditorId: user.id },
-          status: LineItemStatus.DRAFT_SAVED
-        },
-      });
+        const submittedItems = await this.lineItemRepo.count({
+          where: {
+            auditId: audit.id,
+            assignments: { auditorId: user.id },
+            status: LineItemStatus.SUBMITTED,
+          },
+        });
 
-      const pendingExceptions = await this.lineItemRepo.count({
-        where: { 
-          auditId: audit.id, 
-          assignments: { auditorId: user.id },
-          status: LineItemStatus.EXCEPTION_PENDING
-        },
-      });
+        const draftItems = await this.lineItemRepo.count({
+          where: {
+            auditId: audit.id,
+            assignments: { auditorId: user.id },
+            status: LineItemStatus.DRAFT_SAVED,
+          },
+        });
 
-      return {
-        ...audit,
-        endDate: audit.expectedCompletionDate,
-        stats: {
-          totalItems,
-          submittedItems,
-          draftItems,
-          pendingExceptions,
-          completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
-        }
-      };
-    }));
+        const pendingExceptions = await this.lineItemRepo.count({
+          where: {
+            auditId: audit.id,
+            assignments: { auditorId: user.id },
+            status: LineItemStatus.EXCEPTION_PENDING,
+          },
+        });
+
+        return {
+          ...audit,
+          endDate: audit.expectedCompletionDate,
+          stats: {
+            totalItems,
+            submittedItems,
+            draftItems,
+            pendingExceptions,
+            completionPercent:
+              totalItems > 0
+                ? Math.round((submittedItems / totalItems) * 100)
+                : 0,
+          },
+        };
+      }),
+    );
 
     return results;
   }
@@ -92,20 +100,20 @@ export class AuditorAuditsService {
     const totalItems = await this.lineItemRepo.count({
       where: { auditId, assignments: { auditorId: user.id } },
     });
-    
+
     const submittedItems = await this.lineItemRepo.count({
-      where: { 
-        auditId, 
+      where: {
+        auditId,
         assignments: { auditorId: user.id },
-        status: LineItemStatus.SUBMITTED
+        status: LineItemStatus.SUBMITTED,
       },
     });
 
     const pendingExceptions = await this.lineItemRepo.count({
-      where: { 
-        auditId, 
+      where: {
+        auditId,
         assignments: { auditorId: user.id },
-        status: LineItemStatus.EXCEPTION_PENDING
+        status: LineItemStatus.EXCEPTION_PENDING,
       },
     });
 
@@ -114,24 +122,29 @@ export class AuditorAuditsService {
       relations: ['businessUnit'],
     });
 
-    const buStats = await Promise.all(bus.map(async (bu) => {
-      const buTotalItems = await this.lineItemRepo.count({
-        where: { auditBusinessUnitId: bu.id },
-      });
+    const buStats = await Promise.all(
+      bus.map(async (bu) => {
+        const buTotalItems = await this.lineItemRepo.count({
+          where: { auditBusinessUnitId: bu.id },
+        });
 
-      const buCompletedItems = await this.lineItemRepo.count({
-        where: { 
-          auditBusinessUnitId: bu.id,
-          status: LineItemStatus.SUBMITTED
-        },
-      });
+        const buCompletedItems = await this.lineItemRepo.count({
+          where: {
+            auditBusinessUnitId: bu.id,
+            status: LineItemStatus.SUBMITTED,
+          },
+        });
 
-      return {
-        id: bu.id,
-        name: bu.businessUnit.name,
-        coAuditorCompletion: buTotalItems > 0 ? Math.round((buCompletedItems / buTotalItems) * 100) : 0,
-      };
-    }));
+        return {
+          id: bu.id,
+          name: bu.businessUnit.name,
+          coAuditorCompletion:
+            buTotalItems > 0
+              ? Math.round((buCompletedItems / buTotalItems) * 100)
+              : 0,
+        };
+      }),
+    );
 
     return {
       ...audit,
@@ -141,9 +154,10 @@ export class AuditorAuditsService {
         totalItems,
         submittedItems,
         pendingExceptions,
-        completionPercent: totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
+        completionPercent:
+          totalItems > 0 ? Math.round((submittedItems / totalItems) * 100) : 0,
         buStats,
-      }
+      },
     };
   }
 
@@ -152,8 +166,8 @@ export class AuditorAuditsService {
       where: { auditorId: user.id },
       relations: ['audit'],
     });
-    
-    const auditIds = assignments.map(a => a.auditId);
+
+    const auditIds = assignments.map((a) => a.auditId);
     if (auditIds.length === 0) {
       return {
         totalAudits: 0,
@@ -161,18 +175,26 @@ export class AuditorAuditsService {
         totalSubmitted: 0,
         totalExceptions: 0,
         submissionRate: 0,
-        auditBreakdown: []
+        auditBreakdown: [],
       };
     }
 
     const totalAssigned = await this.lineItemRepo.count({
-      where: { auditId: In(auditIds), assignments: { auditorId: user.id } }
+      where: { auditId: In(auditIds), assignments: { auditorId: user.id } },
     });
     const totalSubmitted = await this.lineItemRepo.count({
-      where: { auditId: In(auditIds), assignments: { auditorId: user.id }, status: LineItemStatus.SUBMITTED }
+      where: {
+        auditId: In(auditIds),
+        assignments: { auditorId: user.id },
+        status: LineItemStatus.SUBMITTED,
+      },
     });
     const totalExceptions = await this.lineItemRepo.count({
-      where: { auditId: In(auditIds), assignments: { auditorId: user.id }, status: LineItemStatus.EXCEPTION_PENDING }
+      where: {
+        auditId: In(auditIds),
+        assignments: { auditorId: user.id },
+        status: LineItemStatus.EXCEPTION_PENDING,
+      },
     });
 
     return {
@@ -180,13 +202,15 @@ export class AuditorAuditsService {
       totalAssigned,
       totalSubmitted,
       totalExceptions,
-      submissionRate: totalAssigned > 0 ? Math.round((totalSubmitted / totalAssigned) * 100) : 0,
-      auditBreakdown: assignments.map(a => ({
+      submissionRate:
+        totalAssigned > 0
+          ? Math.round((totalSubmitted / totalAssigned) * 100)
+          : 0,
+      auditBreakdown: assignments.map((a) => ({
         auditId: a.auditId,
         auditName: a.audit?.name,
         status: a.audit?.status,
-      }))
+      })),
     };
   }
 }
-

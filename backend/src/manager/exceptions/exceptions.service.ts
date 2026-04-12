@@ -1,12 +1,29 @@
-import { Injectable, Logger, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { ExceptionRequest, ExceptionStatus } from '../../database/entities/exception-request.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
+import {
+  ExceptionRequest,
+  ExceptionStatus,
+} from '../../database/entities/exception-request.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
 import { NotificationsService } from '../../shared/notifications/notifications.service';
 import { NotificationType } from '../../database/entities/notification.entity';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
-import { ApproveExceptionDto, RejectExceptionDto } from './dto/exception-action.dto';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
+import {
+  ApproveExceptionDto,
+  RejectExceptionDto,
+} from './dto/exception-action.dto';
 import { User } from '../../database/entities/user.entity';
 import { ExceptionComment } from '../../database/entities/exception-comment.entity';
 
@@ -27,7 +44,8 @@ export class ManagerExceptionsService {
   ) {}
 
   async findAll(auditId: string, status?: ExceptionStatus) {
-    const query = this.exceptionRepo.createQueryBuilder('er')
+    const query = this.exceptionRepo
+      .createQueryBuilder('er')
       .leftJoinAndSelect('er.auditScopeLineItem', 'li')
       .leftJoinAndSelect('er.auditor', 'auditor')
       .where('li.auditId = :auditId', { auditId });
@@ -40,12 +58,13 @@ export class ManagerExceptionsService {
   }
 
   async findAllGlobal(status?: ExceptionStatus, manager?: User) {
-    const query = this.exceptionRepo.createQueryBuilder('er')
+    const query = this.exceptionRepo
+      .createQueryBuilder('er')
       .leftJoinAndSelect('er.auditScopeLineItem', 'li')
       .leftJoinAndSelect('er.auditor', 'auditor');
 
     if (manager) {
-       query.andWhere('er.managerId = :managerId', { managerId: manager.id });
+      query.andWhere('er.managerId = :managerId', { managerId: manager.id });
     }
 
     if (status) {
@@ -66,7 +85,9 @@ export class ManagerExceptionsService {
     }
 
     if (exception.status !== ExceptionStatus.PENDING) {
-      throw new UnprocessableEntityException(`Status cannot be changed from ${exception.status}`);
+      throw new UnprocessableEntityException(
+        `Status cannot be changed from ${exception.status}`,
+      );
     }
 
     await this.dataSource.transaction(async (managerEm) => {
@@ -117,7 +138,9 @@ export class ManagerExceptionsService {
     }
 
     if (exception.status !== ExceptionStatus.PENDING) {
-      throw new UnprocessableEntityException(`Status cannot be changed from ${exception.status}`);
+      throw new UnprocessableEntityException(
+        `Status cannot be changed from ${exception.status}`,
+      );
     }
 
     await this.dataSource.transaction(async (managerEm) => {

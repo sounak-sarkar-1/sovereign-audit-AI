@@ -9,6 +9,6 @@ import { AiJob } from '../../database/entities/ai-job.entity';
   imports: [TypeOrmModule.forFeature([AiJob]), AiJobsModule],
   controllers: [ClientSearchController],
   providers: [ClientSearchService],
-  exports: [ClientSearchService]
+  exports: [ClientSearchService],
 })
 export class ClientSearchModule {}

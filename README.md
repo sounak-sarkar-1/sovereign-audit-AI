@@ -1,5 +1,9 @@
 # 🛡️ Sovereign Audit AI
 
+> [!IMPORTANT]
+> Copy `backend/.env.example` to `backend/.env` and fill in real values before running the application.
+
+
 **Sovereign Audit AI** is a state-of-the-art, multi-tenant SaaS platform designed to digitize and automate the high-stakes world of audit management. From initial scope definition to AI-powered report finalized, the platform provides a seamless, secure, and intelligent experience for all audit stakeholders.
 
 ---

@@ -1,0 +1,15 @@
+.env
+.env.*
+dist/
+*.log
+*.txt
+check-*.ts
+check-*.js
+get-*.ts
+get-*.js
+reset-*.ts
+reset-*.js
+scratch/
+bootstrap_*.log
+compile_errors*.txt
+node_modules/

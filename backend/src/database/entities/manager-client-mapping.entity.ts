@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, DeleteDateColumn, ManyToOne, JoinColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
 import { User } from './user.entity';
 
 @Entity('manager_client_mappings')

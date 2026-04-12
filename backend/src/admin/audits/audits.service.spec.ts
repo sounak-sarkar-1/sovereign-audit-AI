@@ -51,10 +51,21 @@ describe('AdminAuditsService', () => {
 
       await service.findAll(filters);
 
-      expect(mockAuditRepository.createQueryBuilder).toHaveBeenCalledWith('audit');
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('audit.name ILIKE :search', { search: '%test%' });
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('audit.status = :status', { status: AuditStatus.CLOSED });
-      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith('audit.clientId = :clientId', { clientId: 'client-1' });
+      expect(mockAuditRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'audit',
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'audit.name ILIKE :search',
+        { search: '%test%' },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'audit.status = :status',
+        { status: AuditStatus.CLOSED },
+      );
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'audit.clientId = :clientId',
+        { clientId: 'client-1' },
+      );
       expect(mockQueryBuilder.getMany).toHaveBeenCalled();
     });
   });
@@ -77,7 +88,9 @@ describe('AdminAuditsService', () => {
       const csv = await service.exportCsv({});
 
       expect(csv).toContain('Audit ID,Name,Client,Manager,Status');
-      expect(csv).toContain('"1","Audit 1","Client A","Manager X","in_progress"');
+      expect(csv).toContain(
+        '"1","Audit 1","Client A","Manager X","in_progress"',
+      );
     });
   });
 });

@@ -4,10 +4,14 @@ export class AddAnnotationsToUploadedFiles1712736000000 implements MigrationInte
   name = 'AddAnnotationsToUploadedFiles1712736000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "uploaded_files" ADD "annotations" jsonb`);
+    await queryRunner.query(
+      `ALTER TABLE "uploaded_files" ADD "annotations" jsonb`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "uploaded_files" DROP COLUMN "annotations"`);
+    await queryRunner.query(
+      `ALTER TABLE "uploaded_files" DROP COLUMN "annotations"`,
+    );
   }
 }

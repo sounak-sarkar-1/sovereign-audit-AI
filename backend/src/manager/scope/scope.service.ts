@@ -264,7 +264,9 @@ export class ManagerScopeService {
     const headers = [];
     headerRow.eachCell((cell, colNumber) => {
       headers.push({
-        columnLetter: headerRow.getCell(colNumber).address.replace(/[0-9]/g, ''),
+        columnLetter: headerRow
+          .getCell(colNumber)
+          .address.replace(/[0-9]/g, ''),
         headerText: cell.text,
       });
     });

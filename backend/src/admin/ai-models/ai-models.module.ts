@@ -6,10 +6,7 @@ import { AiModel } from '../../database/entities/ai-model.entity';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AiModel]),
-    AuditTrailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([AiModel]), AuditTrailModule],
   controllers: [AdminAiModelsController],
   providers: [AdminAiModelsService],
   exports: [AdminAiModelsService],

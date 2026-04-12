@@ -7,10 +7,7 @@ import { Audit } from '../../database/entities/audit.entity';
 import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BusinessUnit, Audit]),
-    AuditTrailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([BusinessUnit, Audit]), AuditTrailModule],
   controllers: [AdminBusinessUnitsController],
   providers: [AdminBusinessUnitsService],
   exports: [AdminBusinessUnitsService],

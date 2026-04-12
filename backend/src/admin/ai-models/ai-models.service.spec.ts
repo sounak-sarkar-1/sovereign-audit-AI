@@ -15,7 +15,8 @@ describe('AdminAiModelsService', () => {
   let auditTrailService: any;
   let dataSource: any;
 
-  const mockEncryptionKey = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; // 64 hex chars for 32 bytes
+  const mockEncryptionKey =
+    '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'; // 64 hex chars for 32 bytes
 
   beforeEach(async () => {
     repository = {
@@ -35,9 +36,11 @@ describe('AdminAiModelsService', () => {
     };
 
     dataSource = {
-      transaction: jest.fn().mockImplementation((cb) => cb({
-        update: jest.fn(),
-      })),
+      transaction: jest.fn().mockImplementation((cb) =>
+        cb({
+          update: jest.fn(),
+        }),
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -88,7 +91,7 @@ describe('AdminAiModelsService', () => {
       expect(repository.create).toHaveBeenCalled();
       expect(repository.save).toHaveBeenCalled();
       expect(auditTrailService.log).toHaveBeenCalled();
-      
+
       // Check if encryption was called (indirectly by checking repository.create call)
       const createArgs = repository.create.mock.calls[0][0];
       expect(createArgs.apiKeyEnc).toBeDefined();
@@ -101,7 +104,7 @@ describe('AdminAiModelsService', () => {
       const testKey = 'secret-api-key';
       const encrypted = EncryptionUtils.encrypt(testKey, mockEncryptionKey);
       const decrypted = EncryptionUtils.decrypt(encrypted, mockEncryptionKey);
-      
+
       expect(decrypted).toBe(testKey);
       expect(encrypted).not.toBe(testKey);
       expect(encrypted.split(':')).toHaveLength(3);
@@ -113,7 +116,11 @@ describe('AdminAiModelsService', () => {
       const id = 'model-1';
       const actor = { id: 'admin-1', role: 'admin', ip: '127.0.0.1' };
 
-      repository.findOne.mockReturnValue({ id, name: 'Model 1', isActive: false });
+      repository.findOne.mockReturnValue({
+        id,
+        name: 'Model 1',
+        isActive: false,
+      });
 
       await service.activate(id, actor);
 
@@ -129,7 +136,9 @@ describe('AdminAiModelsService', () => {
 
       repository.findOne.mockReturnValue({ id, isActive: true });
 
-      await expect(service.remove(id, actor)).rejects.toThrow(UnprocessableEntityException);
+      await expect(service.remove(id, actor)).rejects.toThrow(
+        UnprocessableEntityException,
+      );
     });
 
     it('should soft delete if model is inactive', async () => {

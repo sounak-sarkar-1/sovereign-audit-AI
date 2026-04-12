@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Like } from 'typeorm';
 import { AdminUsersService } from './users.service';
-import { User, UserRole, UserStatus } from '../../database/entities/user.entity';
+import {
+  User,
+  UserRole,
+  UserStatus,
+} from '../../database/entities/user.entity';
 import { Audit } from '../../database/entities/audit.entity';
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
@@ -57,12 +61,14 @@ describe('AdminUsersService', () => {
 
       await service.findAll(query);
 
-      expect(repository.findAndCount).toHaveBeenCalledWith(expect.objectContaining({
-        where: [
-          { role: UserRole.AUDITOR, email: Like('%John%') },
-          { role: UserRole.AUDITOR, fullName: Like('%John%') },
-        ],
-      }));
+      expect(repository.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: [
+            { role: UserRole.AUDITOR, email: Like('%John%') },
+            { role: UserRole.AUDITOR, fullName: Like('%John%') },
+          ],
+        }),
+      );
     });
 
     it('should return users whose fullName contains "John"', async () => {

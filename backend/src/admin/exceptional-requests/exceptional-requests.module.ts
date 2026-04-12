@@ -10,11 +10,7 @@ import { NotificationsModule } from '../../shared/notifications/notifications.mo
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ExceptionalActionRequest,
-      Audit,
-      AuditTrailLog,
-    ]),
+    TypeOrmModule.forFeature([ExceptionalActionRequest, Audit, AuditTrailLog]),
     FilesModule,
     NotificationsModule,
   ],

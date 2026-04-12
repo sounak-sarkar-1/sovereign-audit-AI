@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 
 export enum NotificationType {
@@ -42,7 +49,12 @@ export class Notification {
   @Column({ name: 'is_read', type: 'boolean', default: false })
   isRead: boolean;
 
-  @Column({ name: 'related_entity_type', type: 'varchar', length: 100, nullable: true })
+  @Column({
+    name: 'related_entity_type',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
   relatedEntityType: string;
 
   @Column({ name: 'related_entity_id', type: 'uuid', nullable: true })

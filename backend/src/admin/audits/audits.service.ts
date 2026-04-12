@@ -14,13 +14,16 @@ export class AdminAuditsService {
   ) {}
 
   async findAll(filters: AuditFilterDto): Promise<Audit[]> {
-    const query = this.auditRepository.createQueryBuilder('audit')
+    const query = this.auditRepository
+      .createQueryBuilder('audit')
       .leftJoinAndSelect('audit.client', 'client')
       .leftJoinAndSelect('audit.manager', 'manager')
       .withDeleted(); // Include soft-deleted audits
 
     if (filters.search) {
-      query.andWhere('audit.name ILIKE :search', { search: `%${filters.search}%` });
+      query.andWhere('audit.name ILIKE :search', {
+        search: `%${filters.search}%`,
+      });
     }
 
     if (filters.status) {
@@ -28,19 +31,27 @@ export class AdminAuditsService {
     }
 
     if (filters.clientId) {
-      query.andWhere('audit.clientId = :clientId', { clientId: filters.clientId });
+      query.andWhere('audit.clientId = :clientId', {
+        clientId: filters.clientId,
+      });
     }
 
     if (filters.managerId) {
-      query.andWhere('audit.managerId = :managerId', { managerId: filters.managerId });
+      query.andWhere('audit.managerId = :managerId', {
+        managerId: filters.managerId,
+      });
     }
 
     if (filters.startDate) {
-      query.andWhere('audit.createdAt >= :startDate', { startDate: filters.startDate });
+      query.andWhere('audit.createdAt >= :startDate', {
+        startDate: filters.startDate,
+      });
     }
 
     if (filters.endDate) {
-      query.andWhere('audit.createdAt <= :endDate', { endDate: filters.endDate });
+      query.andWhere('audit.createdAt <= :endDate', {
+        endDate: filters.endDate,
+      });
     }
 
     const sortBy = filters.sortBy || 'createdAt';
@@ -52,7 +63,7 @@ export class AdminAuditsService {
 
   async exportCsv(filters: AuditFilterDto): Promise<string> {
     const audits = await this.findAll(filters);
-    
+
     const headers = [
       'Audit ID',
       'Name',
@@ -62,24 +73,28 @@ export class AdminAuditsService {
       'Start Date',
       'Expected Completion',
       'Created At',
-      'Deleted At'
+      'Deleted At',
     ];
 
-    const rows = audits.map(audit => [
+    const rows = audits.map((audit) => [
       audit.id,
       audit.name,
       audit.client?.fullName || 'N/A',
       audit.manager?.fullName || 'N/A',
       audit.status,
       audit.startDate ? new Date(audit.startDate).toISOString() : 'N/A',
-      audit.expectedCompletionDate ? new Date(audit.expectedCompletionDate).toISOString() : 'N/A',
+      audit.expectedCompletionDate
+        ? new Date(audit.expectedCompletionDate).toISOString()
+        : 'N/A',
       new Date(audit.createdAt).toISOString(),
-      audit.deletedAt ? new Date(audit.deletedAt).toISOString() : 'N/A'
+      audit.deletedAt ? new Date(audit.deletedAt).toISOString() : 'N/A',
     ]);
 
     const csvContent = [
       headers.join(','),
-      ...rows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+      ...rows.map((row) =>
+        row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(','),
+      ),
     ].join('\n');
 
     return csvContent;

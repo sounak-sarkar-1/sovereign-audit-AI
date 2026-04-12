@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CorrectiveActionPlan, CorrectiveActionStatus } from '../../database/entities/corrective-action-plan.entity';
+import {
+  CorrectiveActionPlan,
+  CorrectiveActionStatus,
+} from '../../database/entities/corrective-action-plan.entity';
 import { User } from '../../database/entities/user.entity';
 
 @Injectable()
@@ -12,7 +15,8 @@ export class ClientCorrectiveActionsService {
   ) {}
 
   async findAll(clientId: string, auditId?: string) {
-    const query = this.repo.createQueryBuilder('cap')
+    const query = this.repo
+      .createQueryBuilder('cap')
       .leftJoinAndSelect('cap.audit', 'audit')
       .leftJoinAndSelect('cap.lineItem', 'li')
       .leftJoinAndSelect('cap.assignee', 'assignee')

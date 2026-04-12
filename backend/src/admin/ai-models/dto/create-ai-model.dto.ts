@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsEnum, IsUrl, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsUrl,
+  IsOptional,
+} from 'class-validator';
 import { AiModelType } from '../../../database/entities/ai-model.entity';
 
 export class CreateAiModelDto {

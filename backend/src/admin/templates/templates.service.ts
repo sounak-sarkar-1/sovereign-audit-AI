@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, IsNull } from 'typeorm';
 import { AuditTemplate } from '../../database/entities/audit-template.entity';
@@ -6,7 +10,10 @@ import { AuditTemplateLineItem } from '../../database/entities/audit-template-li
 import { AuditTemplateOption } from '../../database/entities/audit-template-option.entity';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
-import { AuditTrailService, AuditAction } from '../../shared/audit-trail/audit-trail.service';
+import {
+  AuditTrailService,
+  AuditAction,
+} from '../../shared/audit-trail/audit-trail.service';
 
 @Injectable()
 export class TemplatesService {
@@ -18,7 +25,8 @@ export class TemplatesService {
   ) {}
 
   async findAll(page: number = 1, limit: number = 10, search?: string) {
-    const query = this.templateRepo.createQueryBuilder('template')
+    const query = this.templateRepo
+      .createQueryBuilder('template')
       .where('template.deleted_at IS NULL');
 
     if (search) {
@@ -130,7 +138,8 @@ export class TemplatesService {
     try {
       // Update template meta
       if (updateDto.name) template.name = updateDto.name;
-      if (updateDto.description !== undefined) template.description = updateDto.description;
+      if (updateDto.description !== undefined)
+        template.description = updateDto.description;
       await queryRunner.manager.save(template);
 
       if (updateDto.lineItems) {
@@ -198,7 +207,8 @@ export class TemplatesService {
     await this.templateRepo.save(template);
 
     // Soft-delete line items too
-    await this.dataSource.createQueryBuilder()
+    await this.dataSource
+      .createQueryBuilder()
       .update(AuditTemplateLineItem)
       .set({ deletedAt: new Date() })
       .where('template_id = :id AND deleted_at IS NULL', { id })

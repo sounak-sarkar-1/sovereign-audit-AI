@@ -28,7 +28,10 @@ export default () => ({
   },
 
   ai: {
-    requestTimeoutMs: parseInt(process.env.AI_REQUEST_TIMEOUT_MS || '120000', 10),
+    requestTimeoutMs: parseInt(
+      process.env.AI_REQUEST_TIMEOUT_MS || '120000',
+      10,
+    ),
   },
 
   pgBoss: {

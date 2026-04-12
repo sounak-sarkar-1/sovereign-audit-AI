@@ -13,11 +13,19 @@ import { map } from 'rxjs/operators';
  */
 @Injectable()
 export class TransformResponseInterceptor implements NestInterceptor {
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
+  intercept(
+    _context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<unknown> {
     return next.handle().pipe(
       map((response) => {
         // If it's already a success/data envelope, leave as is
-        if (response && typeof response === 'object' && 'success' in response && 'data' in response) {
+        if (
+          response &&
+          typeof response === 'object' &&
+          'success' in response &&
+          'data' in response
+        ) {
           return response;
         }
 

@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Param, UseGuards, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { ManagerExceptionalRequestsService } from './exceptional-requests.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -26,7 +33,9 @@ export class ManagerExceptionalRequestsController {
     @CurrentUser() manager: User,
   ) {
     if (dto.justification.length < 20) {
-      throw new UnprocessableEntityException('Justification must be at least 20 characters');
+      throw new UnprocessableEntityException(
+        'Justification must be at least 20 characters',
+      );
     }
     return this.service.create(auditId, dto, manager);
   }

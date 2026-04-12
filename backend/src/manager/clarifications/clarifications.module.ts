@@ -10,7 +10,11 @@ import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ClarificationRequest, ExceptionRequest, ClarificationResponse]),
+    TypeOrmModule.forFeature([
+      ClarificationRequest,
+      ExceptionRequest,
+      ClarificationResponse,
+    ]),
     NotificationsModule,
     AuditTrailModule,
   ],

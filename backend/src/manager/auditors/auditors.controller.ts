@@ -1,9 +1,4 @@
-import { 
-  Controller, 
-  Get, 
-  Query, 
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { HeatmapService } from './heatmap.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';

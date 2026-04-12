@@ -2,8 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
-import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
-import { ExceptionRequest, ExceptionStatus } from '../../database/entities/exception-request.entity';
+import {
+  AuditScopeLineItem,
+  LineItemStatus,
+} from '../../database/entities/audit-scope-line-item.entity';
+import {
+  ExceptionRequest,
+  ExceptionStatus,
+} from '../../database/entities/exception-request.entity';
 
 @Injectable()
 export class ClientInsightsService {
@@ -26,41 +32,65 @@ export class ClientInsightsService {
     });
 
     if (audits.length === 0) {
-      return { data: { auditsCount: 0, complianceTrend: [], riskByBu: [], recurringFindings: [] } };
+      return {
+        data: {
+          auditsCount: 0,
+          complianceTrend: [],
+          riskByBu: [],
+          recurringFindings: [],
+        },
+      };
     }
 
     // 1. Audit Frequency & Compliance Trend
-    const complianceTrend = await Promise.all(audits.map(async audit => {
-      const totalItems = await this.lineItemRepo.count({ where: { auditId: audit.id } });
-      const exceptions = await this.exceptionRepo.count({ 
-        where: { 
-          auditScopeLineItem: { auditId: audit.id }, 
-          status: ExceptionStatus.APPROVED 
-        } 
-      });
+    const complianceTrend = await Promise.all(
+      audits.map(async (audit) => {
+        const totalItems = await this.lineItemRepo.count({
+          where: { auditId: audit.id },
+        });
+        const exceptions = await this.exceptionRepo.count({
+          where: {
+            auditScopeLineItem: { auditId: audit.id },
+            status: ExceptionStatus.APPROVED,
+          },
+        });
 
-      const score = totalItems > 0 ? Math.round(((totalItems - exceptions) / totalItems) * 100) : 100;
+        const score =
+          totalItems > 0
+            ? Math.round(((totalItems - exceptions) / totalItems) * 100)
+            : 100;
 
-      return {
-        auditId: audit.id,
-        name: audit.name,
-        date: audit.expectedCompletionDate,
-        score,
-      };
-    }));
+        return {
+          auditId: audit.id,
+          name: audit.name,
+          date: audit.expectedCompletionDate,
+          score,
+        };
+      }),
+    );
 
     // Calculate Latest Score and Delta
-    const latestScore = complianceTrend.length > 0 ? complianceTrend[complianceTrend.length - 1].score : 0;
-    const prevScore = complianceTrend.length > 1 ? complianceTrend[complianceTrend.length - 2].score : latestScore;
+    const latestScore =
+      complianceTrend.length > 0
+        ? complianceTrend[complianceTrend.length - 1].score
+        : 0;
+    const prevScore =
+      complianceTrend.length > 1
+        ? complianceTrend[complianceTrend.length - 2].score
+        : latestScore;
     const delta = latestScore - prevScore;
 
     // 2. Risk by BU (based on exceptions)
-    const riskByBu = await this.lineItemRepo.createQueryBuilder('li')
+    const riskByBu = await this.lineItemRepo
+      .createQueryBuilder('li')
       .leftJoin('li.audit', 'audit')
       .leftJoin('li.auditBusinessUnit', 'bu')
       .select('bu.name', 'buName')
       .addSelect('COUNT(li.id)', 'totalItems')
-      .addSelect('SUM(CASE WHEN li.status = :exApproved THEN 1 ELSE 0 END)', 'exceptionCount')
+      .addSelect(
+        'SUM(CASE WHEN li.status = :exApproved THEN 1 ELSE 0 END)',
+        'exceptionCount',
+      )
       .where('audit.clientId = :clientId', { clientId })
       .andWhere('audit.status = :closed', { closed: AuditStatus.CLOSED })
       .setParameters({ exApproved: LineItemStatus.EXCEPTION_APPROVED })
@@ -71,14 +101,14 @@ export class ClientInsightsService {
       data: {
         auditsCount: audits.length,
         complianceTrend,
-        riskByBu: riskByBu.map(r => ({
+        riskByBu: riskByBu.map((r) => ({
           buName: r.buName,
           rate: r.totalItems > 0 ? (r.exceptionCount / r.totalItems) * 100 : 0,
         })),
         complianceScore: latestScore,
         complianceDelta: delta,
         recurringFindings: [], // Placeholder
-      }
+      },
     };
   }
 }

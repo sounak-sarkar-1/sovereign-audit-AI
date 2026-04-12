@@ -1,4 +1,12 @@
-import { IsString, IsEnum, IsBoolean, IsOptional, IsInt, Min, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsBoolean,
+  IsOptional,
+  IsInt,
+  Min,
+  IsArray,
+} from 'class-validator';
 import { InputMethod } from '../../../database/entities/audit-scope-line-item.entity';
 
 export class UpdateScopeItemDto {

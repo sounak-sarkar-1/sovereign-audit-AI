@@ -1,7 +1,16 @@
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExceptionalActionRequest, ExceptionalRequestStatus, ExceptionalActionType } from '../../database/entities/exceptional-action-request.entity';
+import {
+  ExceptionalActionRequest,
+  ExceptionalRequestStatus,
+  ExceptionalActionType,
+} from '../../database/entities/exceptional-action-request.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { AuditTrailLog } from '../../database/entities/audit-trail-log.entity';
 import { FilesService } from '../../shared/files/files.service';
@@ -24,7 +33,9 @@ export class AdminExceptionalRequestsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async findAll(status?: ExceptionalRequestStatus): Promise<ExceptionalActionRequest[]> {
+  async findAll(
+    status?: ExceptionalRequestStatus,
+  ): Promise<ExceptionalActionRequest[]> {
     const where = status ? { status } : {};
     return await this.requestRepository.find({
       where,
@@ -40,7 +51,9 @@ export class AdminExceptionalRequestsService {
     });
 
     if (!request) {
-      throw new NotFoundException(`Exceptional request with ID ${id} not found`);
+      throw new NotFoundException(
+        `Exceptional request with ID ${id} not found`,
+      );
     }
 
     return request;
@@ -59,7 +72,9 @@ export class AdminExceptionalRequestsService {
     }
 
     if (!file) {
-      throw new BadRequestException('Evidence file is required to approve an exceptional request');
+      throw new BadRequestException(
+        'Evidence file is required to approve an exceptional request',
+      );
     }
 
     // Upload evidence file
@@ -80,37 +95,43 @@ export class AdminExceptionalRequestsService {
     await this.requestRepository.save(request);
 
     // Perform the action on the audit
-    const audit = await this.auditRepository.findOne({ where: { id: request.auditId } });
+    const audit = await this.auditRepository.findOne({
+      where: { id: request.auditId },
+    });
     if (!audit) {
-        throw new NotFoundException(`Audit ${request.auditId} not found`);
+      throw new NotFoundException(`Audit ${request.auditId} not found`);
     }
 
     if (request.actionType === ExceptionalActionType.DELETE) {
       audit.deletedAt = new Date();
       // Also update status if needed, but soft-delete usually relies on deletedAt
       await this.auditRepository.save(audit);
-      
-      await this.auditTrailRepository.save(this.auditTrailRepository.create({
-        actorUserId: adminId,
-        actorRole: 'admin',
-        actionType: 'AUDIT_DELETED',
-        entityType: 'audit',
-        entityId: audit.id,
-        payload: { requestId: request.id },
-      }));
+
+      await this.auditTrailRepository.save(
+        this.auditTrailRepository.create({
+          actorUserId: adminId,
+          actorRole: 'admin',
+          actionType: 'AUDIT_DELETED',
+          entityType: 'audit',
+          entityId: audit.id,
+          payload: { requestId: request.id },
+        }),
+      );
     } else if (request.actionType === ExceptionalActionType.REOPEN) {
       audit.status = AuditStatus.REOPENED;
       audit.deletedAt = null;
       await this.auditRepository.save(audit);
 
-      await this.auditTrailRepository.save(this.auditTrailRepository.create({
-        actorUserId: adminId,
-        actorRole: 'admin',
-        actionType: 'AUDIT_REOPENED',
-        entityType: 'audit',
-        entityId: audit.id,
-        payload: { requestId: request.id },
-      }));
+      await this.auditTrailRepository.save(
+        this.auditTrailRepository.create({
+          actorUserId: adminId,
+          actorRole: 'admin',
+          actionType: 'AUDIT_REOPENED',
+          entityType: 'audit',
+          entityId: audit.id,
+          payload: { requestId: request.id },
+        }),
+      );
     }
 
     // Notify manager
@@ -139,7 +160,9 @@ export class AdminExceptionalRequestsService {
     }
 
     if (!adminComment || adminComment.trim().length < 10) {
-      throw new BadRequestException('Admin comment must be at least 10 characters for rejection');
+      throw new BadRequestException(
+        'Admin comment must be at least 10 characters for rejection',
+      );
     }
 
     await this.requestRepository.update(id, {

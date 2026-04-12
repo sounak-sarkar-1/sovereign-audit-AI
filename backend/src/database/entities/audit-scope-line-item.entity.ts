@@ -15,7 +15,6 @@ import { AuditScopeLineItemOption } from './audit-scope-line-item-option.entity'
 import { LineItemResponse } from './line-item-response.entity';
 import { AuditorLineItemAssignment } from './auditor-line-item-assignment.entity';
 
-
 export enum InputMethod {
   FREE_TEXT = 'free_text',
   MULTIPLE_CHOICE = 'multiple_choice',
@@ -90,17 +89,21 @@ export class AuditScopeLineItem {
   })
   status: LineItemStatus;
 
-  @OneToMany(() => AuditScopeLineItemOption, (option) => option.lineItem, { cascade: true })
+  @OneToMany(() => AuditScopeLineItemOption, (option) => option.lineItem, {
+    cascade: true,
+  })
   options: AuditScopeLineItemOption[];
 
   @OneToMany(() => LineItemResponse, (response) => response.lineItem)
   responses: LineItemResponse[];
 
-  @OneToMany(() => AuditorLineItemAssignment, (assignment) => assignment.auditScopeLineItem)
+  @OneToMany(
+    () => AuditorLineItemAssignment,
+    (assignment) => assignment.auditScopeLineItem,
+  )
   assignments: AuditorLineItemAssignment[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
-
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })

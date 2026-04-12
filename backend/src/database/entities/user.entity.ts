@@ -64,15 +64,15 @@ export class User {
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date;
 
-  @OneToMany(() => ManagerAuditorMapping, m => m.manager)
+  @OneToMany(() => ManagerAuditorMapping, (m) => m.manager)
   auditorMappings: ManagerAuditorMapping[];
 
-  @OneToMany(() => ManagerAuditorMapping, m => m.auditor)
+  @OneToMany(() => ManagerAuditorMapping, (m) => m.auditor)
   managedByMappings: ManagerAuditorMapping[];
 
-  @OneToMany(() => ManagerClientMapping, m => m.manager)
+  @OneToMany(() => ManagerClientMapping, (m) => m.manager)
   clientMappings: ManagerClientMapping[];
 
-  @OneToMany(() => ManagerClientMapping, m => m.client)
+  @OneToMany(() => ManagerClientMapping, (m) => m.client)
   managedClientsByMappings: ManagerClientMapping[];
 }

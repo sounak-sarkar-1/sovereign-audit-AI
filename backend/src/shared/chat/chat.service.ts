@@ -31,7 +31,7 @@ export class ChatService {
   async markAsRead(auditId: string, userId: string) {
     await this.messageRepo.update(
       { auditId, authorId: userId, isRead: false },
-      { isRead: true }
+      { isRead: true },
     );
     return { success: true };
   }

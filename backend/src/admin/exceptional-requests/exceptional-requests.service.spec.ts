@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AdminExceptionalRequestsService } from './exceptional-requests.service';
-import { ExceptionalActionRequest, ExceptionalRequestStatus, ExceptionalActionType } from '../../database/entities/exceptional-action-request.entity';
+import {
+  ExceptionalActionRequest,
+  ExceptionalRequestStatus,
+  ExceptionalActionType,
+} from '../../database/entities/exceptional-action-request.entity';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
 import { AuditTrailLog } from '../../database/entities/audit-trail-log.entity';
 import { FilesService } from '../../shared/files/files.service';
@@ -69,12 +73,19 @@ describe('AdminExceptionalRequestsService', () => {
       ],
     }).compile();
 
-    service = module.get<AdminExceptionalRequestsService>(AdminExceptionalRequestsService);
-    requestRepository = module.get<Repository<ExceptionalActionRequest>>(getRepositoryToken(ExceptionalActionRequest));
+    service = module.get<AdminExceptionalRequestsService>(
+      AdminExceptionalRequestsService,
+    );
+    requestRepository = module.get<Repository<ExceptionalActionRequest>>(
+      getRepositoryToken(ExceptionalActionRequest),
+    );
     auditRepository = module.get<Repository<Audit>>(getRepositoryToken(Audit));
-    auditTrailRepository = module.get<Repository<AuditTrailLog>>(getRepositoryToken(AuditTrailLog));
+    auditTrailRepository = module.get<Repository<AuditTrailLog>>(
+      getRepositoryToken(AuditTrailLog),
+    );
     filesService = module.get<FilesService>(FilesService);
-    notificationsService = module.get<NotificationsService>(NotificationsService);
+    notificationsService =
+      module.get<NotificationsService>(NotificationsService);
   });
 
   afterEach(() => {
@@ -103,9 +114,11 @@ describe('AdminExceptionalRequestsService', () => {
     it('should filter by status', async () => {
       mockRequestRepository.find.mockResolvedValue([]);
       await service.findAll(ExceptionalRequestStatus.PENDING);
-      expect(mockRequestRepository.find).toHaveBeenCalledWith(expect.objectContaining({
-        where: { status: ExceptionalRequestStatus.PENDING },
-      }));
+      expect(mockRequestRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { status: ExceptionalRequestStatus.PENDING },
+        }),
+      );
     });
   });
 
@@ -136,12 +149,19 @@ describe('AdminExceptionalRequestsService', () => {
 
     it('should throw NotFoundException if request does not exist', async () => {
       mockRequestRepository.findOne.mockResolvedValue(null);
-      await expect(service.approve(mockId, mockAdminId, mockFile)).rejects.toThrow(NotFoundException);
+      await expect(
+        service.approve(mockId, mockAdminId, mockFile),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if request is not pending', async () => {
-      mockRequestRepository.findOne.mockResolvedValue({ ...mockRequest, status: ExceptionalRequestStatus.APPROVED });
-      await expect(service.approve(mockId, mockAdminId, mockFile)).rejects.toThrow(BadRequestException);
+      mockRequestRepository.findOne.mockResolvedValue({
+        ...mockRequest,
+        status: ExceptionalRequestStatus.APPROVED,
+      });
+      await expect(
+        service.approve(mockId, mockAdminId, mockFile),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should successfully approve a delete request', async () => {
@@ -150,7 +170,12 @@ describe('AdminExceptionalRequestsService', () => {
       mockFilesService.uploadFile.mockResolvedValue({ id: 'file-1' });
       mockAuditTrailRepository.create.mockReturnValue({});
 
-      const result = await service.approve(mockId, mockAdminId, mockFile, 'Approved justification');
+      const result = await service.approve(
+        mockId,
+        mockAdminId,
+        mockFile,
+        'Approved justification',
+      );
 
       expect(mockFilesService.uploadFile).toHaveBeenCalled();
       expect(mockRequest.status).toBe(ExceptionalRequestStatus.APPROVED);
@@ -162,7 +187,10 @@ describe('AdminExceptionalRequestsService', () => {
     });
 
     it('should successfully approve a reopen request', async () => {
-      const reopenRequest = { ...mockRequest, actionType: ExceptionalActionType.REOPEN };
+      const reopenRequest = {
+        ...mockRequest,
+        actionType: ExceptionalActionType.REOPEN,
+      };
       mockRequestRepository.findOne.mockResolvedValue(reopenRequest);
       mockAuditRepository.findOne.mockResolvedValue(mockAudit);
       mockFilesService.uploadFile.mockResolvedValue({ id: 'file-2' });
@@ -177,7 +205,11 @@ describe('AdminExceptionalRequestsService', () => {
 
   describe('reject', () => {
     it('should reject a request', async () => {
-      const mockRequest = { id: '1', status: ExceptionalRequestStatus.PENDING, requestedById: 'm1' } as any;
+      const mockRequest = {
+        id: '1',
+        status: ExceptionalRequestStatus.PENDING,
+        requestedById: 'm1',
+      } as any;
       mockRequestRepository.findOne.mockResolvedValue(mockRequest);
 
       await service.reject('1', 'admin-1', 'Reason');

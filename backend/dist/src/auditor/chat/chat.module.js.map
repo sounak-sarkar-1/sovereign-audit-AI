@@ -1,1 +1,0 @@
-{"version":3,"file":"chat.module.js","sourceRoot":"","sources":["../../../../src/auditor/chat/chat.module.ts"],"names":[],"mappings":";;;;;;;;;AAAA,2CAAwC;AACxC,uDAA0D;AAC1D,+DAA+E;AAMxE,IAAM,iBAAiB,GAAvB,MAAM,iBAAiB;CAAG,CAAA;AAApB,8CAAiB;4BAAjB,iBAAiB;IAJ7B,IAAA,eAAM,EAAC;QACN,OAAO,EAAE,CAAC,wBAAgB,CAAC;QAC3B,WAAW,EAAE,CAAC,uCAAqB,CAAC;KACrC,CAAC;GACW,iBAAiB,CAAG"}

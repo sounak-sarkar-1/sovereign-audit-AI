@@ -4,7 +4,10 @@ import { DataSource } from 'typeorm';
 import { TemplatesService } from './templates.service';
 import { AuditTemplate } from '../../database/entities/audit-template.entity';
 import { AuditTrailService } from '../../shared/audit-trail/audit-trail.service';
-import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 describe('TemplatesService', () => {
   let service: TemplatesService;
@@ -19,7 +22,11 @@ describe('TemplatesService', () => {
     rollbackTransaction: jest.fn().mockResolvedValue(null),
     release: jest.fn().mockResolvedValue(null),
     manager: {
-      save: jest.fn().mockImplementation((entity) => Promise.resolve({ id: 'uuid', ...entity })),
+      save: jest
+        .fn()
+        .mockImplementation((entity) =>
+          Promise.resolve({ id: 'uuid', ...entity }),
+        ),
       create: jest.fn().mockImplementation((cls, data) => ({ ...data })),
       update: jest.fn().mockResolvedValue({ affected: 1 }),
     },
@@ -37,7 +44,9 @@ describe('TemplatesService', () => {
       }),
       findOne: jest.fn(),
       create: jest.fn().mockImplementation((data) => data),
-      save: jest.fn().mockImplementation((data) => Promise.resolve({ id: 'uuid', ...data })),
+      save: jest
+        .fn()
+        .mockImplementation((data) => Promise.resolve({ id: 'uuid', ...data })),
     };
 
     dataSource = {
@@ -130,7 +139,9 @@ describe('TemplatesService', () => {
       mockQueryResult.manager.save.mockRejectedValueOnce(new Error('DB Error'));
       const dto = { name: 'Fail', lineItems: [] };
 
-      await expect(service.create(dto, 'user-id')).rejects.toThrow(InternalServerErrorException);
+      await expect(service.create(dto, 'user-id')).rejects.toThrow(
+        InternalServerErrorException,
+      );
       expect(mockQueryResult.rollbackTransaction).toHaveBeenCalled();
     });
   });

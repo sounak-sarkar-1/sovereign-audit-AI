@@ -9,11 +9,15 @@ import { NotificationsModule } from '../../shared/notifications/notifications.mo
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ClarificationRequest, ClarificationResponse, UploadedFile]),
+    TypeOrmModule.forFeature([
+      ClarificationRequest,
+      ClarificationResponse,
+      UploadedFile,
+    ]),
     NotificationsModule,
   ],
   controllers: [ClientClarificationsController],
   providers: [ClientClarificationsService],
-  exports: [ClientClarificationsService]
+  exports: [ClientClarificationsService],
 })
 export class ClientClarificationsModule {}

@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { AiJob, JobType, JobStatus } from '../../database/entities/ai-job.entity';
+import {
+  AiJob,
+  JobType,
+  JobStatus,
+} from '../../database/entities/ai-job.entity';
 import { SearchQueryDto } from './dto/search-query.dto';
 import { AiJobsService } from '../../shared/ai-jobs/ai-jobs.service';
 
@@ -28,10 +32,10 @@ export class ClientSearchService {
       const savedJob = await manager.save(aiJob);
 
       // Publish to pg-boss
-      await this.aiJobsService.send('nl-search', { 
+      await this.aiJobsService.send('nl-search', {
         jobId: savedJob.id,
         query: dto.query,
-        clientId 
+        clientId,
       });
 
       return { jobId: savedJob.id };

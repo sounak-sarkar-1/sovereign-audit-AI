@@ -1,10 +1,10 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Delete, 
-  Body, 
-  Param, 
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Body,
+  Param,
   UseGuards,
   HttpStatus,
   HttpCode,

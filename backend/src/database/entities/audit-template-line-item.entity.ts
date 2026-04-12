@@ -48,7 +48,9 @@ export class AuditTemplateLineItem {
   @Column({ name: 'display_order', type: 'integer', default: 0 })
   displayOrder: number;
 
-  @OneToMany(() => AuditTemplateOption, (option) => option.lineItem, { cascade: true })
+  @OneToMany(() => AuditTemplateOption, (option) => option.lineItem, {
+    cascade: true,
+  })
   options: AuditTemplateOption[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })

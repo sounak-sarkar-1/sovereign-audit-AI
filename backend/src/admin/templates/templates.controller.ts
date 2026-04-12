@@ -31,7 +31,11 @@ export class TemplatesController {
     @Query('limit') limit?: number,
     @Query('search') search?: string,
   ) {
-    return this.templatesService.findAll(page ? +page : 1, limit ? +limit : 10, search);
+    return this.templatesService.findAll(
+      page ? +page : 1,
+      limit ? +limit : 10,
+      search,
+    );
   }
 
   @Get(':id')
