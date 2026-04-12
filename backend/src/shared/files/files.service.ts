@@ -67,7 +67,8 @@ export class FilesService {
     file: Express.Multer.File,
     uploadedBy: string,
     entityType: FileEntityType,
-    entityId: string,
+    entityId?: string,
+
   ): Promise<UploadedFile> {
     try {
       const ext = path.extname(file.originalname);

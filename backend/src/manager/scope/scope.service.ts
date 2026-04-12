@@ -136,10 +136,12 @@ export class ManagerScopeService {
     }
 
     return await this.dataSource.transaction(async (manager) => {
-      if (dto.options !== undefined) {
+      const { options: optionsDto, ...updateData } = dto;
+
+      if (optionsDto !== undefined) {
         await manager.delete(AuditScopeLineItemOption, { lineItemId: itemId });
-        if (dto.options.length > 0) {
-          const options = dto.options.map((opt, index) =>
+        if (optionsDto.length > 0) {
+          const options = optionsDto.map((opt, index) =>
             manager.create(AuditScopeLineItemOption, {
               lineItemId: itemId,
               optionText: opt,
@@ -150,9 +152,10 @@ export class ManagerScopeService {
         }
       }
 
-      Object.assign(item, dto);
+      Object.assign(item, updateData);
       return await manager.save(item);
     });
+
   }
 
   async removeLineItem(auditId: string, itemId: string) {

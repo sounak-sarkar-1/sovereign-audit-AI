@@ -4,6 +4,7 @@ import {
   UnprocessableEntityException,
   NotFoundException,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
@@ -110,23 +111,39 @@ export class ManagerReportsService {
       });
       const savedJob = await managerEm.save(aiJob);
 
+      this.logger.log(`Created AI Job ${savedJob.id} for Audit ${auditId}`);
+
       // Publish to pg-boss
-      await this.aiJobsService.send('report-generation', {
-        jobId: savedJob.id,
-        reportId: savedReport.id,
-        auditId,
-      });
+      try {
+        await this.aiJobsService.send('report-generation', {
+          jobId: savedJob.id,
+          reportId: savedReport.id,
+          auditId,
+        });
+        this.logger.log(`Sent report-generation job for Audit ${auditId}`);
+      } catch (err) {
+        this.logger.error(`Failed to send report-generation job: ${err.message}`, err.stack);
+        throw new InternalServerErrorException('Failed to dispatch background job');
+      }
 
       return { reportId: savedReport.id, jobId: savedJob.id };
     });
   }
 
   async findAll(auditId: string) {
-    return this.reportRepo.find({
-      where: { auditId },
-      relations: ['file'],
-      order: { version: 'DESC' },
-    });
+    this.logger.log(`Fetching reports for audit: ${auditId}`);
+    try {
+      const reports = await this.reportRepo.find({
+        where: { auditId },
+        relations: ['file'],
+        order: { version: 'DESC' },
+      });
+      this.logger.log(`Found ${reports.length} reports for audit ${auditId}`);
+      return reports;
+    } catch (err) {
+      this.logger.error(`Failed to fetch reports for audit ${auditId}: ${err.message}`, err.stack);
+      throw new InternalServerErrorException('Database error while fetching reports');
+    }
   }
 
   async sendToClient(auditId: string, reportId: string, manager: User) {

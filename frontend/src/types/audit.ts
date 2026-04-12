@@ -56,6 +56,7 @@ export interface Audit {
   auditorCount?: number;
   completionPercentage?: number;
   openExceptionsCount?: number;
+  incompleteMandatoryCount?: number;
   hasPendingExceptionalRequest?: boolean;
   businessUnits?: BusinessUnit[];
   assignments?: Assignment[];

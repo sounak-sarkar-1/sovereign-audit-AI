@@ -52,8 +52,9 @@ export class UploadedFile {
   })
   entityType: FileEntityType;
 
-  @Column({ name: 'entity_id', type: 'uuid' })
+  @Column({ name: 'entity_id', type: 'uuid', nullable: true })
   entityId: string;
+
 
   @Column({ type: 'jsonb', nullable: true })
   annotations: any;

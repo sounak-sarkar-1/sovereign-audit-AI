@@ -47,9 +47,6 @@ export class AuditReport {
   })
   status: ReportStatus;
 
-  @Column({ name: 'manager_notes', type: 'text', nullable: true })
-  managerNotes: string;
-
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 

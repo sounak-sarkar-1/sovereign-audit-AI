@@ -133,10 +133,12 @@ export class AuditorScopeService {
     user: User,
     dto: UpdateResponseDto,
   ) {
-    const lineItem = await this.lineItemRepo.findOne({
-      where: { id: liId, auditId },
-      relations: ['assignments'],
-    });
+    this.logger.log(`Updating response for liId: ${liId}, isDraft: ${dto.isDraft}`);
+    try {
+      const lineItem = await this.lineItemRepo.findOne({
+        where: { id: liId, auditId },
+        relations: ['assignments'],
+      });
 
     if (!lineItem)
       throw new NotFoundException('Line item not found in this audit');
@@ -221,8 +223,23 @@ export class AuditorScopeService {
       lineItem.status = LineItemStatus.SUBMITTED;
     }
 
-    await this.lineItemRepo.save(lineItem);
+      // Explicitly update status to ensure consistency
+      await this.lineItemRepo.update(
+        { id: liId },
+        { status: lineItem.status },
+      );
 
-    return response;
+      return response;
+    } catch (error) {
+      this.logger.error(`Error in updateResponse: ${error.message}`, error.stack);
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to update response');
+    }
   }
 }

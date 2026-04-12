@@ -375,7 +375,7 @@ async function seed() {
     const actionRequest = await manager.findOne(ExceptionalActionRequest, { 
       where: { auditId: audit.id, actionType: actionType, requestedById: mgr.id } 
     });
-    });
+
 
     if (!actionRequest) {
       await manager.save(

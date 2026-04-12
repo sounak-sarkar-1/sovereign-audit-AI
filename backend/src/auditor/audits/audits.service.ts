@@ -49,7 +49,10 @@ export class AuditorAuditsService {
           where: {
             auditId: audit.id,
             assignments: { auditorId: user.id },
-            status: LineItemStatus.SUBMITTED,
+            status: In([
+              LineItemStatus.SUBMITTED,
+              LineItemStatus.EXCEPTION_APPROVED,
+            ]),
           },
         });
 
@@ -105,7 +108,10 @@ export class AuditorAuditsService {
       where: {
         auditId,
         assignments: { auditorId: user.id },
-        status: LineItemStatus.SUBMITTED,
+        status: In([
+          LineItemStatus.SUBMITTED,
+          LineItemStatus.EXCEPTION_APPROVED,
+        ]),
       },
     });
 
@@ -131,7 +137,10 @@ export class AuditorAuditsService {
         const buCompletedItems = await this.lineItemRepo.count({
           where: {
             auditBusinessUnitId: bu.id,
-            status: LineItemStatus.SUBMITTED,
+            status: In([
+              LineItemStatus.SUBMITTED,
+              LineItemStatus.EXCEPTION_APPROVED,
+            ]),
           },
         });
 
@@ -186,7 +195,10 @@ export class AuditorAuditsService {
       where: {
         auditId: In(auditIds),
         assignments: { auditorId: user.id },
-        status: LineItemStatus.SUBMITTED,
+        status: In([
+          LineItemStatus.SUBMITTED,
+          LineItemStatus.EXCEPTION_APPROVED,
+        ]),
       },
     });
     const totalExceptions = await this.lineItemRepo.count({

@@ -295,6 +295,8 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
                  auditId={audit.id} 
                  auditStatus={audit.status} 
                  auditName={audit.name} 
+                 completionPercentage={audit.completionPercentage}
+                 incompleteMandatoryCount={audit.incompleteMandatoryCount}
                />
             </TabsContent>
           </Tabs>

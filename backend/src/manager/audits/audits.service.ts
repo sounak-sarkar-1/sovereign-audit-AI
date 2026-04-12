@@ -8,8 +8,9 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, In, IsNull } from 'typeorm';
+import { Repository, DataSource, In, IsNull, Not } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
+import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { User } from '../../database/entities/user.entity';
 import { ManagerClientMapping } from '../../database/entities/manager-client-mapping.entity';
@@ -45,6 +46,8 @@ export class ManagerAuditsService {
     private buRepo: Repository<BusinessUnit>,
     @InjectRepository(ExceptionalActionRequest)
     private requestRepo: Repository<ExceptionalActionRequest>,
+    @InjectRepository(AuditScopeLineItem)
+    private lineItemRepo: Repository<AuditScopeLineItem>,
     private dataSource: DataSource,
     private auditTrailService: AuditTrailService,
   ) {}
@@ -73,48 +76,15 @@ export class ManagerAuditsService {
 
     const auditsWithStats = await Promise.all(
       audits.map(async (audit) => {
-        const auditorCount = await this.assignmentRepo
-          .createQueryBuilder('assignment')
-          .where('assignment.audit_id = :auditId', { auditId: audit.id })
-          .andWhere('assignment.deleted_at IS NULL')
-          .select('COUNT(DISTINCT assignment.auditor_id)', 'count')
-          .getRawOne();
-
-        const lineItemStats = await this.dataSource.query(
-          `SELECT 
-          COUNT(*) FILTER (WHERE is_optional = false) as total,
-          COUNT(*) FILTER (WHERE is_optional = false AND status IN ('submitted', 'exception_approved')) as completed
-        FROM audit_scope_line_items 
-        WHERE audit_id = $1 AND deleted_at IS NULL`,
-          [audit.id],
-        );
-        const totalItems = parseInt(lineItemStats[0].total);
-        const completedItems = parseInt(lineItemStats[0].completed);
-        const completionPercentage =
-          totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-
-        const openExceptions = await this.dataSource.query(
-          `SELECT COUNT(*) as count 
-        FROM exception_requests er
-        JOIN audit_scope_line_items li ON er.audit_scope_line_item_id = li.id
-        WHERE li.audit_id = $1 AND er.status = 'pending'`,
-          [audit.id],
-        );
-        const openExceptionsCount = parseInt(openExceptions[0].count);
-
-        const pendingRequest = await this.requestRepo.findOne({
-          where: {
-            auditId: audit.id,
-            status: ExceptionalRequestStatus.PENDING,
-          },
-        });
+        const stats = await this.calculateStats(audit.id);
+        const { auditorCount, hasPendingExceptionalRequest } = await this.getLegacyStats(audit.id);
 
         return {
           ...audit,
-          auditorCount: parseInt(auditorCount.count),
-          completionPercentage,
-          openExceptionsCount,
-          hasPendingExceptionalRequest: !!pendingRequest,
+          auditorCount,
+          completionPercentage: stats.completionPercentage,
+          openExceptionsCount: stats.openExceptionsCount,
+          hasPendingExceptionalRequest,
         };
       }),
     );
@@ -217,14 +187,95 @@ export class ManagerAuditsService {
       relations: ['auditor'],
     });
 
-    return {
+    const stats = await this.calculateStats(id);
+
+    const result = {
       ...audit,
       businessUnits: auditBUs.map((abu) => ({
         ...abu.businessUnit,
-        id: abu.id, // This is the audit_business_unit_id needed for assignments and scope
-        realBusinessUnitId: abu.businessUnitId, // Keep the actual BU ID if needed
+        id: abu.id,
+        realBusinessUnitId: abu.businessUnitId,
       })),
       assignments,
+      completionPercentage: stats.completionPercentage,
+      openExceptionsCount: stats.openExceptionsCount,
+      incompleteMandatoryCount: stats.incompleteMandatoryCount,
+    };
+
+    this.logger.log(`AuditDetail [${id}]: Progress=${result.completionPercentage}%`);
+    return result;
+  }
+
+  private async calculateStats(auditId: string) {
+    const totalItems = await this.lineItemRepo.count({
+      where: { auditId, deletedAt: IsNull() },
+    });
+
+    const completedItems = await this.lineItemRepo.count({
+      where: {
+        auditId,
+        deletedAt: IsNull(),
+        status: In([
+          LineItemStatus.SUBMITTED,
+          LineItemStatus.EXCEPTION_APPROVED,
+        ]),
+      },
+    });
+
+    const completionPercentage =
+      totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+
+    this.logger.log(`Stats [${auditId}]: Total=${totalItems}, Completed=${completedItems}, Perc=${completionPercentage}%, IncompleteMandatory=${incompleteMandatoryCount}`);
+
+    const incompleteMandatoryCount = await this.lineItemRepo.count({
+      where: {
+        auditId,
+        isOptional: false,
+        deletedAt: IsNull(),
+        status: Not(
+          In([LineItemStatus.SUBMITTED, LineItemStatus.EXCEPTION_APPROVED]),
+        ),
+      },
+    });
+
+    const openExceptionsCount = await this.dataSource
+      .createQueryBuilder('exception_requests', 'er')
+      .innerJoin(
+        'audit_scope_line_items',
+        'li',
+        'er.audit_scope_line_item_id = li.id',
+      )
+      .where('li.audit_id = :auditId', { auditId })
+      .andWhere('er.status = :status', { status: 'pending' })
+      .getCount();
+
+    return {
+      totalItems,
+      completedItems,
+      completionPercentage,
+      openExceptionsCount,
+      incompleteMandatoryCount,
+    };
+  }
+
+  private async getLegacyStats(auditId: string) {
+    const auditorCountRaw = await this.assignmentRepo
+      .createQueryBuilder('assignment')
+      .where('assignment.audit_id = :auditId', { auditId })
+      .andWhere('assignment.deleted_at IS NULL')
+      .select('COUNT(DISTINCT assignment.auditor_id)', 'count')
+      .getRawOne();
+
+    const pendingRequest = await this.requestRepo.findOne({
+      where: {
+        auditId,
+        status: ExceptionalRequestStatus.PENDING,
+      },
+    });
+
+    return {
+      auditorCount: parseInt(auditorCountRaw.count) || 0,
+      hasPendingExceptionalRequest: !!pendingRequest,
     };
   }
 
@@ -268,11 +319,10 @@ export class ManagerAuditsService {
     if (audit.status !== AuditStatus.DRAFT)
       throw new BadRequestException('Only draft audits can be started');
 
-    const scopeItemCount = await this.dataSource.query(
-      `SELECT COUNT(*) FROM audit_scope_line_items WHERE audit_id = $1 AND deleted_at IS NULL`,
-      [id],
-    );
-    if (parseInt(scopeItemCount[0].count) === 0) {
+    const scopeItemCount = await this.lineItemRepo.count({
+      where: { auditId: id, deletedAt: IsNull() },
+    });
+    if (scopeItemCount === 0) {
       throw new BadRequestException(
         'Cannot start audit without scope line items',
       );

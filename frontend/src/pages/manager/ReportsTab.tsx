@@ -24,14 +24,17 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { reportService, type AuditReport } from '@/services/reportService';
 import { aiJobsService } from '../../services/aiJobsService';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 interface ReportsTabProps {
   auditId: string;
   auditStatus: string;
   auditName: string;
+  completionPercentage?: number;
+  incompleteMandatoryCount?: number;
 }
 
-const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditStatus, auditName }) => {
+const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditStatus, auditName, completionPercentage = 0, incompleteMandatoryCount = 0 }) => {
   const queryClient = useQueryClient();
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [jobProgress, setJobProgress] = useState(0);
@@ -46,9 +49,15 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
     mutationFn: () => reportService.generateReport(auditId),
     onSuccess: (data) => {
       setActiveJobId(data.jobId);
-      setJobProgress(10);
+      setJobProgress(100); // Start showing progress
       queryClient.invalidateQueries({ queryKey: ['audit', auditId] });
+      toast.success('Report generation started');
     },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || 'Failed to start report generation';
+      toast.error(msg);
+      console.error('Report gen error:', err);
+    }
   });
 
   const uploadMutation = useMutation({
@@ -137,24 +146,28 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
               <div className="flex flex-col gap-4">
                 <div className="bg-white p-4 rounded-lg border flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-50 rounded-full text-green-600">
-                      <CheckCircle2 size={20} />
+                    <div className={`p-2 rounded-full ${incompleteMandatoryCount === 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>
+                      {incompleteMandatoryCount === 0 ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
                     </div>
                     <div>
                       <div className="text-sm font-bold">Readiness Checklist</div>
-                      <div className="text-xs text-muted-foreground">All mandatory line items are completed.</div>
+                      <div className="text-xs text-muted-foreground">
+                        {incompleteMandatoryCount === 0 
+                          ? "All mandatory line items are completed." 
+                          : `${incompleteMandatoryCount} mandatory items are still pending.`}
+                      </div>
                     </div>
                   </div>
-                  <Button 
-                    variant="default" 
-                    className="bg-accent hover:bg-accent/90"
-                    onClick={() => generateMutation.mutate()}
-                    disabled={generateMutation.isPending}
-                    data-testid="generate-report-btn"
-                  >
-                    {generateMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Play size={14} className="mr-2" />}
-                    Generate Report v1
-                  </Button>
+                <Button 
+                   variant="default" 
+                   className="bg-accent hover:bg-accent/90"
+                   onClick={() => generateMutation.mutate()}
+                   disabled={generateMutation.isPending || incompleteMandatoryCount > 0}
+                   data-testid="generate-report-btn"
+                 >
+                   {generateMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Play size={14} className="mr-2" />}
+                   Generate Report v1
+                 </Button>
                 </div>
               </div>
             )}

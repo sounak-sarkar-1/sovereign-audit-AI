@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 import configuration from './config/configuration';
+
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { TenantModule } from './tenant/tenant.module';
@@ -58,7 +60,24 @@ import { AppService } from './app.service';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration],
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
+        PORT: Joi.number().default(3000),
+        DATABASE_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().min(32).required(),
+        REFRESH_TOKEN_SECRET: Joi.string().min(32).required(),
+        JWT_EXPIRES_IN: Joi.string().default('15m'),
+        REFRESH_TOKEN_EXPIRES_IN: Joi.string().default('7d'),
+        AES_ENCRYPTION_KEY: Joi.string().length(64).required(),
+        FRONTEND_URL: Joi.string().uri().required(),
+      }),
+      validationOptions: {
+        abortEarly: false,
+      },
     }),
+
     ThrottlerModule.forRoot([
       {
         ttl: 60000,

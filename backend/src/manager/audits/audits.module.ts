@@ -10,6 +10,7 @@ import { AuditTrailModule } from '../../shared/audit-trail/audit-trail.module';
 import { AuditorAuditAssignment } from '../../database/entities/auditor-audit-assignment.entity';
 import { BusinessUnit } from '../../database/entities/business-unit.entity';
 import { ExceptionalActionRequest } from '../../database/entities/exceptional-action-request.entity';
+import { AuditScopeLineItem } from '../../database/entities/audit-scope-line-item.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ExceptionalActionRequest } from '../../database/entities/exceptional-ac
       AuditorAuditAssignment,
       BusinessUnit,
       ExceptionalActionRequest,
+      AuditScopeLineItem,
     ]),
     AuditTrailModule,
   ],

@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
@@ -8,9 +8,10 @@ import { TransformResponseInterceptor } from './common/interceptors/transform-re
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
-  console.log('Bootstrap starting...');
+  const logger = new Logger('Bootstrap');
+  logger.log('Bootstrap starting...');
   const app = await NestFactory.create(AppModule);
-  console.log('Nest application created');
+  logger.log('Nest application created');
 
   // URL versioning
   app.setGlobalPrefix('api/v1');
@@ -55,10 +56,11 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
-  console.log(`Attempting to listen on port ${port}...`);
   await app.listen(port, '0.0.0.0');
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap().catch((err) => {
-  console.error('Bootstrap failed!', err);
+  const logger = new Logger('Bootstrap');
+  logger.error('Bootstrap failed!', err);
 });
+
