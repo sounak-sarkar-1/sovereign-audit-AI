@@ -15,10 +15,14 @@ import {
   ShieldCheck,
   Calendar,
   ChevronRight,
-  ClipboardList
+  ClipboardList,
+  FileText,
+  ExternalLink,
+  Download
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const ClientAuditDetail: React.FC = () => {
   const { id } = useParams();
@@ -27,6 +31,11 @@ const ClientAuditDetail: React.FC = () => {
   const { data: audit, isLoading } = useQuery({
     queryKey: ['client-audit-detail', id],
     queryFn: () => clientService.getAuditDetail(id!),
+  });
+
+  const { data: reportsData } = useQuery({
+    queryKey: ['client-reports'],
+    queryFn: () => clientService.getReports(),
   });
 
   if (isLoading) {
@@ -38,6 +47,12 @@ const ClientAuditDetail: React.FC = () => {
   }
 
   const data = audit?.data || audit;
+  const reports = reportsData?.data || reportsData || [];
+  const associatedReport = reports.find((r: any) => r.auditId === id || r.audit?.id === id);
+
+  const defaultTab = (data.status === 'pending_client_review' || 
+                      data.status === 'feedback_submitted' || 
+                      data.status === 'final') ? 'report' : 'scope';
 
   return (
     <div className="space-y-6">
@@ -81,11 +96,13 @@ const ClientAuditDetail: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Tabs defaultValue="scope" className="w-full">
+          <Tabs defaultValue={defaultTab} className="w-full">
             <TabsList className="bg-muted/30 p-1 rounded-full w-fit">
               <TabsTrigger value="scope" className="rounded-full px-8">Audit Scope</TabsTrigger>
+              <TabsTrigger value="report" className="rounded-full px-8">Report</TabsTrigger>
               <TabsTrigger value="timeline" className="rounded-full px-8">Timeline</TabsTrigger>
             </TabsList>
+            
             <TabsContent value="scope" className="mt-6">
                <Card className="shadow-card border-none bg-white">
                  <CardHeader className="border-b p-6">
@@ -104,6 +121,134 @@ const ClientAuditDetail: React.FC = () => {
                        </p>
                     </div>
                  </CardContent>
+               </Card>
+            </TabsContent>
+
+            <TabsContent value="report" className="mt-6">
+               {associatedReport ? (
+                 associatedReport.fileId ? (
+                   <div className="space-y-6">
+                     {associatedReport.status === 'sent_for_client_review' && (
+                       <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center gap-4">
+                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                           <ShieldCheck size={20} />
+                         </div>
+                         <div className="space-y-1">
+                           <p className="text-sm font-bold text-dark">Action Required: Report Awaiting Review</p>
+                           <p className="text-xs text-muted-foreground">Please review the findings and provide your feedback to finalize this engagement.</p>
+                         </div>
+                       </div>
+                     )}
+                     
+                     <Card className="shadow-card border-none bg-white overflow-hidden">
+                       <CardHeader className="border-b p-6 flex flex-row items-center justify-between">
+                          <div className="space-y-1">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                               <FileText size={16} /> Audit Report Details
+                            </CardTitle>
+                            <p className="text-xl font-bold text-dark">Version {associatedReport.version}.0</p>
+                          </div>
+                          <Badge className={cn(
+                            "rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider",
+                            associatedReport.status === 'final' ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+                          )}>
+                            {associatedReport.status.replace(/_/g, ' ')}
+                          </Badge>
+                       </CardHeader>
+                       <CardContent className="p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                             <div className="space-y-4">
+                                <div className="flex items-center justify-between text-sm py-2 border-b border-dashed">
+                                   <span className="text-muted-foreground">Generated On</span>
+                                   <span className="font-bold">{format(new Date(associatedReport.createdAt), 'PPP')}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm py-2 border-b border-dashed">
+                                   <span className="text-muted-foreground">Audit Period</span>
+                                   <span className="font-bold">Q1 2024</span>
+                                </div>
+                             </div>
+                             <div className="bg-muted/10 rounded-xl p-4 space-y-2">
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Manager Notes</p>
+                                <p className="text-xs text-dark italic leading-relaxed">
+                                   {associatedReport.managerNotes || "No additional notes provided by the lead manager for this version."}
+                                </p>
+                             </div>
+                          </div>
+
+                          <div className="flex flex-col sm:flex-row gap-3">
+                             <Button 
+                                className="flex-1 rounded-full bg-primary hover:bg-primary/90 gap-2 h-11"
+                                onClick={() => navigate(`/client/reports/${associatedReport.id}`)}
+                             >
+                                <ExternalLink size={18} /> Review & Provide Feedback
+                             </Button>
+                             <Button 
+                                variant="outline" 
+                                className="flex-1 rounded-full gap-2 h-11 border-bg-mid"
+                                onClick={() => {
+                                  clientService.downloadReport(associatedReport.id, `${data.name}_Report_v${associatedReport.version}.pdf`);
+                                  toast.success('Download started');
+                                }}
+                             >
+                                <Download size={18} /> Download PDF Version
+                             </Button>
+                          </div>
+                       </CardContent>
+                     </Card>
+                   </div>
+                 ) : (
+                   <Card className="shadow-card border-none bg-white">
+                     <CardHeader className="border-b p-6">
+                        <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                           <FileText size={16} /> Audit Report
+                        </CardTitle>
+                     </CardHeader>
+                     <CardContent className="p-12 text-center space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground mx-auto">
+                            <Clock size={32} />
+                        </div>
+                        <div className="space-y-1">
+                           <p className="font-bold text-dark text-lg">Report Generation in Progress</p>
+                           <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                             The final audit report is being prepared for your review. You will be notified once it is ready.
+                           </p>
+                        </div>
+                     </CardContent>
+                   </Card>
+                 )
+               ) : (
+                 <Card className="shadow-card border-none bg-white">
+                   <CardHeader className="border-b p-6">
+                      <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                         <FileText size={16} /> Audit Report
+                      </CardTitle>
+                   </CardHeader>
+                   <CardContent className="p-12 text-center space-y-4">
+                      <div className="w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground mx-auto">
+                          <FileText size={32} />
+                      </div>
+                      <div className="space-y-1">
+                         <p className="font-bold text-dark text-lg">No Report Generated Yet</p>
+                         <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                           An audit report has not been initiated for this engagement. Reports are usually generated once all fieldwork is complete.
+                         </p>
+                      </div>
+                   </CardContent>
+                 </Card>
+               )}
+            </TabsContent>
+
+            <TabsContent value="timeline" className="mt-6">
+               <Card className="shadow-card border-none bg-white p-6">
+                  <div className="flex flex-col items-center justify-center py-10 text-center space-y-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                       <Clock size={24} />
+                    </div>
+                    <div>
+                       <h3 className="text-sm font-bold text-dark">Audit Timeline</h3>
+                       <p className="text-xs text-muted-foreground">Chronological roadmap of the engagement milestones.</p>
+                    </div>
+                  </div>
                </Card>
             </TabsContent>
           </Tabs>

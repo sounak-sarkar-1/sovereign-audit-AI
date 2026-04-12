@@ -152,6 +152,10 @@ export class ManagerReportsService {
       relations: ['audit', 'audit.client'],
     });
     if (!report) throw new NotFoundException('Report not found');
+    if (!report.fileId)
+      throw new BadRequestException(
+        'Report file has not been generated yet. Please wait for generation to complete before sending.',
+      );
     if (report.status !== ReportStatus.DRAFT)
       throw new BadRequestException('Only draft reports can be sent to client');
 

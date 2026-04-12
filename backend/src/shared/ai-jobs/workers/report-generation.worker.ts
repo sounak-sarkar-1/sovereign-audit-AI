@@ -17,6 +17,7 @@ import {
   ExceptionStatus,
 } from '../../../database/entities/exception-request.entity';
 import { FilesService } from '../../files/files.service';
+import { FileEntityType } from '../../../database/entities/uploaded-file.entity';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { NotificationType } from '../../../database/entities/notification.entity';
 import {
@@ -62,7 +63,13 @@ export class ReportGenerationWorker implements OnModuleInit {
   }
 
   private async handleJob(job: any) {
-    const { jobId, reportId, auditId } = job.data;
+    const jobData = Array.isArray(job) ? job[0].data : job?.data;
+    if (!jobData) {
+      this.logger.error('ReportGenerationWorker: Received invalid job data', job);
+      return;
+    }
+    const { jobId, reportId, auditId } = jobData;
+    this.logger.log(`ReportGenerationWorker: picked up job ${jobId}`);
 
     try {
       await this.aiJobRepo.update(jobId, { status: JobStatus.PROCESSING });
@@ -193,7 +200,8 @@ export class ReportGenerationWorker implements OnModuleInit {
         fileName,
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         audit.managerId,
-        'reports',
+        FileEntityType.AUDIT_REPORT,
+        reportId,
       );
 
       // 4. Update Database
@@ -230,6 +238,8 @@ export class ReportGenerationWorker implements OnModuleInit {
         status: JobStatus.FAILED,
         errorMessage: error.message,
       });
+      // Re-throw to ensure PgBoss marks the job as failed
+      throw error;
     }
   }
 }

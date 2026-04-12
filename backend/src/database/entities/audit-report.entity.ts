@@ -53,6 +53,10 @@ export class AuditReport {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt: Date;
 
+  @Column({ name: 'manager_notes', type: 'text', nullable: true })
+  managerNotes: string | null;
+
+
   @OneToMany(() => ClientReportFeedback, (feedback) => feedback.report)
   feedbacks: ClientReportFeedback[];
 }

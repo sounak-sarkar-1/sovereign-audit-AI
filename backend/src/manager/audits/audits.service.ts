@@ -225,8 +225,6 @@ export class ManagerAuditsService {
     const completionPercentage =
       totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
 
-    this.logger.log(`Stats [${auditId}]: Total=${totalItems}, Completed=${completedItems}, Perc=${completionPercentage}%, IncompleteMandatory=${incompleteMandatoryCount}`);
-
     const incompleteMandatoryCount = await this.lineItemRepo.count({
       where: {
         auditId,
@@ -237,6 +235,8 @@ export class ManagerAuditsService {
         ),
       },
     });
+
+    this.logger.log(`Stats [${auditId}]: Total=${totalItems}, Completed=${completedItems}, Perc=${completionPercentage}%, IncompleteMandatory=${incompleteMandatoryCount}`);
 
     const openExceptionsCount = await this.dataSource
       .createQueryBuilder('exception_requests', 'er')

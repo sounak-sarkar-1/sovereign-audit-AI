@@ -45,7 +45,9 @@ export class AiJobsService implements OnModuleInit, OnModuleDestroy {
           this.logger.log('PgBoss started successfully, creating queues...');
           await this.boss.createQueue('scope-extraction');
           await this.boss.createQueue('report-generation');
-          this.logger.log('Queues created, resolving ready signal');
+          await this.boss.createQueue('nl-search');
+          this.logger.log('Queues [scope-extraction, report-generation, nl-search] created successfully');
+          this.logger.log('PgBoss ready signal resolving...');
           this.resolveReady();
         })
         .catch((err) => {
