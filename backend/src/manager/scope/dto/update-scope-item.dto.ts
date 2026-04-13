@@ -5,7 +5,9 @@ import {
   IsOptional,
   IsInt,
   Min,
+  Max,
   IsArray,
+  IsNumber,
 } from 'class-validator';
 import { InputMethod } from '../../../database/entities/audit-scope-line-item.entity';
 
@@ -30,6 +32,12 @@ export class UpdateScopeItemDto {
   @Min(0)
   @IsOptional()
   displayOrder?: number;
+
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  weightage?: number;
 
   @IsArray()
   @IsString({ each: true })

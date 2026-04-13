@@ -14,6 +14,7 @@ import { AuditBusinessUnit } from './audit-business-unit.entity';
 import { AuditScopeLineItemOption } from './audit-scope-line-item-option.entity';
 import { LineItemResponse } from './line-item-response.entity';
 import { AuditorLineItemAssignment } from './auditor-line-item-assignment.entity';
+import { ExceptionRequest } from './exception-request.entity';
 
 export enum InputMethod {
   FREE_TEXT = 'free_text',
@@ -89,6 +90,9 @@ export class AuditScopeLineItem {
   })
   status: LineItemStatus;
 
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  weightage: number | null;
+
   @OneToMany(() => AuditScopeLineItemOption, (option) => option.lineItem, {
     cascade: true,
   })
@@ -111,4 +115,7 @@ export class AuditScopeLineItem {
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamptz', nullable: true })
   deletedAt: Date;
+
+  @OneToMany(() => ExceptionRequest, (er) => er.auditScopeLineItem)
+  exceptionRequests: ExceptionRequest[];
 }

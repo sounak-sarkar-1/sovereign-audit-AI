@@ -11,7 +11,10 @@ import {
   ClipboardList,
   Settings,
   ChevronRight,
-  Zap
+  Zap,
+  ArrowUp,
+  ArrowDown,
+  Minus
 } from 'lucide-react';
 import { 
   XAxis, 
@@ -37,9 +40,12 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import ComplianceComparisonModal from '@/components/client/ComplianceComparisonModal';
 
 const ExecutiveCockpit: React.FC = () => {
   const navigate = useNavigate();
+  const [selectedAuditId, setSelectedAuditId] = React.useState<string | null>(null);
+  const [isComparisonOpen, setIsComparisonOpen] = React.useState(false);
 
   const { data: auditsData, isLoading: auditsLoading } = useQuery({
     queryKey: ['client-audits'],
@@ -266,6 +272,7 @@ const ExecutiveCockpit: React.FC = () => {
                 <TableHead className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Audit Project</TableHead>
                 <TableHead className="py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Lead Manager</TableHead>
                 <TableHead className="py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Timeline</TableHead>
+                <TableHead className="py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Score</TableHead>
                 <TableHead className="py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Audit Status</TableHead>
                 <TableHead className="text-right px-6 py-4 font-bold text-muted-foreground uppercase tracking-wider text-[10px]">Action</TableHead>
               </TableRow>
@@ -280,6 +287,43 @@ const ExecutiveCockpit: React.FC = () => {
                       <Clock className="mr-1.5 h-3 w-3" />
                       {format(new Date(audit.startDate), 'MMM dd')} - {format(new Date(audit.expectedCompletionDate), 'MMM dd, yyyy')}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {audit.compliancePercentage !== null ? (
+                      <div className="space-y-1">
+                        <Badge 
+                          className={cn(
+                            "rounded-full px-2 py-0 text-[10px] font-black border-none",
+                            audit.compliancePercentage >= 90 ? "bg-emerald-100 text-emerald-700" : 
+                            audit.compliancePercentage >= 60 ? "bg-amber-100 text-amber-700" : 
+                            "bg-red-100 text-red-700"
+                          )}
+                        >
+                          {audit.compliancePercentage.toFixed(1)}%
+                        </Badge>
+                        {audit.hasPrevious && audit.previousCompliancePercentage !== null && (
+                          <div 
+                            className="flex items-center gap-0.5 text-[9px] font-bold text-muted-foreground hover:text-primary cursor-pointer transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedAuditId(audit.id);
+                              setIsComparisonOpen(true);
+                            }}
+                          >
+                            {audit.compliancePercentage > audit.previousCompliancePercentage ? (
+                              <ArrowUp size={8} className="text-emerald-500" />
+                            ) : audit.compliancePercentage < audit.previousCompliancePercentage ? (
+                              <ArrowDown size={8} className="text-red-500" />
+                            ) : (
+                              <Minus size={8} />
+                            )}
+                            {Math.abs(audit.compliancePercentage - audit.previousCompliancePercentage).toFixed(1)}% vs prev.
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-tighter">Pending</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge 
@@ -314,6 +358,15 @@ const ExecutiveCockpit: React.FC = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Comparison Modal */}
+      {selectedAuditId && (
+        <ComplianceComparisonModal 
+          auditId={selectedAuditId}
+          open={isComparisonOpen}
+          onOpenChange={setIsComparisonOpen}
+        />
+      )}
     </div>
   );
 };

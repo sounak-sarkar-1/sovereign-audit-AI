@@ -49,6 +49,11 @@ export class ManagerAuditsController {
     return this.auditsService.getTrail(id);
   }
 
+  @Get('audits/:id/compliance-comparison')
+  async getComparison(@Param('id') id: string) {
+    return this.auditsService.getComparisonData(id);
+  }
+
   @Put('audits/:id')
   async update(
     @Param('id') id: string,

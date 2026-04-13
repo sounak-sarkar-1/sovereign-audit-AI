@@ -18,15 +18,21 @@ import {
   ClipboardList,
   FileText,
   ExternalLink,
-  Download
+  Download,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  Info
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import ComplianceComparisonModal from '@/components/client/ComplianceComparisonModal';
 
 const ClientAuditDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isComparisonOpen, setIsComparisonOpen] = React.useState(false);
 
   const { data: audit, isLoading } = useQuery({
     queryKey: ['client-audit-detail', id],
@@ -279,6 +285,57 @@ const ClientAuditDetail: React.FC = () => {
               </CardContent>
            </Card>
 
+            {data.compliancePercentage !== null && (
+               <Card className={cn(
+                 "shadow-card border-none overflow-hidden text-white relative",
+                 data.compliancePercentage >= 90 ? "bg-emerald-600" : 
+                 data.compliancePercentage >= 60 ? "bg-amber-500" : 
+                 "bg-red-600"
+               )}>
+                  <div className="absolute top-[-10px] right-[-10px] opacity-10 rotate-12">
+                     <ShieldCheck size={100} />
+                  </div>
+                  <CardContent className="p-6 space-y-4 relative z-10">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">Compliance Score</p>
+                    <div className="flex items-end gap-2">
+                       <h2 className="text-4xl font-black tracking-tighter">{data.compliancePercentage.toFixed(1)}%</h2>
+                       <Badge className="bg-white/20 text-white border-none font-bold text-[9px] rounded-full px-2 mb-1.5 uppercase tracking-widest">
+                          {data.compliancePercentage >= 90 ? 'COMPLIANT' : 
+                           data.compliancePercentage >= 60 ? 'NEEDS IMPROVEMENT' : 
+                           'CRITICAL'}
+                       </Badge>
+                    </div>
+
+                    {data.hasPrevious && data.previousCompliancePercentage !== null && (
+                       <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+                          <div className="flex items-center justify-between">
+                             <span className="text-[9px] font-bold uppercase tracking-wider opacity-70">Series Shift</span>
+                             <div className="flex items-center gap-1.5">
+                                <span className="text-sm font-black">
+                                   {Math.abs(data.compliancePercentage - data.previousCompliancePercentage).toFixed(1)}%
+                                </span>
+                                {data.compliancePercentage > data.previousCompliancePercentage ? (
+                                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center"><ArrowUp size={12} /></div>
+                                ) : data.compliancePercentage < data.previousCompliancePercentage ? (
+                                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center"><ArrowDown size={12} /></div>
+                                ) : (
+                                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center"><Minus size={12} /></div>
+                                )}
+                             </div>
+                          </div>
+                          <Button 
+                             variant="secondary" 
+                             className="w-full rounded-full h-9 text-[10px] font-black uppercase tracking-widest gap-2 bg-white text-dark hover:bg-white/90 shadow-sm"
+                             onClick={() => setIsComparisonOpen(true)}
+                          >
+                             <Info size={12} /> Compare Performance
+                          </Button>
+                       </div>
+                    )}
+                  </CardContent>
+               </Card>
+            )}
+
            <Card className="shadow-card border-none bg-accent/5 border border-accent/10">
               <CardContent className="p-6 space-y-4">
                  <div className="flex items-center gap-3">
@@ -300,6 +357,15 @@ const ClientAuditDetail: React.FC = () => {
            </Card>
         </div>
       </div>
+
+      {/* Comparison Modal */}
+      {id && (
+        <ComplianceComparisonModal 
+          auditId={id}
+          open={isComparisonOpen}
+          onOpenChange={setIsComparisonOpen}
+        />
+      )}
     </div>
   );
 };

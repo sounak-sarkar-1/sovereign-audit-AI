@@ -33,6 +33,7 @@ export interface ScopeLineItem {
   displayOrder: number;
   source: LineItemSource;
   status: LineItemStatus;
+  weightage: number | null;
   options?: ScopeLineItemOption[];
   auditBusinessUnit?: any;
   createdAt: string;

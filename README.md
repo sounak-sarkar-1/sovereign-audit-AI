@@ -29,6 +29,23 @@ The platform is built around four distinct roles, each with strictly enforced bo
 - **Natural Language Search**: Semantic search over historical audit reports for rapid knowledge retrieval.
 - **Advanced State Machine**: Robust lifecycle management from `Draft` to `Closed` with structured feedback loops.
 - **Granular Assignments**: Support for both Business Unit level and item-level auditor assignments.
+- ✅ **Weighted compliance scoring** per audit scope line item
+- ✅ **Automated compliance percentage calculation** at report generation
+- ✅ **Audit series linking** with compliance delta tracking
+- ✅ **Excel export** of audit line items with weighted contribution breakdown
+- ✅ **Client-facing compliance score comparison** (current vs previous audit)
+
+---
+
+## 🔌 API Endpoints
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| PUT    | `/manager/audits/:id/scope/weightages` | Manager | Bulk update line item weightages |
+| POST   | `/manager/audits/:id/scope/weightages/distribute-equally` | Manager | Auto-distribute equal weightage |
+| GET    | `/manager/audits/:id/reports/export-line-items` | Manager | Download line items as Excel |
+| GET    | `/manager/audits/:id/compliance-comparison` | Manager | Get compliance delta vs previous audit |
+| GET    | `/client/audits/:id/reports/export-line-items` | Client | Download line items as Excel |
+| GET    | `/client/audits/:id/compliance-comparison` | Client | Get compliance delta vs previous audit |
 
 ---
 

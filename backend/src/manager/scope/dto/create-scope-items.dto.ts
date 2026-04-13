@@ -8,6 +8,8 @@ import {
   IsOptional,
   IsInt,
   Min,
+  Max,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { InputMethod } from '../../../database/entities/audit-scope-line-item.entity';
@@ -30,6 +32,12 @@ export class ScopeItemDto {
   @Min(0)
   @IsOptional()
   displayOrder?: number;
+
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  @Max(100)
+  @IsOptional()
+  weightage?: number;
 
   @IsArray()
   @IsString({ each: true })

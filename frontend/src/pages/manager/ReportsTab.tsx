@@ -16,7 +16,12 @@ import {
   XCircle,
   HelpCircle,
   ArrowRight,
-  Archive
+  Archive,
+  ShieldCheck,
+  ShieldAlert,
+  ArrowUp,
+  ArrowDown,
+  Minus
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,6 +33,7 @@ import { aiJobsService } from '../../services/aiJobsService';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import ComplianceComparisonModal from '@/components/manager/ComplianceComparisonModal';
 
 interface ReportsTabProps {
   auditId: string;
@@ -45,8 +51,10 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
   incompleteMandatoryCount = 0 
 }) => {
   const queryClient = useQueryClient();
+  const [isExporting, setIsExporting] = React.useState(false);
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [jobProgress, setJobProgress] = useState(0);
+  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: reports, isLoading: isReportsLoading } = useQuery<AuditReport[]>({
@@ -102,6 +110,21 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
     },
   });
 
+  const handleExport = async () => {
+    if (!auditId) return;
+    setIsExporting(true);
+    try {
+      await reportService.exportLineItems(auditId, auditName || 'Audit');
+      toast.success('Excel file downloaded successfully.');
+    } catch (err: any) {
+      toast.error(
+        err.response?.data?.message || 'Failed to export line items.',
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   // Polling for AI Job
   useEffect(() => {
     let interval: any;
@@ -134,6 +157,88 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Compliance Score Card */}
+      {latestReport && !activeJobId && (
+        <Card className="shadow-elevated border-none overflow-hidden bg-white">
+          <div className="flex flex-col md:flex-row items-stretch">
+             <div className={cn(
+               "w-full md:w-[260px] p-8 flex flex-col items-center justify-center text-center relative overflow-hidden",
+               (latestReport.compliancePercentage || 0) >= 90 ? "bg-emerald-600 text-white" : 
+               (latestReport.compliancePercentage || 0) >= 60 ? "bg-amber-500 text-white" : 
+               "bg-red-600 text-white"
+             )}>
+                <div className="absolute top-[-20px] left-[-20px] opacity-10 rotate-12">
+                   {(latestReport.compliancePercentage || 0) >= 90 ? <ShieldCheck size={140} /> : <ShieldAlert size={140} />}
+                </div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 opacity-80">Compliance Score</p>
+                <h2 className="text-6xl font-black tracking-tighter mb-2 relative z-10">
+                   {latestReport.compliancePercentage?.toFixed(1) || '0.0'}%
+                </h2>
+                <Badge className="bg-white/20 text-white border-none font-black text-[10px] rounded-full px-4 py-1 uppercase tracking-widest relative z-10 shadow-sm backdrop-blur-md">
+                   {(latestReport.compliancePercentage || 0) >= 90 ? 'COMPLIANT' : 
+                    (latestReport.compliancePercentage || 0) >= 60 ? 'NEEDS IMPROVEMENT' : 
+                    'CRITICAL'}
+                </Badge>
+             </div>
+             
+             <div className="flex-1 p-8 flex flex-col justify-between bg-muted/5">
+                <div className="space-y-4">
+                   <div className="flex justify-between items-center">
+                      <h4 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Assurance Insights</h4>
+                      {latestReport.hasPrevious && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 rounded-full px-4 text-[10px] font-black uppercase tracking-widest gap-2 bg-white shadow-sm border border-muted/20 hover:bg-muted/10 transition-all hover:scale-105 active:scale-95"
+                          onClick={() => setIsComparisonOpen(true)}
+                        >
+                           <History size={12} className="text-primary" />
+                           View Delta vs Prev. Audit
+                        </Button>
+                      )}
+                   </div>
+                   
+                   <p className="text-sm font-medium text-dark/70 leading-relaxed max-w-xl">
+                      The compliance score is derived from weightage-adjusted responses across all business units. 
+                      A score of <strong>{latestReport.compliancePercentage?.toFixed(1)}%</strong> indicates 
+                      {(latestReport.compliancePercentage || 0) >= 90 ? " strong adherence to control requirements." : 
+                       (latestReport.compliancePercentage || 0) >= 60 ? " partial control gaps that require management attention." : 
+                       " significant control deficiencies across high-weightage line items."}
+                   </p>
+                </div>
+
+                {latestReport.hasPrevious && latestReport.previousCompliancePercentage !== undefined && (
+                   <div className="mt-8 pt-6 border-t border-muted/10 flex items-center gap-6">
+                      <div className="flex flex-col">
+                         <span className="text-[9px] font-black text-muted-foreground uppercase tracking-wider mb-1">Previous Score</span>
+                         <span className="text-xl font-bold text-dark/40 italic">{latestReport.previousCompliancePercentage.toFixed(1)}%</span>
+                      </div>
+                      <div className="h-8 w-px bg-muted/20" />
+                      <div className="flex flex-col">
+                         <span className="text-[9px] font-black text-muted-foreground uppercase tracking-wider mb-1">Shift</span>
+                         <div className="flex items-center gap-2">
+                            <span className={cn(
+                               "text-xl font-black",
+                               (latestReport.compliancePercentage || 0) > latestReport.previousCompliancePercentage ? "text-emerald-600" : 
+                               (latestReport.compliancePercentage || 0) < latestReport.previousCompliancePercentage ? "text-red-600" : 
+                               "text-dark/40"
+                            )}>
+                               {Math.abs((latestReport.compliancePercentage || 0) - latestReport.previousCompliancePercentage).toFixed(1)}%
+                            </span>
+                            {(latestReport.compliancePercentage || 0) > latestReport.previousCompliancePercentage 
+                               ? <ArrowUp size={16} className="text-emerald-500" /> 
+                               : (latestReport.compliancePercentage || 0) < latestReport.previousCompliancePercentage 
+                               ? <ArrowDown size={16} className="text-red-500" />
+                               : <Minus size={16} className="text-dark/20" />}
+                         </div>
+                      </div>
+                   </div>
+                )}
+             </div>
+          </div>
+        </Card>
+      )}
+
       {/* Phase 1 & 2: Generate & Review */}
       {(!latestReport || activeJobId) && (
         <Card className="border-accent/20 bg-accent/5">
@@ -177,16 +282,31 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
                       </div>
                     </div>
                   </div>
-                <Button 
-                   variant="default" 
-                   className="bg-accent hover:bg-accent/90"
-                   onClick={() => generateMutation.mutate()}
-                   disabled={generateMutation.isPending || incompleteMandatoryCount > 0}
-                   data-testid="generate-report-btn"
-                 >
-                   {generateMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Play size={14} className="mr-2" />}
-                   Generate Report v1
-                 </Button>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleExport}
+                    disabled={isExporting}
+                    className="rounded-full gap-2 border-primary/20 hover:bg-primary/5 text-primary text-xs font-bold"
+                  >
+                    {isExporting ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Download size={14} />
+                    )}
+                    Export Line Items
+                  </Button>
+                  <Button 
+                     variant="default" 
+                     className="bg-accent hover:bg-accent/90"
+                     onClick={() => generateMutation.mutate()}
+                     disabled={generateMutation.isPending || incompleteMandatoryCount > 0}
+                     data-testid="generate-report-btn"
+                   >
+                     {generateMutation.isPending ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : <Play size={14} className="mr-2" />}
+                     Generate Report v1
+                   </Button>
+                </div>
                 </div>
               </div>
             )}
@@ -402,7 +522,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
                     className="bg-accent hover:bg-accent/90 rounded-full px-8 shadow-md" 
                     onClick={() => {
                         finalizeMutation.mutate(latestReport.id);
-                        toast.success('Audit finalized and closed successfully');
+                        toast.success('Audit finalized and closed successfully.');
                     }}
                     disabled={finalizeMutation.isPending} 
                     data-testid="finalize-audit-btn"
@@ -455,6 +575,13 @@ const ReportsTab: React.FC<ReportsTabProps> = ({
           </Card>
         </div>
       )}
+
+      {/* Comparison Modal */}
+      <ComplianceComparisonModal 
+        auditId={auditId}
+        open={isComparisonOpen}
+        onOpenChange={setIsComparisonOpen}
+      />
     </div>
   );
 };

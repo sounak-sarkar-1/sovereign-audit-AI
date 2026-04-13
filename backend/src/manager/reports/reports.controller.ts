@@ -73,4 +73,13 @@ export class ManagerReportsController {
   ) {
     return this.service.uploadVersion(auditId, reportId, file, manager);
   }
+
+  @Get('export-line-items')
+  async exportLineItems(
+    @Param('id') auditId: string,
+    @CurrentUser() manager: User,
+    @Res() res: Response,
+  ) {
+    return this.service.exportLineItems(auditId, manager, res);
+  }
 }

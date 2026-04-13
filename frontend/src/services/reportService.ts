@@ -13,6 +13,9 @@ export interface AuditReport {
   managerNotes?: string;
   createdAt: string;
   updatedAt: string;
+  compliancePercentage: number | null;
+  hasPrevious: boolean;
+  previousCompliancePercentage?: number;
   feedbacks?: any[];
 }
 
@@ -53,6 +56,25 @@ export const reportService = {
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
+
+  exportLineItems: async (auditId: string, auditName: string) => {
+    const res: any = await api.get(
+      `/manager/audits/${auditId}/reports/export-line-items`,
+      { responseType: 'blob' }
+    );
+    const url = window.URL.createObjectURL(new Blob([res]));
+    const link = document.createElement('a');
+    link.href = url;
+    const date = new Date().toISOString().split('T')[0];
+    link.setAttribute(
+      'download',
+      `${auditName.replace(/\s+/g, '_')}_LineItems_${date}.xlsx`,
+    );
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);

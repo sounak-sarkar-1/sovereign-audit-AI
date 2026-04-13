@@ -23,6 +23,7 @@ import { CreateScopeItemsDto } from './dto/create-scope-items.dto';
 import { UpdateScopeItemDto } from './dto/update-scope-item.dto';
 import { ImportFromTemplateDto } from './dto/import-from-template.dto';
 import { ConfirmExcelImportDto } from './dto/confirm-excel-import.dto';
+import { UpdateWeightagesDto } from './dto/update-weightages.dto';
 
 @Controller('manager/audits/:auditId/scope')
 @UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
@@ -41,6 +42,19 @@ export class ManagerScopeController {
     @Body() dto: CreateScopeItemsDto,
   ) {
     return this.service.createLineItems(auditId, dto);
+  }
+
+  @Put('weightages')
+  async updateWeightages(
+    @Param('auditId', ParseUUIDPipe) auditId: string,
+    @Body() dto: UpdateWeightagesDto,
+  ) {
+    return this.service.updateWeightages(auditId, dto);
+  }
+
+  @Post('weightages/distribute-equally')
+  async distributeEqualWeightage(@Param('auditId', ParseUUIDPipe) auditId: string) {
+    return this.service.distributeEqualWeightage(auditId);
   }
 
   @Post('line-items/batch')

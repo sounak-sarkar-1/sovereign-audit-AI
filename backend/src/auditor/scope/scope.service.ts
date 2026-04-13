@@ -186,6 +186,7 @@ export class AuditorScopeService {
 
     response.responseText = dto.responseText;
     response.selectedOptionId = dto.selectedOptionId;
+    response.complianceScore = dto.complianceScore;
     response.comment = dto.comment;
     response.isDraft = dto.isDraft;
 
@@ -210,6 +211,9 @@ export class AuditorScopeService {
       lineItem.status = LineItemStatus.DRAFT_SAVED;
     } else {
       // Validate for submission
+      if (!dto.complianceScore) {
+        throw new BadRequestException('Compliance score is required for submission');
+      }
       if (
         lineItem.inputMethod === 'free_text' &&
         (!dto.responseText || dto.responseText.length < 10)

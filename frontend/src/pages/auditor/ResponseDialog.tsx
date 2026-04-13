@@ -17,6 +17,13 @@ import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
 interface ResponseDialogProps {
   item: ScopeLineItemExtended | null;
   open: boolean;
@@ -36,6 +43,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
     responseText: '',
     selectedOptionId: null as string | null,
     comment: '',
+    complianceScore: null as number | null,
   });
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -49,6 +57,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
         responseText: item.ownResponse.responseText || '',
         selectedOptionId: item.ownResponse.selectedOptionId || '',
         comment: item.ownResponse.comment || '',
+        complianceScore: (item.ownResponse as any).complianceScore || null,
       });
       setUploadedFiles((item as any).evidenceFiles || []);
     } else {
@@ -56,6 +65,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
         responseText: '',
         selectedOptionId: null,
         comment: '',
+        complianceScore: null,
       });
       setUploadedFiles([]);
     }
@@ -135,6 +145,50 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
           <div className="bg-orange-50/50 border border-orange-100 rounded-xl p-3 text-xs text-orange-800 flex gap-3">
             <AlertTriangle className="h-4 w-4 shrink-0 text-orange-500" />
             <p className="font-medium">Submitting this response triggers the manager review workflow. Please ensure all evidence is annotated correctly.</p>
+          </div>
+
+          <div className="space-y-4">
+            <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex justify-between items-center">
+              Compliance Score (1 = Non-Compliant, 5 = Fully Compliant)
+              {formData.complianceScore === null && (
+                <span className="text-[10px] text-destructive font-black animate-pulse">REQUIRED</span>
+              )}
+            </Label>
+            <TooltipProvider>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((score) => {
+                  const labels: Record<number, string> = {
+                    1: 'Non-Compliant',
+                    2: 'Mostly Non-Compliant',
+                    3: 'Partially Compliant',
+                    4: 'Mostly Compliant',
+                    5: 'Fully Compliant'
+                  };
+
+                  return (
+                    <Tooltip key={score}>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, complianceScore: score })}
+                          className={cn(
+                            "flex-1 h-12 rounded-xl border-2 transition-all font-black text-lg",
+                            formData.complianceScore === score
+                              ? "border-primary bg-primary text-white shadow-lg scale-105"
+                              : "border-muted/30 hover:border-primary/50 hover:bg-muted/10 text-muted-foreground/50"
+                          )}
+                        >
+                          {score}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="bg-dark text-white border-none text-[10px] font-bold py-1 px-2">
+                        {labels[score]}
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
+            </TooltipProvider>
           </div>
 
           {item.inputMethod === 'free_text' ? (
@@ -294,7 +348,7 @@ const ResponseDialog: React.FC<ResponseDialogProps> = ({
           </Button>
           <Button 
             onClick={() => handleAction(false)} 
-            disabled={isPending}
+            disabled={isPending || formData.complianceScore === null}
             className="flex-1 rounded-full bg-primary hover:bg-primary/90 font-bold uppercase tracking-widest text-[10px] h-10 shadow-elevated"
             data-testid="submit-for-review-btn"
           >

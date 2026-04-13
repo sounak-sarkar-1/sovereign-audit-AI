@@ -526,6 +526,19 @@ Inline edit form opens in expanded row
 Template import
 'Use Template' selected from Add More dropdown
 Modal opens: searchable template list, multi-select checkboxes, BU assignment select, Import button
+
+### Weightage Management (New)
+Components added to ScopeItemsTable:
+  - WEIGHTAGE column: inline editable percentage input per line item
+  - Total Weightage summary bar: shows running sum, colour-coded (green=100%, amber=partial, red=0%)
+  - "Distribute Equally" button: auto-assigns equal weightage across all items
+  - Warning banner: shown when weightages ≠ 100% (blocks report generation)
+
+Validation:
+  - All weightages must sum to exactly 100% (±0.01 tolerance)
+  - Report generation blocked if validation fails
+  - Toast shown on successful bulk weightage save
+
 5. Auditor Assignment
 SCR-MGR-008 — Assignments Tab
 Screen ID
@@ -794,6 +807,24 @@ Version history accordion
 Collapsible list
 GET /manager/audits/:id/reports
 All versions listed with download links
+
+### Compliance Score Card (New)
+Displayed when report exists and compliancePercentage is not null:
+  - Large coloured percentage display
+  - Badge: COMPLIANT / NEEDS IMPROVEMENT / CRITICAL
+  - Delta indicator if previousAuditId is set (clickable → ComplianceComparisonModal)
+
+### Export Line Items Button (New)
+  - Visible when audit status ≥ under_manager_review
+  - Downloads formatted .xlsx with 10 columns + summary footer
+  - Disabled with spinner during download
+
+### ComplianceComparisonModal (New)
+  - Triggered by clicking delta indicator
+  - Shows: previous audit score, current score, delta
+  - Line item table: item name, previous score, current score, change (colour coded)
+  - New/removed items flagged with badges
+
 Phase 3 — Send to Client and Review Feedback
 Component
 Type

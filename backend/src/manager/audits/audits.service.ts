@@ -10,6 +10,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In, IsNull, Not } from 'typeorm';
 import { Audit, AuditStatus } from '../../database/entities/audit.entity';
+import { AuditReport, ReportStatus } from '../../database/entities/audit-report.entity';
 import { AuditScopeLineItem, LineItemStatus } from '../../database/entities/audit-scope-line-item.entity';
 import { AuditBusinessUnit } from '../../database/entities/audit-business-unit.entity';
 import { User } from '../../database/entities/user.entity';
@@ -132,6 +133,15 @@ export class ManagerAuditsService {
     await queryRunner.startTransaction();
 
     try {
+      if (createDto.previousAuditId) {
+        const prevAudit = await queryRunner.manager.findOne(Audit, {
+          where: { id: createDto.previousAuditId, clientId: createDto.clientId },
+        });
+        if (!prevAudit) {
+          throw new BadRequestException('Previous audit must belong to the same client');
+        }
+      }
+
       const audit = this.auditRepo.create({
         ...createDto,
         managerId,
@@ -298,6 +308,18 @@ export class ManagerAuditsService {
       audit.expectedCompletionDate = newEndDate;
     }
 
+    if (updateDto.previousAuditId !== undefined) {
+      if (updateDto.previousAuditId) {
+        const prevAudit = await this.auditRepo.findOne({
+          where: { id: updateDto.previousAuditId, clientId: audit.clientId },
+        });
+        if (!prevAudit) {
+          throw new BadRequestException('Previous audit must belong to the same client');
+        }
+      }
+      audit.previousAuditId = updateDto.previousAuditId;
+    }
+
     await this.auditRepo.save(audit);
 
     await this.auditTrailService.log({
@@ -377,5 +399,77 @@ export class ManagerAuditsService {
     });
 
     return this.findOne(id);
+  }
+
+  async getComparisonData(auditId: string) {
+    const currentAudit = await this.auditRepo.findOne({
+      where: { id: auditId },
+      relations: ['previousAudit'],
+    });
+    if (!currentAudit) throw new NotFoundException('Audit not found');
+
+    const currentReport = await this.dataSource.getRepository(AuditReport).findOne({
+      where: { auditId: currentAudit.id, status: ReportStatus.FINAL },
+      order: { version: 'DESC' },
+    });
+
+    if (!currentAudit.previousAuditId) {
+      return { hasPrevious: false };
+    }
+
+    const prevAudit = await this.auditRepo.findOne({
+      where: { id: currentAudit.previousAuditId },
+    });
+    const prevReport = await this.dataSource.getRepository(AuditReport).findOne({
+      where: { auditId: currentAudit.previousAuditId, status: ReportStatus.FINAL },
+      order: { version: 'DESC' },
+    });
+
+    const currentItems = await this.lineItemRepo.find({
+      where: { auditId: currentAudit.id },
+      relations: ['responses'],
+    });
+
+    const prevItems = await this.lineItemRepo.find({
+      where: { auditId: currentAudit.previousAuditId },
+      relations: ['responses'],
+    });
+
+    const comparisonItems = currentItems.map(curr => {
+      const prev = prevItems.find(p => p.name.toLowerCase() === curr.name.toLowerCase());
+      const currResp = curr.responses.find(r => !r.isDraft);
+      const prevResp = prev?.responses.find(r => !r.isDraft);
+
+      return {
+        itemName: curr.name,
+        currentScore: currResp?.complianceScore ?? null,
+        currentWeightage: Number(curr.weightage || 0),
+        previousScore: prevResp?.complianceScore ?? null,
+        previousWeightage: prev ? Number(prev.weightage || 0) : 0,
+        scoreDelta: (currResp?.complianceScore && prevResp?.complianceScore) 
+          ? currResp.complianceScore - prevResp.complianceScore 
+          : null,
+      };
+    });
+
+    return {
+      hasPrevious: true,
+      current: {
+        auditId: currentAudit.id,
+        auditName: currentAudit.name,
+        compliancePercentage: currentReport?.compliancePercentage ?? null,
+        reportDate: currentReport?.createdAt ?? null,
+      },
+      previous: {
+        auditId: prevAudit.id,
+        auditName: prevAudit.name,
+        compliancePercentage: prevReport?.compliancePercentage ?? null,
+        reportDate: prevReport?.createdAt ?? null,
+      },
+      delta: (currentReport?.compliancePercentage && prevReport?.compliancePercentage)
+        ? Number(currentReport.compliancePercentage) - Number(prevReport.compliancePercentage)
+        : null,
+      lineItemComparison: comparisonItems,
+    };
   }
 }

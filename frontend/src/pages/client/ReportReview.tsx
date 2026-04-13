@@ -8,7 +8,12 @@ import {
   FileSearch,
   CheckCircle,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  ArrowUp,
+  ArrowDown,
+  Minus,
+  Info,
+  Download
 } from 'lucide-react';
 import { clientService } from '@/services/clientService';
 import { Button } from '@/components/ui/button';
@@ -17,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import ComplianceComparisonModal from '@/components/client/ComplianceComparisonModal';
 
 
 // Removed ReportFeedbackDialog import
@@ -25,6 +31,8 @@ const ReportReview: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isExporting, setIsExporting] = React.useState(false);
+  const [isComparisonOpen, setIsComparisonOpen] = React.useState(false);
 
   const { data: report, isLoading, error } = useQuery({
     queryKey: ['client-report', id],
@@ -64,6 +72,7 @@ const ReportReview: React.FC = () => {
 
   const currentStatus = report.status;
   const auditName = report.audit?.name || "Audit Engagement";
+  const auditData = report.audit;
   
   return (
     <div className="space-y-6">
@@ -121,7 +130,7 @@ const ReportReview: React.FC = () => {
               <Button 
                  variant="outline" 
                  className="rounded-full shadow-sm"
-                  onClick={() => clientService.downloadReport(id!, `${auditName}_Report.docx`)}
+                  onClick={handleDownload}
               >
                  Download to View In Browser
               </Button>
@@ -156,14 +165,82 @@ const ReportReview: React.FC = () => {
                 </div>
               </div>
               
+              {auditData?.compliancePercentage !== null && auditData?.compliancePercentage !== undefined && (
+                <div className="pt-4 border-t border-dashed space-y-3">
+                   <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Compliance Score</p>
+                   <div className="flex items-center justify-between">
+                      <span className={cn(
+                        "text-3xl font-black",
+                        auditData.compliancePercentage >= 90 ? "text-emerald-600" : 
+                        auditData.compliancePercentage >= 60 ? "text-amber-500" : 
+                        "text-red-600"
+                      )}>
+                        {auditData.compliancePercentage.toFixed(1)}%
+                      </span>
+                      <Badge variant="outline" className={cn(
+                        "text-[9px] font-black uppercase tracking-widest",
+                        auditData.compliancePercentage >= 90 ? "border-emerald-200 text-emerald-700 bg-emerald-50" : 
+                        auditData.compliancePercentage >= 60 ? "border-amber-200 text-amber-700 bg-amber-50" : 
+                        "border-red-200 text-red-700 bg-red-50"
+                      )}>
+                        {auditData.compliancePercentage >= 90 ? 'Compliant' : 
+                         auditData.compliancePercentage >= 60 ? 'Needs Imp.' : 
+                         'Critical'}
+                      </Badge>
+                   </div>
+                   {auditData.hasPrevious && auditData.previousCompliancePercentage !== null && (
+                      <div 
+                        className="flex items-center justify-between text-[10px] bg-muted/20 p-2 rounded-lg cursor-pointer hover:bg-muted/40 transition-colors"
+                        onClick={() => setIsComparisonOpen(true)}
+                      >
+                         <span className="font-bold text-muted-foreground uppercase">Shift vs Prev.</span>
+                         <div className="flex items-center gap-1">
+                            <span className="font-black">
+                               {Math.abs(auditData.compliancePercentage - auditData.previousCompliancePercentage).toFixed(1)}%
+                            </span>
+                            {auditData.compliancePercentage > auditData.previousCompliancePercentage ? (
+                               <ArrowUp size={10} className="text-emerald-600" />
+                            ) : auditData.compliancePercentage < auditData.previousCompliancePercentage ? (
+                               <ArrowDown size={10} className="text-red-600" />
+                            ) : (
+                               <Minus size={10} className="text-muted-foreground" />
+                            )}
+                         </div>
+                      </div>
+                   )}
+                </div>
+              )}
+              
               {currentStatus === 'sent_for_client_review' && (
-                <div className="pt-4 border-t border-dashed">
+                <div className="pt-4 border-t border-dashed space-y-2">
                   <Button 
                     className="w-full rounded-full bg-primary hover:bg-primary/90 gap-2 h-11 font-bold shadow-sm"
                     onClick={() => navigate(`/client/reports/${id}/feedback`)}
                   >
                     <MessageSquare size={16} /> Submit Feedback
                   </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={handleDownload}
+                      className="flex-1 rounded-full text-[10px] font-black uppercase tracking-widest gap-2"
+                    >
+                      <Download size={14} /> Download (DOCX)
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleExport}
+                      disabled={isExporting}
+                      className="flex-1 rounded-full text-[10px] font-black uppercase tracking-widest gap-2 bg-white/50"
+                    >
+                      {isExporting ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Download size={14} />
+                      )}
+                      Export (XLSX)
+                    </Button>
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -171,7 +248,14 @@ const ReportReview: React.FC = () => {
         </div>
       </div>
 
-      {/* Deleted ReportFeedbackDialog */}
+      {/* Comparison Modal */}
+      {report.auditId && (
+        <ComplianceComparisonModal 
+          auditId={report.auditId}
+          open={isComparisonOpen}
+          onOpenChange={setIsComparisonOpen}
+        />
+      )}
     </div>
   );
 };

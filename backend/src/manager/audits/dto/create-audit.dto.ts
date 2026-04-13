@@ -31,4 +31,8 @@ export class CreateAuditDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsUUID()
+  @IsOptional()
+  previousAuditId?: string;
 }

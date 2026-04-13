@@ -46,6 +46,9 @@ export class LineItemResponse {
   @JoinColumn({ name: 'selected_option_id' })
   selectedOption: AuditScopeLineItemOption;
 
+  @Column({ name: 'compliance_score', type: 'smallint', nullable: true })
+  complianceScore: number | null;
+
   @Column({ type: 'text', nullable: true })
   comment: string;
 

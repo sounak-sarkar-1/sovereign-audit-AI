@@ -4,6 +4,9 @@ import {
   IsUUID,
   IsBoolean,
   ValidateIf,
+  IsInt,
+  Min,
+  Max,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 
@@ -17,6 +20,12 @@ export class UpdateResponseDto {
   @ValidateIf((o) => o.selectedOptionId !== '' && o.selectedOptionId !== null)
   @IsUUID()
   selectedOptionId?: string | null;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  complianceScore?: number;
 
   @IsOptional()
   @IsString()

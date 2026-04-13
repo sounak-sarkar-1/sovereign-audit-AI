@@ -47,6 +47,15 @@ export class AuditReport {
   })
   status: ReportStatus;
 
+  @Column({
+    name: 'compliance_percentage',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
+  compliancePercentage: number | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt: Date;
 

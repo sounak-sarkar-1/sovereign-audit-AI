@@ -56,4 +56,7 @@ export const auditService = {
   getAuditTrail: async (auditId: string) => {
     return await api.get<any[]>(`/manager/audits/${auditId}/trail`);
   },
+  getComplianceComparison: async (auditId: string) => {
+    return await api.get<any>(`/manager/audits/${auditId}/compliance-comparison`);
+  },
 };

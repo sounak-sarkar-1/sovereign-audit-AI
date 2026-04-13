@@ -7,8 +7,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
+import { AuditBusinessUnit } from './audit-business-unit.entity';
 
 export enum AuditStatus {
   DRAFT = 'draft',
@@ -63,6 +65,13 @@ export class Audit {
   })
   expectedCompletionDate: Date;
 
+  @Column({ name: 'previous_audit_id', type: 'uuid', nullable: true })
+  previousAuditId: string | null;
+
+  @ManyToOne(() => Audit, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'previous_audit_id' })
+  previousAudit?: Audit;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -71,4 +80,7 @@ export class Audit {
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
+
+  @OneToMany(() => AuditBusinessUnit, (abu) => abu.audit)
+  businessUnits: AuditBusinessUnit[];
 }

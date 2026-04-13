@@ -115,4 +115,28 @@ export const clientService = {
     const response = await api.post('/client/search', { query });
     return response.data;
   },
+
+  getComplianceComparison: async (auditId: string) => {
+    const response = await api.get(`/client/audits/${auditId}/compliance-comparison`);
+    return response.data;
+  },
+
+  exportLineItems: async (auditId: string, auditName: string) => {
+    const res: any = await api.get(
+      `/client/audits/${auditId}/reports/export-line-items`,
+      { responseType: 'blob' }
+    );
+    const url = window.URL.createObjectURL(new Blob([res]));
+    const link = document.createElement('a');
+    link.href = url;
+    const date = new Date().toISOString().split('T')[0];
+    link.setAttribute(
+      'download',
+      `${auditName.replace(/\s+/g, '_')}_LineItems_${date}.xlsx`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode?.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  },
 };

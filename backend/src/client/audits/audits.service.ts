@@ -121,8 +121,41 @@ export class ClientAuditsService {
       .orderBy('audit.createdAt', 'DESC')
       .getManyAndCount();
 
+    const enrichedItems = await Promise.all(
+      items.map(async (audit) => {
+        const latestReport = await this.auditRepo.manager
+          .createQueryBuilder('audit_reports', 'report')
+          .where('report.audit_id = :auditId', { auditId: audit.id })
+          .andWhere('report.status = :status', { status: 'final' })
+          .orderBy('report.version', 'DESC')
+          .getOne();
+
+        let previousCompliancePercentage = null;
+        if (audit.previousAuditId) {
+          const prevReport = await this.auditRepo.manager
+            .createQueryBuilder('audit_reports', 'report')
+            .where('report.audit_id = :auditId', { auditId: audit.previousAuditId })
+            .andWhere('report.status = :status', { status: 'final' })
+            .orderBy('report.version', 'DESC')
+            .getOne();
+          previousCompliancePercentage = prevReport
+            ? Number(prevReport.compliancePercentage)
+            : null;
+        }
+
+        return {
+          ...audit,
+          compliancePercentage: latestReport
+            ? Number(latestReport.compliancePercentage)
+            : null,
+          hasPrevious: !!audit.previousAuditId,
+          previousCompliancePercentage,
+        };
+      }),
+    );
+
     return {
-      data: items,
+      data: enrichedItems,
       meta: {
         total,
         page,
@@ -142,6 +175,35 @@ export class ClientAuditsService {
       throw new NotFoundException('Audit not found');
     }
 
-    return { data: audit };
+    const latestReport = await this.auditRepo.manager
+      .createQueryBuilder('audit_reports', 'report')
+      .where('report.audit_id = :auditId', { auditId: audit.id })
+      .andWhere('report.status = :status', { status: 'final' })
+      .orderBy('report.version', 'DESC')
+      .getOne();
+
+    let previousCompliancePercentage = null;
+    if (audit.previousAuditId) {
+      const prevReport = await this.auditRepo.manager
+        .createQueryBuilder('audit_reports', 'report')
+        .where('report.audit_id = :auditId', { auditId: audit.previousAuditId })
+        .andWhere('report.status = :status', { status: 'final' })
+        .orderBy('report.version', 'DESC')
+        .getOne();
+      previousCompliancePercentage = prevReport
+        ? Number(prevReport.compliancePercentage)
+        : null;
+    }
+
+    return {
+      data: {
+        ...audit,
+        compliancePercentage: latestReport
+          ? Number(latestReport.compliancePercentage)
+          : null,
+        hasPrevious: !!audit.previousAuditId,
+        previousCompliancePercentage,
+      },
+    };
   }
 }

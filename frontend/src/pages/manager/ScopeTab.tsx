@@ -7,7 +7,9 @@ import {
   Loader2,
   FileText,
   CheckCircle2,
-  Library
+  Library,
+  Check,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -97,11 +99,15 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
         items: [data]
       });
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsManualDialogOpen(false);
       resetManualForm();
       toast.success('Scope item saved successfully');
+      // If adding a new item, redistribution is needed
+      if (!editingItem) {
+        distributeMutation.mutate();
+      }
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || 'Failed to save scope item');
@@ -112,6 +118,18 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
     mutationFn: (itemId: string) => scopeService.deleteLineItem(audit.id, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
+      distributeMutation.mutate();
+    }
+  });
+
+  const excelUploadMutation = useMutation({
+    mutationFn: (file: File) => scopeService.importFromExcel(audit.id, file, activeBuId),
+    onSuccess: (data: ImportSession) => {
+      setImportSession(data);
+      toast.success('Excel file processed. Please map the columns.');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to analyze Excel file');
     }
   });
 
@@ -120,6 +138,34 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
     onSuccess: (data: { jobId: string }) => {
       setAiJobId(data.jobId);
       setAiJobStatus('queued');
+    }
+  });
+
+  const templateImportMutation = useMutation({
+    mutationFn: (templateId: string) => scopeService.importFromTemplate(audit.id, { 
+      templateIds: [templateId], 
+      auditBusinessUnitId: activeBuId 
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
+      setIsTemplateDialogOpen(false);
+      setSelectedTemplateId('');
+      toast.success('Items imported from template');
+      distributeMutation.mutate();
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to import from template');
+    }
+  });
+
+  const distributeMutation = useMutation({
+    mutationFn: () => scopeService.distributeEqualWeightage(audit.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
+      toast.success('Equal weightage distributed');
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || 'Failed to distribute weightages');
     }
   });
 
@@ -137,17 +183,7 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsAiDialogOpen(false);
       resetAiFlow();
-    }
-  });
-
-  const excelUploadMutation = useMutation({
-    mutationFn: (file: File) => scopeService.importFromExcel(audit.id, file, activeBuId),
-    onSuccess: (data: ImportSession) => {
-      setImportSession(data);
-      toast.success('Excel file processed. Please map the columns.');
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || 'Failed to analyze Excel file');
+      distributeMutation.mutate();
     }
   });
 
@@ -158,25 +194,10 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
       setIsExcelDialogOpen(false);
       setImportSession(null);
       toast.success('Scope items imported successfully');
+      distributeMutation.mutate();
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || 'Failed to import scope items');
-    }
-  });
-
-  const templateImportMutation = useMutation({
-    mutationFn: (templateId: string) => scopeService.importFromTemplate(audit.id, { 
-      templateIds: [templateId], 
-      auditBusinessUnitId: activeBuId 
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
-      setIsTemplateDialogOpen(false);
-      setSelectedTemplateId('');
-      toast.success('Items imported from template');
-    },
-    onError: (err: any) => {
-      toast.error(err.response?.data?.message || 'Failed to import from template');
     }
   });
 
@@ -240,6 +261,12 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
   };
 
   const hasAnyItems = scopeItemsByBu && Object.keys(scopeItemsByBu).length > 0;
+  
+  const currentBuItems = scopeItemsByBu?.[activeBuId] || [];
+  const totalWeightage = Math.round(currentBuItems.reduce((sum, item) => sum + (item.weightage || 0), 0) * 100) / 100;
+  const isWeightageValid = totalWeightage === 100;
+  const missingWeightage = Math.round((100 - totalWeightage) * 100) / 100;
+  const canEditWeightage = audit.status === 'draft' || audit.status === 'in_progress';
 
   if (isLoading) {
     return (
@@ -291,7 +318,58 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
           }}
         />
       ) : (
-        <Tabs value={activeBuId} onValueChange={setActiveBuId} className="w-full">
+        <div className="space-y-4">
+          {/* Weightage Summary Bar */}
+          <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#1a0d35]/80 backdrop-blur-md border border-bg-mid dark:border-[#3d2a5a] rounded-xl p-4 flex items-center justify-between shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Total Weightage</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-2xl font-black ${
+                    totalWeightage === 100 ? 'text-green-600' : 
+                    totalWeightage > 0 ? 'text-amber-500' : 'text-destructive'
+                  }`}>
+                    {totalWeightage}%
+                  </span>
+                  {totalWeightage === 100 ? (
+                    <div className="bg-green-100 dark:bg-green-900/30 p-1 rounded-full">
+                      <Check className="h-4 w-4 text-green-600" />
+                    </div>
+                  ) : (
+                    <div className={`${totalWeightage > 0 ? 'bg-amber-100 dark:bg-amber-900/30' : 'bg-destructive/10'} p-1 rounded-full`}>
+                      <AlertTriangle className={`h-4 w-4 ${totalWeightage > 0 ? 'text-amber-500' : 'text-destructive'}`} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => distributeMutation.mutate()}
+              disabled={distributeMutation.isPending || !hasAnyItems || !canEditWeightage}
+              className="rounded-full border-primary/20 hover:bg-primary/5 font-bold"
+            >
+              {distributeMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Distribute Equally
+            </Button>
+          </div>
+
+          {/* Warning Banner */}
+          {!isWeightageValid && hasAnyItems && (
+            <Alert variant="warning" className="bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle className="font-bold">Weightages incomplete</AlertTitle>
+              <AlertDescription>
+                Weightages must sum to 100% before the audit report can be generated. 
+                Current total: <span className="font-bold">{totalWeightage}%</span>. 
+                {missingWeightage > 0 ? `Missing: ${missingWeightage}%` : `Excess: ${Math.abs(missingWeightage)}%`}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Tabs value={activeBuId} onValueChange={setActiveBuId} className="w-full">
           <TabsList className="mb-4">
             {audit.businessUnits?.map((bu: any) => (
               <TabsTrigger key={bu.id} value={bu.id}>
@@ -304,10 +382,13 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
             <TabsContent key={bu.id} value={bu.id} className="mt-0">
               <div className="bg-white dark:bg-[#1a0d35] rounded-xl overflow-hidden border border-bg-mid dark:border-[#3d2a5a]">
                 <ScopeItemsTable 
+                  auditId={audit.id}
+                  auditStatus={audit.status}
                   items={scopeItemsByBu?.[bu.id] || []} 
                   onEdit={handleEdit}
                   onDelete={(id: string) => confirm('Delete item?') && deleteMutation.mutate(id)}
                   isDraft={isDraft}
+                  onRefresh={() => queryClient.invalidateQueries({ queryKey: ['scope', audit.id] })}
                 />
               </div>
               {isDraft && (

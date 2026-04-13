@@ -98,4 +98,22 @@ export const scopeService = {
     const response = await api.get(`/ai-jobs/${jobId}`);
     return response.data;
   },
+
+  updateWeightages: async (
+    auditId: string,
+    items: { id: string; weightage: number }[],
+  ) => {
+    const response = await api.put(
+      `/manager/audits/${auditId}/scope/weightages`,
+      { items },
+    );
+    return response.data;
+  },
+
+  distributeEqualWeightage: async (auditId: string) => {
+    const response = await api.post(
+      `/manager/audits/${auditId}/scope/weightages/distribute-equally`,
+    );
+    return response.data;
+  },
 };

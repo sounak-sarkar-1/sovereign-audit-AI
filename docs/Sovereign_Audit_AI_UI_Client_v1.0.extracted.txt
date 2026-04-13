@@ -130,6 +130,17 @@ Active Audits panel: illustration + 'No active audits. Your completed audits are
 No pending actions
 Nothing requires client action
 Pending Actions panel: green checkmark + 'No actions required right now.'
+
+### Compliance Score on Audit Cards (New)
+  - Badge showing compliancePercentage with colour code on each audit card:
+      - ≥ 90%: Green (COMPLIANT)
+      - 60-89%: Amber (NEEDS IMPROVEMENT)
+      - < 60%: Red (CRITICAL)
+  - Delta indicator if audit is part of a series (clickable → ComplianceComparisonModal)
+  - ComplianceComparisonModal (Client Version):
+      - Read-only, no manager-only fields
+      - Fetches: GET /client/audits/:id/compliance-comparison
+      - Shows: previous audit score, current score, delta, per-item comparison table
 SCR-CLI-002 — Active Audit Detail
 Screen ID
 SCR-CLI-002
@@ -427,6 +438,15 @@ Download prompt card
 Alert (info) with download button
 —
 Prominent reminder at top: 'Please download and review the full report before providing feedback.' Download button.
+
+### Compliance Score in Report Summary Sidebar (New)
+  - compliancePercentage displayed with colour badge (COMPLIANT / NEEDS IMPROVEMENT / CRITICAL)
+  - Delta indicator + ComplianceComparisonModal available if audit is series-linked
+
+### Export Line Items Button (New)
+  - Available on reports with status ≥ sent_for_client_review
+  - Downloads same .xlsx as manager export
+  - Disabled with spinner during download
 Report sections accordion
 Accordion list
 Standard report sections (pre-defined list)

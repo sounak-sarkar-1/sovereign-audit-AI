@@ -3,6 +3,7 @@ import {
   Logger,
   NotFoundException,
   UnprocessableEntityException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
@@ -93,6 +94,7 @@ export class ManagerScopeService {
           inputMethod: itemDto.inputMethod,
           isOptional: itemDto.isOptional ?? false,
           displayOrder: itemDto.displayOrder ?? 0,
+          weightage: itemDto.weightage ?? null,
           source: LineItemSource.MANUAL,
           status: LineItemStatus.NOT_STARTED,
         });
@@ -155,7 +157,71 @@ export class ManagerScopeService {
       Object.assign(item, updateData);
       return await manager.save(item);
     });
+  }
 
+  async updateWeightages(
+    auditId: string,
+    dto: { items: { id: string; weightage: number }[] },
+  ) {
+    const itemIds = dto.items.map((i) => i.id);
+    const existingItems = await this.scopeRepository.find({
+      where: { id: In(itemIds), auditId },
+    });
+
+    if (existingItems.length !== itemIds.length) {
+      throw new BadRequestException(
+        'Some item IDs do not belong to this audit',
+      );
+    }
+
+    const totalWeightage = dto.items.reduce((sum, i) => sum + i.weightage, 0);
+    if (Math.abs(totalWeightage - 100) > 0.01) {
+      throw new BadRequestException(
+        `Weightages must sum to 100%. Current total: ${totalWeightage}%`,
+      );
+    }
+
+    return await this.dataSource.transaction(async (manager) => {
+      const updatedItems = [];
+      for (const itemDto of dto.items) {
+        await manager.update(
+          AuditScopeLineItem,
+          { id: itemDto.id },
+          { weightage: itemDto.weightage },
+        );
+        updatedItems.push(
+          await manager.findOne(AuditScopeLineItem, {
+            where: { id: itemDto.id },
+          }),
+        );
+      }
+      return updatedItems;
+    });
+  }
+
+  async distributeEqualWeightage(auditId: string) {
+    const items = await this.scopeRepository.find({
+      where: { auditId },
+      order: { displayOrder: 'ASC' },
+    });
+
+    if (items.length === 0) return [];
+
+    const count = items.length;
+    const equalShare = Math.floor((100 / count) * 100) / 100;
+    let sum = 0;
+
+    const updatedItems = items.map((item, index) => {
+      if (index === count - 1) {
+        item.weightage = Math.round((100 - sum) * 100) / 100;
+      } else {
+        item.weightage = equalShare;
+        sum += equalShare;
+      }
+      return item;
+    });
+
+    return await this.scopeRepository.save(updatedItems);
   }
 
   async removeLineItem(auditId: string, itemId: string) {
