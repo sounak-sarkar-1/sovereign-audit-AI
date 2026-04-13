@@ -73,7 +73,7 @@ const ClientReportsList: React.FC = () => {
                          variant={report.status === 'sent_for_client_review' ? 'default' : 'ghost'}
                          size="sm" 
                          className={report.status === 'sent_for_client_review' ? 'bg-[#4f2d7f]' : ''}
-                         onClick={() => navigate(`/client/reports/${report.id}/review`)}
+                         onClick={() => navigate(`/client/reports/${report.id}`)}
                        >
                          {report.status === 'sent_for_client_review' ? 'Start Review' : 'View Feedback'}
                          <ChevronRight className="ml-1 h-4 w-4" />

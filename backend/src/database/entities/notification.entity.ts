@@ -23,6 +23,7 @@ export enum NotificationType {
   EXCEPTIONAL_REQUEST_RESOLVED = 'exceptional_request_resolved',
   AUDIT_CLOSED = 'audit_closed',
   REPORT_READY = 'report_ready',
+  REPORT_FINALIZED = 'report_finalized', // Added for client sign-off
 }
 
 @Entity('notifications')

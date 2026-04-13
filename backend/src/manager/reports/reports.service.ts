@@ -135,7 +135,7 @@ export class ManagerReportsService {
     try {
       const reports = await this.reportRepo.find({
         where: { auditId },
-        relations: ['file'],
+        relations: ['file', 'feedbacks'],
         order: { version: 'DESC' },
       });
       this.logger.log(`Found ${reports.length} reports for audit ${auditId}`);
@@ -194,15 +194,25 @@ export class ManagerReportsService {
     });
     if (!report) throw new NotFoundException('Report not found');
 
+    if (
+      report.status !== ReportStatus.FEEDBACK_SUBMITTED &&
+      report.status !== ReportStatus.SENT_FOR_CLIENT_REVIEW
+    ) {
+      throw new BadRequestException(
+        'Only reports sent for review or with submitted feedback can be finalized.',
+      );
+    }
+
     report.status = ReportStatus.FINAL;
     await this.reportRepo.save(report);
 
     report.audit.status = AuditStatus.CLOSED;
     await this.auditRepo.save(report.audit);
 
-    // Notify both
+    // Notify both manager and client
     const notifyUsers = [report.audit.managerId, report.audit.clientId];
     for (const userId of notifyUsers) {
+      if (!userId) continue;
       await this.notificationsService.create({
         userId,
         type: NotificationType.AUDIT_CLOSED,
@@ -210,17 +220,17 @@ export class ManagerReportsService {
         message: `Audit Project ${report.audit.name} has been closed and finalized.`,
         relatedEntityType: 'Audit',
         relatedEntityId: report.auditId,
-        metadata: { auditId: report.auditId },
+        metadata: { auditId: report.auditId, reportId: report.id },
       });
     }
 
     await this.auditTrailService.log({
       actorId: manager.id,
       actorRole: manager.role,
-      action: AuditAction.AUDIT_CLOSED,
-      entityType: 'Audit',
-      entityId: report.auditId,
-      metadata: { reportId: report.id },
+      action: AuditAction.REPORT_FINALIZED,
+      entityType: 'AuditReport',
+      entityId: report.id,
+      metadata: { auditId: report.auditId, version: report.version },
     });
 
     return { message: 'Audit finalized and closed' };

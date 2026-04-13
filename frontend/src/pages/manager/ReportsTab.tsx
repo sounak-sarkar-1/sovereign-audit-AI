@@ -11,10 +11,10 @@ import {
   AlertCircle,
   Loader2,
   RefreshCw,
-  Archive,
-  ArrowRight,
   MessageSquare,
-  BadgeCheck
+  BadgeCheck,
+  XCircle,
+  HelpCircle
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,14 +61,14 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (file: File) => reportService.uploadVersion(auditId, latestReport!.id, file),
+    mutationFn: (file: File) => reportService.uploadVersion(auditId, latestReport?.id || '', file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports', auditId] });
     },
   });
 
   const sendMutation = useMutation({
-    mutationFn: (reportId: string) => reportService.sendToClient(auditId, reportId),
+    mutationFn: (reportId: string) => reportService.send(auditId, reportId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports', auditId] });
       queryClient.invalidateQueries({ queryKey: ['audit', auditId] });
@@ -187,7 +187,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
                   <CardDescription>Latest generated version ready for your review.</CardDescription>
                 </div>
                 <div className="flex gap-2">
-                   <Button variant="outline" size="sm" onClick={() => reportService.download(auditId, latestReport.id)} data-testid="download-report-btn">
+                   <Button variant="outline" size="sm" onClick={() => reportService.downloadReport(auditId, latestReport.id, `Report_${auditName}_v${latestReport.version}.docx`)} data-testid="download-report-btn">
                      <Download size={14} className="mr-2" /> Download DOCX
                    </Button>
                    <Button variant="outline" size="sm" className="border-accent text-accent hover:bg-accent/5" onClick={() => generateMutation.mutate()}>
@@ -279,41 +279,122 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
       )}
 
       {/* Phase 3: Client Review Feedback */}
-      {latestReport && latestReport.status === 'sent_for_client_review' && (
-        <Card>
-          <CardHeader>
+      {latestReport && (latestReport.status === 'sent_for_client_review' || latestReport.status === 'feedback_submitted') && (
+        <Card className="shadow-sm border-primary/20 bg-white overflow-hidden">
+          <CardHeader className="bg-primary/5 border-b">
             <div className="flex justify-between items-start">
               <div>
-                <Badge className="bg-blue-500 mb-2">Awaiting Client Review</Badge>
+                <Badge className={cn(
+                  "mb-2",
+                  latestReport.status === 'feedback_submitted' ? "bg-orange-500" : "bg-blue-500"
+                )}>
+                  {latestReport.status === 'feedback_submitted' ? 'Feedback Received' : 'Awaiting Client Review'}
+                </Badge>
                 <CardTitle>Client Feedback Loop</CardTitle>
-                <CardDescription>The report has been sent to {auditName}'s client contacts.</CardDescription>
+                <CardDescription>
+                  {latestReport.status === 'feedback_submitted' 
+                    ? `Client has submitted section-by-section feedback for version ${latestReport.version}.`
+                    : `The report has been sent to ${auditName}'s client contacts.`}
+                </CardDescription>
               </div>
-              <Button variant="outline" size="sm" onClick={() => reportService.download(auditId, latestReport.id)}>
-                <Download size={14} className="mr-2" /> Download Sent DOCX
+              <Button variant="outline" size="sm" onClick={() => reportService.downloadReport(auditId, latestReport.id, `Report_${auditName}_sent.docx`)} className="rounded-full gap-2">
+                <Download size={14} /> Download Sent DOCX
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-             <div className="p-8 text-center bg-muted/20 rounded-xl border-2 border-dashed italic text-muted-foreground">
-                <MessageSquare size={32} className="mx-auto mb-4 opacity-50" />
-                Awaiting client feedback per section...
-             </div>
+          <CardContent className="p-0">
+            {latestReport.status === 'sent_for_client_review' ? (
+              <div className="p-12 text-center italic text-muted-foreground bg-muted/5">
+                <MessageSquare size={32} className="mx-auto mb-4 opacity-50 text-blue-400" />
+                <p className="font-medium">Direct review process is underway.</p>
+                <p className="text-xs mt-1">Awaiting client feedback per section...</p>
+              </div>
+            ) : (
+              <div className="divide-y border-b">
+                {latestReport.feedbacks?.map((f, i) => (
+                  <div key={i} className="p-4 flex items-start gap-4 hover:bg-muted/5 transition-colors">
+                    <div className={cn(
+                      "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                      f.status === 'accepted' ? "bg-green-100 text-green-600" : 
+                      f.status === 'requires_revision' ? "bg-red-100 text-red-600" : 
+                      "bg-muted text-muted-foreground"
+                    )}>
+                      {f.status === 'accepted' ? <CheckCircle2 size={16} /> : 
+                       f.status === 'requires_revision' ? <XCircle size={16} /> : 
+                       <HelpCircle size={16} />}
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-bold text-dark">{f.sectionName}</p>
+                        <Badge variant="outline" className={cn(
+                          "text-[10px] font-bold uppercase",
+                          f.status === 'accepted' ? "border-green-200 text-green-700 bg-green-50" : 
+                          f.status === 'requires_revision' ? "border-red-200 text-red-700 bg-red-50" : 
+                          "border-muted text-muted-foreground"
+                        )}>
+                          {f.status.replace(/_/g, ' ')}
+                        </Badge>
+                      </div>
+                      {f.comment && (
+                        <p className="text-xs text-muted-foreground bg-muted/20 p-2 rounded-md italic">
+                          "{f.comment}"
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
-             <div className="flex items-center justify-between pt-6 border-t font-semibold">
-                <span>Final Review Readiness</span>
-                <div className="flex items-center gap-2 text-red-500 text-sm">
-                  <AlertCircle size={16} />
-                  Requires Revision
-                </div>
-             </div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between font-bold text-sm">
+                 <span className="text-muted-foreground uppercase tracking-widest text-[10px]">Action Recommended</span>
+                 <div className="flex items-center gap-2">
+                   {latestReport.status === 'feedback_submitted' ? (
+                     <div className={cn(
+                       "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold",
+                       latestReport.feedbacks?.some(f => f.status === 'requires_revision') 
+                         ? "bg-red-50 text-red-700 border border-red-100" 
+                         : "bg-green-50 text-green-700 border border-green-100"
+                     )}>
+                       {latestReport.feedbacks?.some(f => f.status === 'requires_revision') 
+                         ? <AlertCircle size={14} /> 
+                         : <CheckCircle2 size={14} />}
+                       {latestReport.feedbacks?.some(f => f.status === 'requires_revision') 
+                         ? "Revision Required" 
+                         : "Ready for Finalization"}
+                     </div>
+                   ) : (
+                     <span className="text-muted-foreground">Awaiting Input</span>
+                   )}
+                 </div>
+              </div>
 
-             <div className="flex justify-end gap-3 pt-4">
-                <Button variant="outline" onClick={() => generateMutation.mutate()}>Regenerate (v{latestReport.version + 1})</Button>
-                <Button className="bg-accent" onClick={() => finalizeMutation.mutate(latestReport.id)} disabled={finalizeMutation.isPending} data-testid="finalize-audit-btn">
-                  {finalizeMutation.isPending ? <Loader2 className="animate-spin mr-2" /> : <BadgeCheck className="mr-2" />}
-                  Finalize Audit
-                </Button>
-             </div>
+              <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+                 <Button 
+                    variant="outline" 
+                    className="rounded-full px-6"
+                    onClick={() => generateMutation.mutate()}
+                 >
+                    <RefreshCw size={14} className="mr-2" />
+                    Regenerate (v{latestReport.version + 1})
+                 </Button>
+                 <Button 
+                    className="bg-accent hover:bg-accent/90 rounded-full px-8 shadow-md" 
+                    onClick={() => {
+                        finalizeMutation.mutate(latestReport.id);
+                        toast.success('Audit finalized and closed successfully');
+                    }}
+                    disabled={finalizeMutation.isPending} 
+                    data-testid="finalize-audit-btn"
+                 >
+                   {finalizeMutation.isPending 
+                    ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> 
+                    : <BadgeCheck className="mr-2 h-4 w-4" />}
+                   Finalize & Close Audit
+                 </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -331,7 +412,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
                 <p className="text-white/80 text-sm">This audit was closed on {format(new Date(latestReport.createdAt), 'MMMM d, yyyy')}</p>
               </div>
             </div>
-            <Button variant="secondary" onClick={() => reportService.download(auditId, latestReport.id)}>
+            <Button variant="secondary" onClick={() => reportService.downloadReport(auditId, latestReport.id, `Final_Report_${auditName}.docx`)}>
               <Download size={14} className="mr-2" /> Download Final Report
             </Button>
           </div>

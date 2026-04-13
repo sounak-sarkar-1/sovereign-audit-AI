@@ -55,9 +55,32 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
   SheetDescription,
 } from "@/components/ui/sheet";
+
+class TabErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: string }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error: error.message };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 text-center text-muted-foreground">
+          <p className="font-semibold text-destructive">Something went wrong loading this tab.</p>
+          <p className="text-xs mt-1">{this.state.error}</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
   const { id } = useParams();
@@ -261,43 +284,55 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
             </TabsList>
 
             <TabsContent value="scope" className="mt-0">
-              <ScopeTab audit={audit} isDraft={isDraft} />
+               <TabErrorBoundary>
+                 <ScopeTab audit={audit} isDraft={isDraft} />
+               </TabErrorBoundary>
             </TabsContent>
             
             <TabsContent value="assignments" className="mt-0">
-               <AssignmentsTab audit={audit} isDraft={isDraft} />
+               <TabErrorBoundary>
+                 <AssignmentsTab audit={audit} isDraft={isDraft} />
+               </TabErrorBoundary>
             </TabsContent>
 
             <TabsContent value="exceptions" className="mt-0">
-               <ExceptionsTab audit={audit} isDraft={isDraft} />
+               <TabErrorBoundary>
+                 <ExceptionsTab audit={audit} isDraft={isDraft} />
+               </TabErrorBoundary>
             </TabsContent>
 
             <TabsContent value="interactions" className="mt-0">
-                <Card className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                     <MessageSquare size={32} />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-dark">Interactions Hub</h3>
-                    <p className="text-xs text-muted-foreground max-w-[280px]">Collaborate with the client and audit team in real-time.</p>
-                  </div>
-                  <Button 
-                    className="rounded-full bg-primary hover:bg-primary/90 shadow-sm"
-                    onClick={() => navigate(`/manager/chats/${id}`)}
-                  >
-                    Open Engagement Chat
-                  </Button>
-                </Card>
+                <TabErrorBoundary>
+                  <Card className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                       <MessageSquare size={32} />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-sm font-bold text-dark">Interactions Hub</h3>
+                      <p className="text-xs text-muted-foreground max-w-[280px]">Collaborate with the client and audit team in real-time.</p>
+                    </div>
+                    <Button 
+                      className="rounded-full bg-primary hover:bg-primary/90 shadow-sm"
+                      onClick={() => navigate(`/manager/chats/${id}`)}
+                    >
+                      Open Engagement Chat
+                    </Button>
+                  </Card>
+                </TabErrorBoundary>
             </TabsContent>
 
             <TabsContent value="report" className="mt-0">
-               <ReportsTab 
-                 auditId={audit.id} 
-                 auditStatus={audit.status} 
-                 auditName={audit.name} 
-                 completionPercentage={audit.completionPercentage}
-                 incompleteMandatoryCount={audit.incompleteMandatoryCount}
-               />
+               <TabErrorBoundary>
+                 <React.Suspense fallback={<div className="p-12 text-center">Loading reports module...</div>}>
+                   <ReportsTab 
+                     auditId={audit.id} 
+                     auditStatus={audit.status} 
+                     auditName={audit.name} 
+                     completionPercentage={audit.completionPercentage}
+                     incompleteMandatoryCount={audit.incompleteMandatoryCount}
+                   />
+                 </React.Suspense>
+               </TabErrorBoundary>
             </TabsContent>
           </Tabs>
         </div>

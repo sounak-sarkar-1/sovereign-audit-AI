@@ -50,4 +50,5 @@ export class ClientReportsController {
   ) {
     return this.service.download(reportId, client.id, res);
   }
+
 }

@@ -55,11 +55,11 @@ export class ClientReportsService {
 
   async findOne(id: string, clientId: string) {
     const report = await this.reportRepo.findOne({
-      where: { id, audit: { clientId } },
-      relations: ['audit', 'file', 'feedbacks'],
+      where: { id },
+      relations: ['audit', 'file'],
     });
 
-    if (!report || report.status === ReportStatus.DRAFT) {
+    if (!report || report.audit?.clientId !== clientId || report.status === ReportStatus.DRAFT) {
       throw new NotFoundException('Report not found');
     }
 
@@ -124,15 +124,18 @@ export class ClientReportsService {
     });
   }
 
-  async download(reportId: string, clientId: string, res: Response) {
+  async download(id: string, clientId: string, res: Response) {
     const report = await this.reportRepo.findOne({
-      where: { id: reportId },
-      relations: ['file', 'audit'],
+      where: { id },
+      relations: ['audit', 'file'],
     });
-    if (!report) throw new NotFoundException('Report not found');
-    if (report.audit.clientId !== clientId) throw new ForbiddenException();
+
+    if (!report || report.audit?.clientId !== clientId) {
+      throw new NotFoundException('Report not found');
+    }
     if (!report.file)
       throw new BadRequestException('Report file not yet generated');
     return this.filesService.streamFile(report.file, res);
   }
+
 }

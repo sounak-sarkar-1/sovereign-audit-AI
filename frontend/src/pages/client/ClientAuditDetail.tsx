@@ -186,11 +186,11 @@ const ClientAuditDetail: React.FC = () => {
                                 variant="outline" 
                                 className="flex-1 rounded-full gap-2 h-11 border-bg-mid"
                                 onClick={() => {
-                                  clientService.downloadReport(associatedReport.id, `${data.name}_Report_v${associatedReport.version}.pdf`);
+                                  clientService.downloadReport(associatedReport.id, `${data.name}_Report_v${associatedReport.version}.docx`);
                                   toast.success('Download started');
                                 }}
                              >
-                                <Download size={18} /> Download PDF Version
+                                <Download size={18} /> Download Report (DOCX)
                              </Button>
                           </div>
                        </CardContent>

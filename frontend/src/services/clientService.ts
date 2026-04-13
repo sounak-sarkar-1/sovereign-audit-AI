@@ -60,6 +60,11 @@ export const clientService = {
     return response.data;
   },
 
+  finalizeReport: async (id: string) => {
+    const response = await api.post(`/client/reports/${id}/finalize`);
+    return response.data;
+  },
+
   downloadReport: async (id: string, filename: string) => {
     const response = await api.get(`/client/reports/${id}/download`, {
       responseType: 'blob',

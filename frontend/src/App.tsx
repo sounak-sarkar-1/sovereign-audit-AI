@@ -39,6 +39,7 @@ import ClientAuditDetail from './pages/client/ClientAuditDetail';
 import ClientReportsList from './pages/client/ClientReportsList';
 import CorrectiveActionPlans from './pages/client/CorrectiveActionPlans';
 import ClientSettings from './pages/client/ClientSettings';
+import ReportFeedbackForm from './pages/client/ReportFeedbackForm';
 
 import { useAuthStore } from './stores/auth';
 import { Toaster } from 'sonner';
@@ -57,6 +58,11 @@ const NavigateToDashboard = () => {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
   return <Navigate to={`/${user.role}/dashboard`} replace />;
+};
+
+const LegacyReportRedirect = () => {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={`/client/reports/${id}`} replace />;
 };
 
 function App() {
@@ -136,7 +142,9 @@ function App() {
                             <Route path="search" element={<ClientNlSearch />} />
                             <Route path="clarifications" element={<ClientClarifications />} />
                             <Route path="reports" element={<ClientReportsList />} />
-                            <Route path="reports/:id/review" element={<ClientReportReview />} />
+                            <Route path="reports/:id" element={<ClientReportReview />} />
+                            <Route path="reports/:id/feedback" element={<ReportFeedbackForm />} />
+                            <Route path="reports/:id/review" element={<LegacyReportRedirect />} />
                             <Route path="corrective-actions" element={<CorrectiveActionPlans />} />
                             <Route path="chat/:id" element={<EngagementChat />} />
                             <Route path="settings" element={<ClientSettings />} />

@@ -12,7 +12,7 @@ export interface AIJob {
 
 export const aiJobsService = {
   getJob: async (jobId: string): Promise<AIJob> => {
-    const response = await api.get(`/shared/ai-jobs/${jobId}`);
-    return response.data;
-  }
+    const res = await api.get(`/ai-jobs/${jobId}`);
+    return res.data?.data ?? res.data;
+  },
 };

@@ -36,7 +36,7 @@ export class ManagerReportsController {
     return this.service.findAll(auditId);
   }
 
-  @Post(':rId/send-to-client')
+  @Post(':rId/send')
   sendToClient(
     @Param('id') auditId: string,
     @Param('rId') reportId: string,
