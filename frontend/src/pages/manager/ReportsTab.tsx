@@ -14,7 +14,9 @@ import {
   MessageSquare,
   BadgeCheck,
   XCircle,
-  HelpCircle
+  HelpCircle,
+  ArrowRight,
+  Archive
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,6 +27,7 @@ import { reportService, type AuditReport } from '@/services/reportService';
 import { aiJobsService } from '../../services/aiJobsService';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 interface ReportsTabProps {
   auditId: string;
@@ -34,7 +37,13 @@ interface ReportsTabProps {
   incompleteMandatoryCount?: number;
 }
 
-const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditStatus, auditName, completionPercentage = 0, incompleteMandatoryCount = 0 }) => {
+const ReportsTab: React.FC<ReportsTabProps> = ({ 
+  auditId, 
+  auditStatus: _auditStatus, 
+  auditName, 
+  completionPercentage: _completionPercentage = 0, 
+  incompleteMandatoryCount = 0 
+}) => {
   const queryClient = useQueryClient();
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const [jobProgress, setJobProgress] = useState(0);
@@ -68,18 +77,28 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ auditId, auditStatus: _auditSta
   });
 
   const sendMutation = useMutation({
-    mutationFn: (reportId: string) => reportService.send(auditId, reportId),
+    mutationFn: (reportId: string) => reportService.sendToClient(auditId, reportId),
     onSuccess: () => {
+      toast.success('Report sent to client for review.');
       queryClient.invalidateQueries({ queryKey: ['reports', auditId] });
       queryClient.invalidateQueries({ queryKey: ['audit', auditId] });
+    },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || 'Failed to send report to client.';
+      toast.error(msg);
     },
   });
 
   const finalizeMutation = useMutation({
     mutationFn: (reportId: string) => reportService.finalize(auditId, reportId),
     onSuccess: () => {
+      toast.success('Audit finalized and closed successfully.');
       queryClient.invalidateQueries({ queryKey: ['reports', auditId] });
       queryClient.invalidateQueries({ queryKey: ['audit', auditId] });
+    },
+    onError: (err: any) => {
+      const msg = err.response?.data?.message || 'Failed to finalize report.';
+      toast.error(msg);
     },
   });
 

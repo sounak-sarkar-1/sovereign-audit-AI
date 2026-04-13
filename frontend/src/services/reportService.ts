@@ -18,42 +18,38 @@ export interface AuditReport {
 
 export const reportService = {
   getReports: async (auditId: string): Promise<AuditReport[]> => {
-    const res = await api.get(`/manager/audits/${auditId}/reports`);
-    return res.data?.data ?? res.data ?? [];
+    return await api.get(`/manager/audits/${auditId}/reports`);
   },
 
   generateReport: async (auditId: string) => {
-    const res = await api.post(`/manager/audits/${auditId}/reports/generate`);
-    return res.data?.data ?? res.data;
+    return await api.post(`/manager/audits/${auditId}/reports/generate`);
   },
 
   uploadVersion: async (auditId: string, reportId: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await api.post(
+    return await api.post(
       `/manager/audits/${auditId}/reports/${reportId}/upload`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    return res.data?.data ?? res.data;
   },
 
-  send: async (auditId: string, reportId: string) => {
-    const res = await api.post(`/manager/audits/${auditId}/reports/${reportId}/send`);
-    return res.data?.data ?? res.data;
+  sendToClient: async (auditId: string, reportId: string) => {
+    return await api.post(`/manager/audits/${auditId}/reports/${reportId}/send`);
   },
 
   finalize: async (auditId: string, reportId: string) => {
-    const res = await api.post(`/manager/audits/${auditId}/reports/${reportId}/finalize`);
-    return res.data?.data ?? res.data;
+    return await api.post(`/manager/audits/${auditId}/reports/${reportId}/finalize`);
   },
 
   downloadReport: async (auditId: string, reportId: string, filename: string = 'report.docx') => {
-    const res = await api.get(
+    const res: any = await api.get(
       `/manager/audits/${auditId}/reports/${reportId}/download`,
       { responseType: 'blob' }
     );
-    const url = window.URL.createObjectURL(new Blob([res.data]));
+    // Since interceptor now returns RAW data, 'res' IS the blob.
+    const url = window.URL.createObjectURL(new Blob([res]));
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', filename);

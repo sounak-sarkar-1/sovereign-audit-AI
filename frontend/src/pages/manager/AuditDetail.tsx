@@ -55,6 +55,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
   SheetDescription,
 } from "@/components/ui/sheet";
 
@@ -149,7 +150,18 @@ const AuditDetail = ({ editMode = false }: { editMode?: boolean }) => {
   });
 
   if (isLoading) return <div className="p-12 text-center">Loading audit details...</div>;
-  if (!audit) return <div className="p-12 text-center">Audit not found</div>;
+  
+  if (!audit || !audit.id) {
+    return (
+      <div className="p-12 text-center text-muted-foreground">
+        <p className="font-semibold">Unable to load audit details.</p>
+        <p className="text-xs mt-1">The audit data could not be retrieved. Please try again.</p>
+        <Button className="mt-4" onClick={() => navigate('/manager/audits')}>
+          Back to Dashboard
+        </Button>
+      </div>
+    );
+  }
 
   const isDraft = audit.status === AuditStatus.DRAFT;
   const canStart = isDraft && (audit.assignments?.length || 0) > 0;

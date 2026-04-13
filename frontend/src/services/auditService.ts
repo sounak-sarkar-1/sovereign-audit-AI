@@ -10,62 +10,50 @@ import type { User } from '@/stores/auth';
 
 export const auditService = {
   getAudits: async (params?: { page?: number; limit?: number; status?: AuditStatus }) => {
-    const response = await api.get<AuditListResponse>('/manager/audits', { params });
-    return response.data;
+    return await api.get<AuditListResponse>('/manager/audits', { params });
   },
 
   getAudit: async (id: string) => {
-    const response = await api.get<Audit>(`/manager/audits/${id}`);
-    return response.data;
+    return await api.get<Audit>(`/manager/audits/${id}`);
   },
 
   createAudit: async (data: CreateAuditDto) => {
-    const response = await api.post<Audit>('/manager/audits', data);
-    return response.data;
+    return await api.post<Audit>('/manager/audits', data);
   },
 
   updateAudit: async (id: string, data: UpdateAuditDto) => {
-    const response = await api.put<Audit>(`/manager/audits/${id}`, data);
-    return response.data;
+    return await api.put<Audit>(`/manager/audits/${id}`, data);
   },
 
   startAudit: async (id: string) => {
-    const response = await api.post<Audit>(`/manager/audits/${id}/start`);
-    return response.data;
+    return await api.post<Audit>(`/manager/audits/${id}/start`);
   },
 
   getClients: async () => {
-    const response = await api.get<User[]>('/manager/clients');
-    return response.data;
+    return await api.get<User[]>('/manager/clients');
   },
 
   getAssignments: async (auditId: string) => {
-    const response = await api.get<any>(`/manager/audits/${auditId}/assignments`);
-    return response.data;
+    return await api.get<any>(`/manager/audits/${auditId}/assignments`);
   },
 
   assignToBU: async (auditId: string, data: { auditorId: string; auditBusinessUnitId: string }) => {
-    const response = await api.post(`/manager/audits/${auditId}/assignments`, data);
-    return response.data;
+    return await api.post(`/manager/audits/${auditId}/assignments`, data);
   },
 
   unassignFromBU: async (auditId: string, assignmentId: string) => {
-    const response = await api.delete(`/manager/audits/${auditId}/assignments/${assignmentId}`);
-    return response.data;
+    return await api.delete(`/manager/audits/${auditId}/assignments/${assignmentId}`);
   },
 
   assignToLineItem: async (auditId: string, data: { auditorId: string; lineItemId: string }) => {
-    const response = await api.post(`/manager/audits/${auditId}/assignments/line-items`, data);
-    return response.data;
+    return await api.post(`/manager/audits/${auditId}/assignments/line-items`, data);
   },
 
   unassignFromLineItem: async (auditId: string, assignmentId: string) => {
-    const response = await api.delete(`/manager/audits/${auditId}/assignments/line-items/${assignmentId}`);
-    return response.data;
+    return await api.delete(`/manager/audits/${auditId}/assignments/line-items/${assignmentId}`);
   },
 
   getAuditTrail: async (auditId: string) => {
-    const response = await api.get<any[]>(`/manager/audits/${auditId}/trail`);
-    return response.data;
+    return await api.get<any[]>(`/manager/audits/${auditId}/trail`);
   },
 };

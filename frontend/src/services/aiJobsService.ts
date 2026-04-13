@@ -12,7 +12,6 @@ export interface AIJob {
 
 export const aiJobsService = {
   getJob: async (jobId: string): Promise<AIJob> => {
-    const res = await api.get(`/ai-jobs/${jobId}`);
-    return res.data?.data ?? res.data;
+    return await api.get(`/ai-jobs/${jobId}`);
   },
 };

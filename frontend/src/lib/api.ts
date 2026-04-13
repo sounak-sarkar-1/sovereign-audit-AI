@@ -1,6 +1,19 @@
 import axios from 'axios';
 import { useAuthStore } from '../stores/auth';
 
+declare module 'axios' {
+  export interface AxiosInstance {
+    request<T = any, R = T, D = any>(config: AxiosRequestConfig<D>): Promise<R>;
+    get<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+    delete<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+    head<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+    options<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+    post<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+    put<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+    patch<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+  }
+}
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1',
   withCredentials: true,
@@ -22,18 +35,12 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => {
-    // Automatically unwrap success/data wrapper from backend
-    if (response.data && response.data.success === true) {
-      const { success, ...payload } = response.data;
-      // If the payload only has a 'data' property (and potentially others we don't care about), 
-      // but 'data' is the common pattern, we check for its existence.
-      // If we have both 'data' AND 'meta', we return the whole payload.
-      if (Object.keys(payload).length === 1 && 'data' in payload) {
-        return { ...response, data: payload.data };
-      }
-      return { ...response, data: payload };
+    // Backend wraps responses as { data: T, message: string, statusCode: number }
+    // Return the inner data directly if it exists
+    if (response.data && response.data.data !== undefined) {
+      return response.data.data;
     }
-    return response;
+    return response.data;
   },
   async (error) => {
     const originalRequest = error.config;
