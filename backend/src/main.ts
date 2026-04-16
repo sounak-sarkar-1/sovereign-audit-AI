@@ -19,8 +19,28 @@ async function bootstrap() {
   // Cookie Parser
   app.use(cookieParser());
 
-  // Helmet
-  app.use(helmet());
+  // CORS — must be registered BEFORE helmet
+  const frontendUrl = process.env.FRONTEND_URL;
+  const nodeEnv = process.env.NODE_ENV;
+
+  if (nodeEnv !== 'development' && !frontendUrl) {
+    throw new Error(
+      'FRONTEND_URL environment variable is required in production',
+    );
+  }
+
+  app.enableCors({
+    origin: frontendUrl || 'http://localhost:5173',
+    credentials: true,
+  });
+
+  // Helmet — applied AFTER CORS
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: process.env.NODE_ENV === 'production',
+    }),
+  );
 
   // Global Pipes
   app.useGlobalPipes(
@@ -39,21 +59,6 @@ async function bootstrap() {
     new LoggingInterceptor(),
     new TransformResponseInterceptor(),
   );
-
-  // CORS
-  const frontendUrl = process.env.FRONTEND_URL;
-  const nodeEnv = process.env.NODE_ENV;
-
-  if (nodeEnv !== 'development' && !frontendUrl) {
-    throw new Error(
-      'FRONTEND_URL environment variable is required in production',
-    );
-  }
-
-  app.enableCors({
-    origin: frontendUrl || 'http://localhost:5173',
-    credentials: true,
-  });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

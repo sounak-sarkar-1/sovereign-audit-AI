@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  ChevronLeft, 
-  Download, 
-  MessageSquare, 
+import {
+  ChevronLeft,
+  Download,
+  MessageSquare,
   FileSearch,
   CheckCircle,
   Loader2,
@@ -13,7 +13,6 @@ import {
   ArrowDown,
   Minus,
   Info,
-  Download
 } from 'lucide-react';
 import { clientService } from '@/services/clientService';
 import { Button } from '@/components/ui/button';
@@ -73,15 +72,15 @@ const ReportReview: React.FC = () => {
   const currentStatus = report.status;
   const auditName = report.audit?.name || "Audit Engagement";
   const auditData = report.audit;
-  
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="p-0 hover:bg-transparent text-muted-foreground hover:text-dark mb-1"
             onClick={() => navigate('/client/reports')}
           >
@@ -91,49 +90,49 @@ const ReportReview: React.FC = () => {
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight text-dark">{auditName} — Audit Report</h1>
             <Badge className={cn(
-               currentStatus === 'final' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-blue-100 text-blue-700 hover:bg-blue-100',
-               "rounded-full border-none px-3 capitalize"
+              currentStatus === 'final' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 'bg-blue-100 text-blue-700 hover:bg-blue-100',
+              "rounded-full border-none px-3 capitalize"
             )}>
               {currentStatus === 'final' ? 'Final Report' : 'Draft for Review'}
             </Badge>
           </div>
         </div>
         <div className="flex items-center gap-2">
-            <Button 
-                variant="outline" 
-                size="sm" 
-                className="gap-2 rounded-full font-bold"
-                onClick={() => clientService.downloadReport(id!, `${auditName}_Report.docx`)}
-            >
-              <Download size={16} /> Download Report (DOCX)
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 rounded-full font-bold"
+            onClick={() => clientService.downloadReport(id!, `${auditName}_Report.docx`)}
+          >
+            <Download size={16} /> Download Report (DOCX)
+          </Button>
+          {currentStatus === 'sent_for_client_review' && (
+            <Button size="sm" className="gap-2 rounded-full bg-primary" onClick={() => navigate(`/client/reports/${id}/feedback`)}>
+              <MessageSquare size={16} /> Submit Feedback
             </Button>
-            {currentStatus === 'sent_for_client_review' && (
-              <Button size="sm" className="gap-2 rounded-full bg-primary" onClick={() => navigate(`/client/reports/${id}/feedback`)}>
-                <MessageSquare size={16} /> Submit Feedback
-              </Button>
-            )}
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3 space-y-6">
           <Card className="shadow-card border-none bg-white p-6 min-h-[800px] flex flex-col items-center justify-center text-center space-y-4">
-             <div className="w-20 h-20 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground">
-                <FileSearch size={40} />
-             </div>
-             <div className="space-y-1">
-                <h3 className="text-xl font-bold text-dark">Document Viewer</h3>
-                <p className="text-sm text-muted-foreground max-w-sm">
-                   The secure PDF viewer is loading. In production, this would render a paginated preview of the report content.
-                </p>
-             </div>
-              <Button 
-                 variant="outline" 
-                 className="rounded-full shadow-sm"
-                  onClick={handleDownload}
-              >
-                 Download to View In Browser
-              </Button>
+            <div className="w-20 h-20 rounded-full bg-muted/20 flex items-center justify-center text-muted-foreground">
+              <FileSearch size={40} />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold text-dark">Document Viewer</h3>
+              <p className="text-sm text-muted-foreground max-w-sm">
+                The secure PDF viewer is loading. In production, this would render a paginated preview of the report content.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="rounded-full shadow-sm"
+              onClick={handleDownload}
+            >
+              Download to View In Browser
+            </Button>
           </Card>
         </div>
 
@@ -155,65 +154,65 @@ const ReportReview: React.FC = () => {
                 <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Status</p>
                 <div className="pt-1">
                   <Badge className={cn(
-                    currentStatus === 'final' ? 'bg-green-100 text-green-700 hover:bg-green-100' : 
-                    currentStatus === 'feedback_submitted' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' :
-                    'bg-blue-100 text-blue-700 hover:bg-blue-100',
+                    currentStatus === 'final' ? 'bg-green-100 text-green-700 hover:bg-green-100' :
+                      currentStatus === 'feedback_submitted' ? 'bg-orange-100 text-orange-700 hover:bg-orange-100' :
+                        'bg-blue-100 text-blue-700 hover:bg-blue-100',
                     "rounded-full border-none px-3 capitalize"
                   )}>
                     {currentStatus.replace(/_/g, ' ')}
                   </Badge>
                 </div>
               </div>
-              
+
               {auditData?.compliancePercentage !== null && auditData?.compliancePercentage !== undefined && (
                 <div className="pt-4 border-t border-dashed space-y-3">
-                   <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Compliance Score</p>
-                   <div className="flex items-center justify-between">
-                      <span className={cn(
-                        "text-3xl font-black",
-                        auditData.compliancePercentage >= 90 ? "text-emerald-600" : 
-                        auditData.compliancePercentage >= 60 ? "text-amber-500" : 
-                        "text-red-600"
-                      )}>
-                        {auditData.compliancePercentage.toFixed(1)}%
-                      </span>
-                      <Badge variant="outline" className={cn(
-                        "text-[9px] font-black uppercase tracking-widest",
-                        auditData.compliancePercentage >= 90 ? "border-emerald-200 text-emerald-700 bg-emerald-50" : 
-                        auditData.compliancePercentage >= 60 ? "border-amber-200 text-amber-700 bg-amber-50" : 
-                        "border-red-200 text-red-700 bg-red-50"
-                      )}>
-                        {auditData.compliancePercentage >= 90 ? 'Compliant' : 
-                         auditData.compliancePercentage >= 60 ? 'Needs Imp.' : 
-                         'Critical'}
-                      </Badge>
-                   </div>
-                   {auditData.hasPrevious && auditData.previousCompliancePercentage !== null && (
-                      <div 
-                        className="flex items-center justify-between text-[10px] bg-muted/20 p-2 rounded-lg cursor-pointer hover:bg-muted/40 transition-colors"
-                        onClick={() => setIsComparisonOpen(true)}
-                      >
-                         <span className="font-bold text-muted-foreground uppercase">Shift vs Prev.</span>
-                         <div className="flex items-center gap-1">
-                            <span className="font-black">
-                               {Math.abs(auditData.compliancePercentage - auditData.previousCompliancePercentage).toFixed(1)}%
-                            </span>
-                            {auditData.compliancePercentage > auditData.previousCompliancePercentage ? (
-                               <ArrowUp size={10} className="text-emerald-600" />
-                            ) : auditData.compliancePercentage < auditData.previousCompliancePercentage ? (
-                               <ArrowDown size={10} className="text-red-600" />
-                            ) : (
-                               <Minus size={10} className="text-muted-foreground" />
-                            )}
-                         </div>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Compliance Score</p>
+                  <div className="flex items-center justify-between">
+                    <span className={cn(
+                      "text-3xl font-black",
+                      auditData.compliancePercentage >= 90 ? "text-emerald-600" :
+                        auditData.compliancePercentage >= 60 ? "text-amber-500" :
+                          "text-red-600"
+                    )}>
+                      {auditData.compliancePercentage.toFixed(1)}%
+                    </span>
+                    <Badge variant="outline" className={cn(
+                      "text-[9px] font-black uppercase tracking-widest",
+                      auditData.compliancePercentage >= 90 ? "border-emerald-200 text-emerald-700 bg-emerald-50" :
+                        auditData.compliancePercentage >= 60 ? "border-amber-200 text-amber-700 bg-amber-50" :
+                          "border-red-200 text-red-700 bg-red-50"
+                    )}>
+                      {auditData.compliancePercentage >= 90 ? 'Compliant' :
+                        auditData.compliancePercentage >= 60 ? 'Needs Imp.' :
+                          'Critical'}
+                    </Badge>
+                  </div>
+                  {auditData.hasPrevious && auditData.previousCompliancePercentage !== null && (
+                    <div
+                      className="flex items-center justify-between text-[10px] bg-muted/20 p-2 rounded-lg cursor-pointer hover:bg-muted/40 transition-colors"
+                      onClick={() => setIsComparisonOpen(true)}
+                    >
+                      <span className="font-bold text-muted-foreground uppercase">Shift vs Prev.</span>
+                      <div className="flex items-center gap-1">
+                        <span className="font-black">
+                          {Math.abs(auditData.compliancePercentage - auditData.previousCompliancePercentage).toFixed(1)}%
+                        </span>
+                        {auditData.compliancePercentage > auditData.previousCompliancePercentage ? (
+                          <ArrowUp size={10} className="text-emerald-600" />
+                        ) : auditData.compliancePercentage < auditData.previousCompliancePercentage ? (
+                          <ArrowDown size={10} className="text-red-600" />
+                        ) : (
+                          <Minus size={10} className="text-muted-foreground" />
+                        )}
                       </div>
-                   )}
+                    </div>
+                  )}
                 </div>
               )}
-              
+
               {currentStatus === 'sent_for_client_review' && (
                 <div className="pt-4 border-t border-dashed space-y-2">
-                  <Button 
+                  <Button
                     className="w-full rounded-full bg-primary hover:bg-primary/90 gap-2 h-11 font-bold shadow-sm"
                     onClick={() => navigate(`/client/reports/${id}/feedback`)}
                   >
@@ -250,7 +249,7 @@ const ReportReview: React.FC = () => {
 
       {/* Comparison Modal */}
       {report.auditId && (
-        <ComplianceComparisonModal 
+        <ComplianceComparisonModal
           auditId={report.auditId}
           open={isComparisonOpen}
           onOpenChange={setIsComparisonOpen}

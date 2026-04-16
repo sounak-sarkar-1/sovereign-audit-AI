@@ -70,7 +70,7 @@ import { AppService } from './app.service';
         REFRESH_TOKEN_SECRET: Joi.string().min(32).required(),
         JWT_EXPIRES_IN: Joi.string().default('15m'),
         REFRESH_TOKEN_EXPIRES_IN: Joi.string().default('7d'),
-        AES_ENCRYPTION_KEY: Joi.string().length(64).required(),
+        AES_ENCRYPTION_KEY: Joi.string().length(32).required(),
         FRONTEND_URL: Joi.string().uri().required(),
       }),
       validationOptions: {

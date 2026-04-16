@@ -449,7 +449,6 @@ export class ManagerReportsService {
       const row = sheet.addRow({
         bu:
           item.auditBusinessUnit?.businessUnit?.name ||
-          item.auditBusinessUnit?.name ||
           '—',
         name: item.name,
         description: item.description || '—',

@@ -15,7 +15,7 @@ export const envValidationSchema = Joi.object({
   REFRESH_TOKEN_SECRET: Joi.string().min(32).required(),
   REFRESH_TOKEN_EXPIRES_IN: Joi.string().default('7d'),
 
-  AES_ENCRYPTION_KEY: Joi.string().length(32).required(),
+  AES_ENCRYPTION_KEY: Joi.string().length(64).required(),
 
   STORAGE_DRIVER: Joi.string().valid('local', 's3').default('local'),
   LOCAL_STORAGE_PATH: Joi.string().default('./uploads'),
