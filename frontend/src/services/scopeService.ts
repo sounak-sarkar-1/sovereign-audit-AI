@@ -12,7 +12,7 @@ export const scopeService = {
     auditId: string,
   ): Promise<Record<string, ScopeLineItem[]>> => {
     const response = await api.get(`/manager/audits/${auditId}/scope`);
-    return response.data;
+    return response;
   },
 
   createLineItems: async (auditId: string, data: any) => {
@@ -20,7 +20,7 @@ export const scopeService = {
       `/manager/audits/${auditId}/scope/line-items`,
       data,
     );
-    return response.data;
+    return response;
   },
 
   updateLineItem: async (auditId: string, itemId: string, data: any) => {
@@ -28,14 +28,14 @@ export const scopeService = {
       `/manager/audits/${auditId}/scope/line-items/${itemId}`,
       data,
     );
-    return response.data;
+    return response;
   },
 
   deleteLineItem: async (auditId: string, itemId: string) => {
     const response = await api.delete(
       `/manager/audits/${auditId}/scope/line-items/${itemId}`,
     );
-    return response.data;
+    return response;
   },
 
   importFromTemplate: async (auditId: string, data: ImportFromTemplateDto) => {
@@ -43,7 +43,7 @@ export const scopeService = {
       `/manager/audits/${auditId}/scope/import-from-template`,
       data,
     );
-    return response.data;
+    return response;
   },
 
   extractFromDocument: async (
@@ -61,7 +61,7 @@ export const scopeService = {
         headers: { 'Content-Type': 'multipart/form-data' },
       },
     );
-    return response.data;
+    return response;
   },
 
   importFromExcel: async (
@@ -79,7 +79,7 @@ export const scopeService = {
         headers: { 'Content-Type': 'multipart/form-data' },
       },
     );
-    return response.data;
+    return response;
   },
 
   confirmExcelImport: async (
@@ -91,12 +91,12 @@ export const scopeService = {
       `/manager/audits/${auditId}/scope/import-from-excel/${importId}/confirm`,
       dto,
     );
-    return response.data;
+    return response;
   },
 
   getAiJob: async (jobId: string): Promise<AiJob> => {
     const response = await api.get(`/ai-jobs/${jobId}`);
-    return response.data;
+    return response;
   },
 
   updateWeightages: async (
@@ -107,13 +107,13 @@ export const scopeService = {
       `/manager/audits/${auditId}/scope/weightages`,
       { items },
     );
-    return response.data;
+    return response;
   },
 
   distributeEqualWeightage: async (auditId: string) => {
     const response = await api.post(
       `/manager/audits/${auditId}/scope/weightages/distribute-equally`,
     );
-    return response.data;
+    return response;
   },
 };

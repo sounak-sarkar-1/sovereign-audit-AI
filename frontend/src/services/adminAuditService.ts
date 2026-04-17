@@ -16,13 +16,13 @@ export interface AuditFilterParams {
 export const adminAuditService = {
   getAudits: async (params: AuditFilterParams) => {
     const response = await api.get('/admin/audits', { params });
-    return response.data;
+    return response;
   },
 
   getAuditById: async (id: string | undefined) => {
     if (!id) return null;
     const response = await api.get(`/admin/audits/${id}`);
-    return response.data;
+    return response;
   },
 
   exportAudits: async (params: AuditFilterParams) => {

@@ -4,65 +4,65 @@ export const clientService = {
   // Audits
   getAudits: async (params?: { page?: number; limit?: number; status?: string }) => {
     const response = await api.get('/client/audits', { params });
-    return response.data;
+    return response;
   },
 
   getAuditDetail: async (id: string) => {
     const response = await api.get(`/client/audits/${id}`);
-    return response.data;
+    return response;
   },
 
   getAuditProgress: async (auditId: string) => {
     const response = await api.get(`/client/audits/${auditId}/progress`);
-    return response.data;
+    return response;
   },
 
   // Insights
   getInsights: async (params?: { auditId?: string }) => {
     const response = await api.get('/client/insights', { params });
-    return response.data;
+    return response;
   },
 
   getAuditInsights: async (auditId: string) => {
     const response = await api.get(`/client/insights`, { params: { auditId } });
-    return response.data;
+    return response;
   },
 
   // Clarifications
   getClarifications: async (params?: { status?: string }) => {
     const response = await api.get('/client/clarifications', { params });
-    return response.data;
+    return response;
   },
 
   getClarificationDetail: async (id: string) => {
     const response = await api.get(`/client/clarifications/${id}`);
-    return response.data;
+    return response;
   },
 
   respondToClarification: async (id: string, message: string, attachmentFileIds?: string[]) => {
     const response = await api.post(`/client/clarifications/${id}/respond`, { message, attachmentFileIds });
-    return response.data;
+    return response;
   },
 
   // Reports
   getReports: async () => {
     const response = await api.get('/client/reports');
-    return response.data;
+    return response;
   },
 
   getReportDetail: async (id: string) => {
     const response = await api.get(`/client/reports/${id}`);
-    return response.data;
+    return response;
   },
 
   submitReportFeedback: async (id: string, feedback: any[]) => {
     const response = await api.post(`/client/reports/${id}/feedback`, { feedback });
-    return response.data;
+    return response;
   },
 
   finalizeReport: async (id: string) => {
     const response = await api.post(`/client/reports/${id}/finalize`);
-    return response.data;
+    return response;
   },
 
   downloadReport: async (id: string, filename: string) => {
@@ -81,44 +81,44 @@ export const clientService = {
   // Corrective Actions
   getCorrectiveActions: async (params?: { auditId?: string }) => {
     const response = await api.get('/client/corrective-actions', { params });
-    return response.data;
+    return response;
   },
 
   createCorrectiveAction: async (data: any) => {
     const response = await api.post('/client/corrective-actions', { ...data });
-    return response.data;
+    return response;
   },
 
   updateCorrectiveAction: async (id: string, data: any) => {
     const response = await api.put(`/client/corrective-actions/${id}`, data);
-    return response.data;
+    return response;
   },
 
   // Chat
   getChatMessages: async (auditId: string) => {
     const response = await api.get(`/client/chats/${auditId}`);
-    return response.data;
+    return response;
   },
 
   sendChatMessage: async (auditId: string, content: string) => {
     const response = await api.post(`/client/chats/${auditId}`, { content });
-    return response.data;
+    return response;
   },
 
   markChatMessageAsRead: async (auditId: string) => {
     const response = await api.post(`/client/chats/${auditId}/read`);
-    return response.data;
+    return response;
   },
 
   // Search
   search: async (query: string) => {
     const response = await api.post('/client/search', { query });
-    return response.data;
+    return response;
   },
 
   getComplianceComparison: async (auditId: string) => {
     const response = await api.get(`/client/audits/${auditId}/compliance-comparison`);
-    return response.data;
+    return response;
   },
 
   exportLineItems: async (auditId: string, auditName: string) => {

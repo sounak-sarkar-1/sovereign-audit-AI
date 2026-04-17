@@ -39,12 +39,12 @@ export const fileService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response;
   },
 
   updateAnnotations: async (id: string, annotations: any): Promise<UploadedFile> => {
     const response = await api.patch(`/shared/files/${id}/annotations`, { annotations });
-    return response.data;
+    return response;
   },
 
   deleteFile: async (id: string): Promise<void> => {
@@ -53,6 +53,6 @@ export const fileService = {
 
   getFile: async (id: string): Promise<UploadedFile> => {
     const response = await api.get(`/shared/files/${id}`);
-    return response.data;
+    return response;
   },
 };

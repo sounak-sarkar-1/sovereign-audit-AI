@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   ChevronLeft,
   Download,
   MessageSquare,
   FileSearch,
-  CheckCircle,
   Loader2,
   AlertCircle,
   ArrowUp,
   ArrowDown,
   Minus,
-  Info,
 } from 'lucide-react';
 import { clientService } from '@/services/clientService';
 import { Button } from '@/components/ui/button';
@@ -20,7 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 import ComplianceComparisonModal from '@/components/client/ComplianceComparisonModal';
 
 
@@ -29,7 +26,6 @@ import ComplianceComparisonModal from '@/components/client/ComplianceComparisonM
 const ReportReview: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [isExporting, setIsExporting] = React.useState(false);
   const [isComparisonOpen, setIsComparisonOpen] = React.useState(false);
 
@@ -40,6 +36,22 @@ const ReportReview: React.FC = () => {
   });
 
   // Removed finalizeMutation
+
+  const handleDownload = () => {
+    clientService.downloadReport(id!, `${auditName}_Report.docx`);
+  };
+
+  const handleExport = async () => {
+    if (!report?.auditId) return;
+    setIsExporting(true);
+    try {
+      await clientService.exportLineItems(report.auditId, auditName);
+    } catch (error) {
+      console.error('Export failed:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   if (isLoading) {
     return (

@@ -22,7 +22,7 @@ export const exceptionalRequestService = {
       actionType,
       justification,
     });
-    return response.data;
+    return response;
   },
 
   // Admin endpoints
@@ -30,12 +30,12 @@ export const exceptionalRequestService = {
     const response = await api.get('/admin/exceptional-requests', {
       params: { status },
     });
-    return response.data;
+    return response;
   },
 
   getRequestDetail: async (id: string) => {
     const response = await api.get(`/admin/exceptional-requests/${id}`);
-    return response.data;
+    return response;
   },
 
   approveRequest: async (id: string, formData: FormData) => {
@@ -44,13 +44,13 @@ export const exceptionalRequestService = {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+    return response;
   },
 
   rejectRequest: async (id: string, adminComment: string) => {
     const response = await api.post(`/admin/exceptional-requests/${id}/reject`, {
       adminComment,
     });
-    return response.data;
+    return response;
   },
 };

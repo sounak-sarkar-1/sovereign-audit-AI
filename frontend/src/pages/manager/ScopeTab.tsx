@@ -99,7 +99,7 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
         items: [data]
       });
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['scope', audit.id] });
       setIsManualDialogOpen(false);
       resetManualForm();
@@ -357,7 +357,7 @@ const ScopeTab: React.FC<ScopeTabProps> = ({ audit, isDraft }) => {
 
           {/* Warning Banner */}
           {!isWeightageValid && hasAnyItems && (
-            <Alert variant="warning" className="bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400">
+            <Alert className="bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400">
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle className="font-bold">Weightages incomplete</AlertTitle>
               <AlertDescription>

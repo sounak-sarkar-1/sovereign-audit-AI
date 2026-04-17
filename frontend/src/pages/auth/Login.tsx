@@ -48,8 +48,8 @@ export default function LoginPage() {
           'X-Tenant-Slug': values.tenantSlug,
         }
       });
-
-      const { accessToken, user } = response.data;
+      console.log('LOGIN RESPONSE:', JSON.stringify(response.data));
+      const { accessToken, user } = response as any;
       setAuth(user, accessToken, values.tenantSlug);
 
       let from = (location.state as any)?.from?.pathname || '/';
@@ -89,7 +89,7 @@ export default function LoginPage() {
                   <span>{error}</span>
                 </div>
               )}
-              
+
               <FormField
                 control={form.control}
                 name="tenantSlug"
@@ -132,8 +132,8 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-[#4f2d7f] hover:bg-[#2b144d] text-white py-6 text-lg"
                 disabled={isLoading}
                 data-testid="login-submit-btn"

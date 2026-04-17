@@ -21,16 +21,16 @@ export interface GetNotificationsParams {
 export const notificationService = {
   getNotifications: async (params?: GetNotificationsParams) => {
     const response = await api.get('/shared/notifications', { params });
-    return response.data;
+    return response;
   },
 
   markAsRead: async (id: string) => {
     const response = await api.patch(`/shared/notifications/${id}/read`);
-    return response.data;
+    return response;
   },
 
   markAllAsRead: async () => {
     const response = await api.patch('/shared/notifications/read-all');
-    return response.data;
+    return response;
   },
 };

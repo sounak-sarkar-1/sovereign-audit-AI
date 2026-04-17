@@ -6,16 +6,16 @@ export const authService = {
       currentPassword,
       newPassword,
     });
-    return response.data;
+    return response;
   },
 
   resetPassword: async (email: string) => {
     const response = await api.post('/auth/request-password-reset', { email });
-    return response.data;
+    return response;
   },
 
   confirmPasswordReset: async (token: string, newPassword: string) => {
     const response = await api.post('/auth/reset-password', { token, newPassword });
-    return response.data;
+    return response;
   },
 };

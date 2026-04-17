@@ -15,12 +15,12 @@ export const templateService = {
     const response = await api.get('/admin/templates', {
       params: { page, limit, search },
     });
-    return response.data;
+    return response;
   },
 
   getTemplate: async (id: string): Promise<AuditTemplate> => {
     const response = await api.get(`/admin/templates/${id}`);
-    return response.data;
+    return response;
   },
 
   createTemplate: async (
@@ -29,7 +29,7 @@ export const templateService = {
     const response = await api.post('/admin/templates', data, {
       timeout: 10000,
     });
-    return response.data;
+    return response;
   },
 
   updateTemplate: async (
@@ -37,13 +37,13 @@ export const templateService = {
     data: UpdateAuditTemplateDto,
   ): Promise<AuditTemplate> => {
     const response = await api.put(`/admin/templates/${id}`, data);
-    return response.data;
+    return response;
   },
 
   deleteTemplate: async (
     id: string,
   ): Promise<{ message: string; warningCount: number }> => {
     const response = await api.delete(`/admin/templates/${id}`);
-    return response.data;
+    return response;
   },
 };

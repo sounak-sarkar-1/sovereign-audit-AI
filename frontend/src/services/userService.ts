@@ -5,8 +5,8 @@ export const userService = {
     const response = await api.get('/admin/users', { params });
     // Handle both { data, meta } and direct array if needed
     // UsersList expects { data, meta }, Dashboard expects { total }
-    const result = response.data;
-    if (result.meta) {
+    const result = response;
+    if (result && result.meta) {
       return {
         items: result.data,
         total: result.meta.total,
@@ -18,21 +18,21 @@ export const userService = {
 
   getUserById: async (id: string) => {
     const response = await api.get(`/admin/users/${id}`);
-    return response.data;
+    return response;
   },
 
   createUser: async (userData: any) => {
     const response = await api.post('/admin/users', userData);
-    return response.data;
+    return response;
   },
 
   updateUser: async (id: string, userData: any) => {
     const response = await api.put(`/admin/users/${id}`, userData);
-    return response.data;
+    return response;
   },
 
   deleteUser: async (id: string) => {
     const response = await api.delete(`/admin/users/${id}`);
-    return response.data;
+    return response;
   }
 };

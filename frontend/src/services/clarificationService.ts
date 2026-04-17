@@ -10,26 +10,26 @@ export interface CreateClarificationDto {
 export const clarificationService = {
   getClarifications: async (status?: string) => {
     const response = await api.get('/manager/clarifications', { params: { status } });
-    return response.data;
+    return response;
   },
 
   getClarificationThread: async (id: string) => {
     const response = await api.get(`/manager/clarifications/${id}`);
-    return response.data;
+    return response;
   },
 
   createClarification: async (auditId: string, dto: CreateClarificationDto) => {
     const response = await api.post(`/manager/clarifications/audits/${auditId}`, dto);
-    return response.data;
+    return response;
   },
 
   respond: async (id: string, message: string) => {
     const response = await api.post(`/client/clarifications/${id}/respond`, { message });
-    return response.data;
+    return response;
   },
 
   close: async (id: string) => {
     const response = await api.post(`/manager/clarifications/${id}/close`);
-    return response.data;
+    return response;
   },
 };

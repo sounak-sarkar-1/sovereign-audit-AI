@@ -30,20 +30,20 @@ export const exceptionService = {
     const response = await api.get(url, {
       params: { status },
     });
-    return response.data;
+    return response;
   },
 
   approveException: async (auditId: string, exId: string, managerComment?: string) => {
     const response = await api.post(`/manager/audits/${auditId}/exceptions/${exId}/approve`, {
       managerComment,
     });
-    return response.data;
+    return response;
   },
 
   rejectException: async (auditId: string, exId: string, managerComment: string) => {
     const response = await api.post(`/manager/audits/${auditId}/exceptions/${exId}/reject`, {
       managerComment,
     });
-    return response.data;
+    return response;
   },
 };
